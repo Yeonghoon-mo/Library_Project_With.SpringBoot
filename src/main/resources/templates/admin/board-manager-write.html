@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ko" layout:decorate="/layout/adminLayout" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<th:block layout:fragment="main">
+    <div id="container">
+        <div class="innerwrap">
+            <div class="page_tits">
+                <h3>게시판 관리</h3>
+                <p class="path"><strong>현재위치 :</strong> <span>게시판관리</span> <span>게시글 등록/수정</span></p>
+            </div>
+            <div id="main">
+                <form id="form" name="form">
+                    <div class="section">
+                        <table class="tb tb_row">
+                            <colgroup>
+                                <col style="width:12%;" />
+                                <col style="width:auto;" />
+                                <col style="width:12%;" />
+                                <col style="width:38%;" />
+                            </colgroup>
+                            <tbody>
+                            <tr>
+                                <th scope="row">제목<span class="es">필수입력</span></th>
+                                <td colspan="3"><input id="title" name="title" type="text" value="" /></td>
+                                <th scope="row">작성자<span class="es">필수입력</span></th>
+                                <td colspan="1"><input id="writer" name="writer" type="text" th:value="${session.login.name}" readonly /></td>
+                            </tr>
+
+                            <tr id="noticeUseYn" name="noticeUseYn">
+                                <th scope="row">사용여부<span class="es">필수입력</span></th>
+                                <td colspan="5">
+                                    <div class="radio_group">
+                                        <p class="radios">
+                                            <input checked id="DT002_6_01" name="noticeYn" type="radio" value="Y"/>
+                                            <label for="DT002_6_01">사용</label><span class="check"></span>
+                                        </p>
+                                        <p class="radios">
+                                            <input id="DT002_6_02" name="noticeYn" type="radio" value="N"  />
+                                            <label for="DT002_6_02">미사용</label><span class="check"></span>
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">내용<span class="es">필수입력</span></th>
+                                <td colspan="5"><textarea cols="90" id="content" name="content" rows="10"></textarea></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">대표 이미지</th>
+                                <td colspan="5">
+                                    <div class="file_input">
+                                        <input type="hidden" id="saveNameImage" name="saveNameImage" />
+                                        <input id="repImage" name="repImage" placeholder="파일 찾기" readonly title="첨부파일" type="text" />
+
+                                        <label for="thumbnail"> 첨부파일
+                                            <input type="file" id="thumbnail" name="thumbnail" onchange="changeFileName(this)" accept="image/*" />
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">첨부파일</th>
+                                <td colspan="5">
+                                    <ul class="filegroup" id="files" name="files">
+                                        <li data-name="file_input">
+                                            <div class="file_input">
+                                                <input type="text" placeholder="파일 찾기" readonly title="첨부파일" />
+                                                <label for="file_0"> 첨부파일
+                                                    <input type="file" id="file_0" name="attachFiles" onchange="changeFileName(this)" />
+                                                </label>
+                                            </div>
+                                            <div class="file_btns">
+                                                <button class="btns primary addfile" onclick="addFile()" type="button">파일 추가등록</button>
+                                                <button class="btns primary addfile" id="firstFileRemoveBtn" onclick="removeFile(this)" type="button">파일삭제</button>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">키워드</th>
+                                <td colspan="5"><input id="boardKeyword" name="boardKeyword" placeholder="키워드는 콤마(,)로 구분합니다." type="text" value="" /></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <p class="btn_set">
+                            <button class="btns btn_st1 btn_mid" onclick="save()" type="button">저장</button>
+                            <button class="btns btn_st1 btn_mid" onclick="goList()" type="button">목록</button>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</th:block>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        window.onload = () => {
+            findBoard();
+            printFileList();
+        }
+
+        // 유효성 검사
+        function isValid() {
+            const form = findById('form');
+
+            if (!form.title.value.trim()) {
+                alert('제목을 입력해 주세요.');
+                form.title.value = '';
+                form.title.focus();
+                return false;
+            }
+
+            if (!form.content.value.trim()) {
+                alert('내용을 입력해 주세요.');
+                form.content.value = '';
+                form.content.focus();
+                return false;
+            }
+
+            if (!form.writer.value.trim()) {
+                alert('작성자를 입력해 주세요 ex)관리자');
+                form.writer.value = '';
+                form.writer.focus();
+                return false;
+            }
+            return true;
+        }
+
+        // 공지사항 등록, 수정
+        function save() {
+            if (!isValid()) {
+                return false;
+            }
+
+            let boardMenuNum = new URLSearchParams(location.search).get('boardMenuNum');
+            const formData = new FormData(findById('form'));
+            let id = [[ ${id} ]];
+            const uri = (id) ? `/api/boards/${id}` : '/api/boards';
+
+            if(boardMenuNum !== '1') {
+                formData.append('noticeYn', 'N');
+            }
+            formData.append('boardMenuNum', boardMenuNum);
+            formData.append('deleteYn', 'N');
+            formData.append('removeFileIds', removeFileIds.getAll());
+
+            callApi(uri, 'POST', formData, true).then(response => {
+                alert("저장되었습니다.");
+                goList();
+            }).catch(error => alert(error.message));
+        }
+
+        // 기존 게시글 정보 Response
+        function findBoard() {
+            const id = [[ ${id} ]];
+            if (!id) {
+                return false;
+            }
+            let boardMenuNum = new URLSearchParams(location.search).get('boardMenuNum');
+            if(boardMenuNum !== '1') {
+                findById('noticeUseYn').innerHTML = '';
+            }
+
+            fetch(`/api/boards/${id}`).then(response => {
+                if(!response.ok) {
+                    throw new Error("Request failed...");
+                }
+                return response.json();
+            }).then(json => {
+                Object.keys(json).forEach(key =>{
+                    const elem = findById(key);
+                    if(elem){
+                        elem.value = json[key];
+                    }
+                });
+            }).catch(error =>{
+                alert('게시글 정보를 찾을 수 없습니다.');
+                location.href = '/manager/board-manager-list' + location.search;
+            });
+        }
+
+        // 기존 파일 정보 Response
+        function printFileList() {
+
+            const id = [[ ${id} ]];
+            if( !id ) {
+                return false;
+            }
+
+            fetch(`/api/boards/${id}/files`).then(response => {
+                if(!response.ok) {
+                    throw new Error("Request Error...");
+                }
+                return response.json();
+            }).then(fileList => {
+                let fileListHtml = '';
+                for(let i = 0; i < fileList.length; i++) {
+                    let fileLists = fileList[i];
+                    let fileAddBtn = (i < 1) ? '<button onclick="addFile()" type="button" class="btns primary addfile">파일 추가등록</button>' : '';
+                    fileListHtml += `
+                        <li data-name="file_input">
+                            <div class="file_input">
+                                <input type="text" title="첨부파일" id="fileList" name="fileList" placeholder="파일 찾기" value="${fileLists.originalName}"  readonly />
+                                <label for="file_${i+1}"> 첨부파일
+                                    <input type="file" id="file_${i+1}" name="attachFiles" onchange="changeFileName(this, ${fileLists.id})" />
+                                </label>
+                            </div>
+                            <div class="file_btns">
+                                ${fileAddBtn}
+                                <button onclick="removeFile(this, ${fileLists.id})" type="button" class="btns primary addfile">파일삭제</button>
+                            </div>
+                        </li>
+                    `;
+                    fileSeq.up();
+                    findById('files').innerHTML = fileListHtml;
+                    document.querySelector('#files > li:first-child > .file_btns > button:last-child').setAttribute('id', 'firstFileRemoveBtn');
+                }
+            });
+        }
+
+        // 첨부파일 추가 등록 버튼
+        function addFile() {
+            if (document.querySelectorAll('li[data-name="file_input"]').length > 9) {
+                alert('파일은 최대 10개까지 업로드 할 수 있습니다.')
+                return false;
+            }
+
+            fileSeq.up();
+            const fileHtml = `
+                <li data-name="file_input" style="margin-top: 15px;">
+                    <div class="file_input">
+                        <input type="text" title="첨부파일" placeholder="파일 찾기"  readonly />
+                        <label for="file_${fileSeq.get()}"> 첨부파일
+                            <input type="file" id="file_${fileSeq.get()}" name="attachFiles" onchange="changeFileName(this)" />
+                        </label>
+                    </div>
+                    <div class="file_btns">
+                        <button onclick="removeFile(this)" type="button" class="btns primary addfile">파일삭제</button>
+                    </div>
+                </li>
+			`;
+
+            $('#files').append(fileHtml);
+        }
+
+        // 추가등록 파일 삭제
+        function removeFile(elem, fileId) {
+            if (fileId) {
+                elem.setAttribute('onclick', 'removeFile(this);');
+                document.querySelectorAll('input[name="attachFiles"]')[0].setAttribute('onchange', 'changeFileName(this)');
+                removeFileIds.add(fileId);
+            }
+
+            const li = elem.closest('li')
+            if (elem.id) {
+                li.querySelectorAll('input').forEach(e => e.value = '');
+                return false;
+            }
+
+            li.remove();
+        }
+
+        // 목록으로 다시 돌아가기 ( 이전 페이지 유지 )
+        function goList(){
+            const id = [[ ${id} ]];
+            location.href = (!id) ? '/manager/board-manager-list' + location.search : `/manager/board-manager-view/${id}` + location.search;
+        }
+
+        /*]]>*/
+    </script>
+</th:block>
+</html>

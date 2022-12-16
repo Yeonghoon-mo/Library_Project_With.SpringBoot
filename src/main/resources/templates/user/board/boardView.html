@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ko" layout:decorate="/layout/userLayout" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<th:block layout:fragment="main">
+	<div class="sub_vis01" id="sub_visual">
+		<div class="innerwrap">
+			<div class="visual">
+				<div class="tit_group">
+					<span id="titleName" name="titleName"></span>
+				</div>
+				<div class="imgs" id="titleImg" name="titleImg">
+
+				</div>
+			</div>
+		</div>
+		<div class="bg"></div>
+	</div>
+
+	<div class="container" id="contents">
+		<div class="innerwrap">
+			<div class="pagetitle" id="subTitleName" name="subTitleName">
+
+				<div class="menulink" id="menulink" name="menulink">
+
+				</div>
+
+			</div>
+			<div class="content">
+				<form id="form" name="form" onsubmit="return false;">
+					<!-- 상세내용 -->
+					<ul class="bbs bbs_view">
+						<li class="b_tit">
+							<p class="subject" id="title" name="title"><span id="subjectMenu" name="subjectMenu"></span></p>
+							<p class="add_info">
+								<span class="b_date" id="createdDate" name="createdDate"><i class="far fa-calendar-alt"></i></span>
+								<span class="b_hit" id="hits" name="hits"><i class="far fa-eye"></i>  </span>
+							</p>
+							<!-- 공감 -->
+							<div class="user_comm">
+								<div class="recomchk">
+									<span class="b_like"><input id="like1" name="likeTypes" onclick="changeLikeType(1, this);" type="checkbox" /><label for="like1"><i class="far fa-thumbs-up"></i> <span class="count" id="likeCnt" name="likeCnt"></span></label></span>
+									<span class="b_dislike"><input id="like0" name="likeTypes" onclick="changeLikeType(0, this);" type="checkbox" /><label for="like0"><i class="far fa-thumbs-down"></i> <span class="count" id="badCnt" name="badCnt"></span></label></span>
+								</div>
+							</div>
+							<!-- // 공감 -->
+						</li>
+						<li>
+							<div class="view_con" id="content" name="content">
+
+							</div>
+							<!-- 작성자 정보 -->
+							<div class="writer_info" id="writer" name="writer">
+
+							</div>
+							<!-- // 작성자 정보 -->
+						</li>
+						<li>
+							<dl>
+								<dt>대표 이미지</dt>
+								<dd>
+									<div class="attach" id="profileImageDown" name="profileImageDown">
+
+									</div>
+								</dd>
+							</dl>
+						</li>
+						<li>
+							<dl>
+								<dt>첨부파일</dt>
+								<dd>
+									<div class="attach" id="fileList" name="fileList">
+
+									</div>
+								</dd>
+							</dl>
+						</li>
+					</ul>
+					<!-- // 상세내용 -->
+							
+					<!-- 버튼 -->
+					<p class="btn_set">
+						<button class="btns btn_st1" onclick="goList()" type="button">목록</button>
+						<button class="btns btn_st1" id="modifyBtn" onclick="goWrite()" style="display: none;" type="button">수정</button>
+						<button class="btns btn_st1" id="deleteBtn" onclick="deleteBoard()" style="display: none;" type="button">삭제</button>
+					</p>
+					<!-- // 버튼 -->
+
+					<!-- 댓글입력영역 -->
+					<div class="cm_write">
+						<fieldset>
+							<legend class="skipinfo">댓글 입력</legend>
+							<div class="cm_input">
+								<p class="message"><textarea cols="90" id="commentContent" name="commentContent" placeholder="내용을 입력해주세요." rows="4"></textarea></p>
+								<span><button class="btns" id="commentSave" name="commentSave" th:onclick="saveComment([[ ${id} ]])" type="button">등 록</button></span>
+							</div>
+						</fieldset>
+					</div>
+					<!-- // 댓글입력영역 -->
+
+					<!-- 댓글 리스트 영역 -->
+					<div class="cm_list" id="commentList">
+
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</th:block>
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+
+		window.onload = () => {
+			subMenuList();
+			menuSelect();
+			titleSelect();
+			printFileList();
+			findComments();
+			findBoard();
+		}
+
+		// 게시글 조회
+		function findBoard() {
+			let repHtml = '';
+			const id = [[ ${id} ]];
+			fetch(`/api/boards/${id}/like`).then(response => {
+				if (!response.ok) {
+					throw new Error("권한이 없습니다.");
+				}
+				return response.json();
+			}).then(json => {
+				json.createdDate = dayjs(json.createdDate).format('YYYY-MM-DD HH:mm:ss');
+				Object.keys(json).forEach(key => {
+					const elem = findById(key);
+					if (elem) {
+						elem.innerHTML += json[key];
+					}
+				});
+
+				if (json.likeType === 1 || json.likeType === 0) {
+					findById('like' + json.likeType).checked = true;
+				}
+
+				if(json.repImage === "" || json.repImage === null) {
+					repHtml = `<p><a><i class="far fa-file-archive"></i>업로드된 이미지가 없습니다.</a></p>`;
+				} else {
+					repHtml = `<p><a href="/api/file-download?originalFilename=${json.repImage}&savedFilename=${json.saveNameImage}"><i class="far fa-file-archive"></i>${json.repImage}</a></p>`;
+
+				}
+				findById('profileImageDown').innerHTML = repHtml;
+
+				const profileImage = (json.profileImage) ? `/api/image-files?savedFilename=${json.profileImage}` : '/user/images/board/default_profile.png';
+				findById('writer').innerHTML = `
+					<span class="writer_img"><img src="${profileImage}" width="30" height="30" alt="프로필 이미지" /></span>
+					<span class="writer"><em id="writer" name="writer">${json.writer}</em></span>
+				`;
+
+				if (json.memberId === (loginMember && loginMember.id)) {
+					findById('modifyBtn').style.display = 'inline-block';
+					findById('deleteBtn').style.display = 'inline-block';
+				}
+			});
+		}
+
+		// 게시글 삭제
+		function deleteBoard() {
+			const id = [[ ${id} ]];
+			if (!confirm(`게시글을 삭제할까요?`)) {
+				return false;
+			}
+
+			fetch(`/api/boards/${id}`, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+
+			}).then(response => {
+				if (!response.ok) {
+					throw new Error('권한이 없습니다.');
+				}
+				alert('정상적으로 처리되었습니다.');
+				goList();
+
+			}).catch(error => {
+				alert(error.message);
+			});
+		}
+
+		// 게시글 수정
+		function goWrite() {
+			location.href = '/board/write' + location.search + `&id=[[ ${id} ]]`;
+		}
+
+		// 게시글 리스트로 이동
+		function goList() {
+			const search = new URLSearchParams(location.search).get('search');
+			const mainMenuNum = new URLSearchParams(location.search).get('mainMenuNum');
+
+			if(!search) {
+				location.href = (mainMenuNum === '2') ?	'/board/gallery-list' + location.search : '/board/list' + location.search ;
+			} else {
+				location.href = '/board/search';
+			}
+		}
+
+		// 좋아요 상태 변경 ( 게시글 )
+		async function changeLikeType(likeType, elem) {
+
+			if ( !loginMember ) {
+				alert('로그인이 필요한 기능입니다.');
+				document.querySelectorAll('input[name="likeTypes"]').forEach(elem => elem.checked = false);
+				return false;
+			}
+
+			// 좋아요 등록 or 상태 변경
+			if (elem.checked) {
+				$(elem).parent().siblings('span').find('input[type="checkbox"]').prop('checked', false);
+				await callApi('/api/likes', 'POST', { boardId: [[ ${id} ]], likeType: likeType }, false).catch(error => alert(error.message));
+			} else {
+				// 좋아요 정보 삭제
+				await callApi('/api/likes', 'DELETE', [[ ${id} ]], false).catch(error => alert(error.message));
+			}
+
+			// 좋아요 정보 조회
+			await getJson('/api/likes', { boardId: [[ ${id} ]] }).then(res => {
+				findById('likeCnt').innerText = res.likeCnt;
+				findById('badCnt').innerText = res.badCnt;
+			});
+		}
+
+		// 댓글 리스트 조회
+		async function findComments() {
+			let html = '';
+			const boardId = [[ ${id} ]]
+			const params = { boardId: boardId, commentLevel: 0 }
+
+			const parentComments = await getJson('/api/comments', params); // 부모 댓글 리스트
+			if ( !parentComments.length ) {
+				findById('commentList').innerHTML = '<div class="cm_none"><p>댓글이 없습니다.<br /> 첫 번째 댓글을 남겨주세요.</p></div>';
+				return false;
+			}
+
+			params.commentLevel = 1; // 자식 댓글
+			for (let i = 0; i < parentComments.length; i++) {
+				const parentComment = parentComments[i]; // 부모 댓글
+				const commentButtonAuthority = parentComment.memberId === (loginMember && loginMember.id) ? 'display: inline-block;' : 'display: none;';
+				params.parentCommentId = parentComment.commentId; // 부모 댓글 번호
+
+				const profileImage = (parentComment.profileImage) ? `/api/image-files?savedFilename=${parentComment.profileImage}` : '/user/images/board/default_profile.png';
+				html += `
+					<div>
+						<span class="writer_img"><img src="${profileImage}" width="30" height="30" /></span>
+						<p class="writer"><em>${parentComment.memberName}</em> <span class="date">${dayjs(parentComment.createdDate).format('YYYY-MM-DD HH:mm')}</span></p>
+						<div class="cont">
+							<div class="txt_con" id="commentUpdateCancelId_${parentComment.commentId}"><p id="commentUpdate_${parentComment.commentId}">${unescape(parentComment.content)}</p></div>
+						</div>
+						<p class="func_btns"><button id="commentModified" name="commentModified" type="button" class="btns" onclick="getCommentInformation(${parentComment.commentId}, '${parentComment.content}')" style="${commentButtonAuthority}"><span class="icons icon_modify">수정</span></button>
+						<button id="commentDelete" name="commentDelete" type="button" class="btns" onclick="deleteComment(${parentComment.commentId})" style="${commentButtonAuthority}"><span class="icons icon_del">삭제</span></button></p>
+				`;
+
+				const childComments = await getJson('/api/comments', params); // 자식 댓글 리스트
+				html += `
+						<p class="cm_re_info"><button type="button">답글 ${childComments.length}</button></p>
+
+						<div class="cm_re_input hide_view">
+							<fieldset>
+								<legend class="skipinfo">댓글 입력</legend>
+								<div class="cm_input">
+									<p><textarea id="commentContent_${parentComment.commentId}" name="commentContent_${parentComment.commentId}" cols="90" rows="4" placeholder="댓글을 입력해주세요." title="댓글 입력"></textarea></p>
+									<span><button type="button" class="btns" onclick="saveCommentLevel1(${boardId}, ${parentComment.commentId})">등 록</button></span>
+								</div>
+							</fieldset>
+						</div>
+				`;
+
+				for (let j = 0; j < childComments.length; j++) {
+					const childComment = childComments[j]; // 자식 댓글
+					const subCommentButtonAuthority = childComment.memberId === (loginMember && loginMember.id) ? 'display: inline-block;' : 'display: none;';
+					const profileImage = (childComment.profileImage) ? `/api/image-files?savedFilename=${childComment.profileImage}` : '/user/images/board/default_profile.png';
+
+					html += `
+						<div class="cm_answer">
+							<span class="writer_img"><img src="${profileImage}" width="30" height="30" /></span>
+							<p class="writer"><em>${childComment.memberName}</em> <span class="date">${dayjs(childComment.createdDate).format('YYYY-MM-DD HH:mm')}</span></p>
+							<div class="cont">
+								<div class="txt_con" id="commentUpdateCancelId_${childComment.commentId}"><p id="commentUpdate_${childComment.commentId}">${unescape(childComment.content)}</p></div>
+							</div>
+							<p class="func_btns"><button  id="subCommentModified" name="subCommentModified" type="button" class="btns" onclick="getCommentInformation(${childComment.commentId}, '${childComment.content}')" style="${subCommentButtonAuthority}"><span class="icons icon_modify">수정</span></button>
+							<button id="subCommentDelete" name="subCommentDelete" type="button" class="btns" onclick="deleteComment(${childComment.commentId})" style="${subCommentButtonAuthority}"><span class="icons icon_del">삭제</span></button></p>
+						</div>
+					`;
+				}
+				html += '</div>';
+				findById('commentList').innerHTML = html;
+			} // end of for
+
+			// 답글 버튼 open event
+			$(".cm_re_info > button").click(function(){
+				var submenu = $(this).parent().next("div.hide_view");
+				if( submenu.is(":visible") ){
+					submenu.removeClass("open");
+				} else {
+					submenu.addClass("open");
+				}
+			});
+		}
+
+		// 댓글 등록
+		function saveComment(id) {
+			const form = findById('form');
+			if (!form.commentContent.value.trim()) {
+				alert('댓글을 입력해주세요.');
+				return false;
+			}
+
+			const params = { boardId: id, commentLevel: 0, content: form.commentContent.value.replaceAll(/(\n|\r\n)/g, '<br />'), deleteYn: 'N' };
+			fetch('/api/comments', {
+				method : 'POST',
+				headers : { 'Content-Type' : 'application/json'},
+				body : JSON.stringify(params)
+			}).then(response => {
+				if(!response.ok) {
+					location.href = '/login';
+					throw new Error('로그인이 필요합니다.');
+				}
+				return response.json();
+			}).then(json => {
+				alert('댓글 등록이 완료되었습니다.');
+				form.commentContent.value = '';
+				findComments();
+			}).catch(err => {
+				alert(err.message);
+			})
+		}
+
+		// 대댓글 등록
+		function saveCommentLevel1(boardId, parentCommentId) {
+			if (!findById(`commentContent_${parentCommentId}`).value.trim()) {
+				alert('댓글을 입력해주세요.');
+				return false;
+			}
+
+			const params = {
+				boardId: boardId,
+				commentLevel: 1,
+				parentCommentId: parentCommentId,
+				content: findById(`commentContent_${parentCommentId}`).value.replaceAll(/(\n|\r\n)/g, '<br />'),
+				deleteYn: 'N'
+			};
+
+			fetch(`/api/comments`, {
+				method : 'POST',
+				headers : { 'Content-Type' : 'application/json'},
+				body : JSON.stringify(params)
+			}).then(response => {
+				if(!response.ok) {
+					location.href = '/login';
+					throw new Error('로그인이 필요합니다.');
+				}
+				return response.json();
+			}).then(json => {
+				alert('댓글 등록이 완료되었습니다.');
+				findComments();
+			}).catch(err => {
+				alert(err.message);
+			})
+		}
+
+		// 댓글 수정
+		function updateComment(commentId) {
+			if (!findById(`commentContentUpdate_${commentId}`).value.trim()) {
+				alert('댓글을 입력해주세요.');
+				return false;
+			}
+
+			const params = { content: findById(`commentContentUpdate_${commentId}`).value.replaceAll(/(\n|\r\n)/g, '<br />') };
+			fetch(`/api/comments/${commentId}`, {
+				method : 'PATCH',
+				headers : { 'Content-Type' : 'application/json'},
+				body : JSON.stringify(params)
+			}).then(response => {
+				if(!response.ok) {
+					location.href = '/login';
+					throw new Error('로그인이 필요합니다.');
+				}
+				return response.json();
+			}).then(json => {
+				alert('댓글 등록이 완료되었습니다.');
+				findComments();
+			}).catch(err => {
+				alert(err.message);
+			})
+		}
+
+		// 수정할 댓글 조회
+		function getCommentInformation(id, content) {
+			if(confirm("댓글을 수정하시겠습니까?")){
+				$(`#commentUpdate_${id}`).replaceWith(`
+					<textarea id="commentContentUpdate_${id}" name="commentContentUpdate" cols="90" rows="4">${content.replaceAll('<br />', '\n')}</textarea>
+					<span><button id="commentSaves_${id}" name="commentSave" type="button" class="btns" onclick="updateComment(${id})">등 록</button></span>
+					<span><button id="commentSaves" name="commentSave" type="button" class="btns" onclick="commentUpdateCancel(${id}, '${content}')">취 소</button></span>
+				`);
+			} else {
+				return false;
+			}
+		}
+
+		// 댓글 수정 취소
+		function commentUpdateCancel(id, content) {
+			$(`#commentUpdateCancelId_${id}`).html(`<p id="commentUpdate_${id}">${content}</p>`);
+		}
+
+		// 댓글 삭제
+		function deleteComment(id) {
+			if (!confirm(`댓글을 삭제할까요?`)) {
+				return false;
+			}
+
+			fetch(`/api/comments/${id}`, {
+				method: 'DELETE',
+				headers: { 'Content-Type': 'application/json' }
+			}).then(response => {
+				if (!response.ok) {
+					throw new Error('권한이 없습니다.');
+				}
+				alert('정상적으로 처리되었습니다.');
+				findComments();
+
+			}).catch(error => {
+				alert(error.message);
+			});
+		}
+
+		// 파일 리스트 조회
+		function printFileList() {
+			const id = [[ ${id} ]];
+			let fileListHtml = '';
+
+			fetch(`/api/boards/${id}/files`).then(response => {
+				if (!response.ok) {
+					throw new Error("Request Error...");
+				}
+				return response.json();
+			}).then(fileList => {
+				if (fileList.length < 1) {
+					fileListHtml += `<p><a><i class="far fa-file-archive"></i>업로드된 파일이 없습니다.</a></p>`;
+				} else {
+					for (let i = 0; i < fileList.length; i++) {
+						let file = fileList[i];
+						fileListHtml += `<p><a href="/api/file-download?originalFilename=${file.originalName}&savedFilename=${file.saveName}"><i class="far fa-file-archive"></i>${file.originalName}</a></p>`;
+					}
+				}
+				findById('fileList').innerHTML = fileListHtml;
+			});
+		}
+
+		/*]]>*/
+	</script>
+</th:block>
+</html>

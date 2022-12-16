@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko" layout:decorate="/layout/userLayout" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<th:block layout:fragment="main">
+    <div class="container" id="contents">
+        <div class="innerwrap">
+            <div class="content">
+                <form id="form" name="form" onsubmit="return false;">
+                    <!-- 검색 영역 -->
+                    <div class="search_box search_page">
+                        <fieldset>
+                            <legend>통합검색</legend>
+                            <div class="sch_word">
+                                <label class="skip_info" for="keyword">검색어를 입력해주세요.</label>
+                                <input id="keyword" name="keyword" title="검색어입력" type="text" value=""/>
+                                <button class="btns" onclick="findPaginationAll()" type="button"><i
+                                        class="fab fa-sistrix"></i><span class="skip_info">검색</span></button>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <!-- // 검색 영역 -->
+                    <!-- 총게시물수 -->
+                    <p class="total_num"><strong class="emtxt" id="emtmt" name="emtmt"></strong>의 검색결과</p>
+                    <!-- // 총게시물수 -->
+                    <div class="sort">
+                        <select id="orderByName" name="orderByName" onchange="findPaginationAll()">
+                            <option value="general">일반</option>
+                            <option value="hits">조회순</option>
+                            <option value="createdDate">작성일자순</option>
+                        </select>
+                    </div>
+                    <!-- <p class="nodata">검색결과가 없습니다.</p> 검색 결과가 없을때 -->
+
+                    <!-- 검색 결과 -->
+                    <div class="resultwrap">
+                        <ul id="list" name="list">
+
+                        </ul>
+                    </div>
+                    <!-- // 검색 결과 -->
+                    <!-- paging -->
+                    <div class="paging">
+                        <ul>
+
+                        </ul>
+                    </div>
+                    <!-- // paging -->
+                </form>
+            </div>
+        </div>
+    </div>
+</th:block>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        window.onload = () => {
+            setQueryStringParams();
+            addEnterSearchEvent();
+            findPaginationAll();
+        }
+
+        /** Query String Parameter Setting (이전 페이지 유지) */
+        function setQueryStringParams() {
+            if (!location.search) {
+                return false;
+            }
+            const form = findById('form');
+            new URLSearchParams(location.search).forEach((value, key) => {
+                if (form[key]) {
+                    form[key].value = value;
+                }
+            })
+        }
+
+        /** 게시글 리스트 출력(Paging) */
+        function findPaginationAll(page) {
+            const form = findById('form');
+            const pageParam = Number(new URLSearchParams(location.search).get('page'));
+            page = (page) ? page : ((pageParam) ? pageParam : 1);
+            const params = {
+                page: page - 1,
+                size: 10,
+                boardMenuNum: 19970709,
+                keyword: form.keyword.value,
+                searchType: '',
+                orderByName: form.orderByName.value,
+                search: 'on'
+            }
+
+            const queryString = new URLSearchParams(params).toString();
+            const replaceUri = location.pathname + '?' + queryString;
+            history.replaceState({}, '', replaceUri);
+
+            getJson('/api/boards', params).then(response => {
+                let html = '';
+                response.content.forEach((obj) => {
+                    const imageSrc = (obj.repImage) ? `/api/image-files?savedFilename=${obj.saveNameImage}` : '/user/images/board/no_img.gif';
+                    const divClass = obj.boardMenuNum.boardType === "0" ? "" :
+                        `<div class="thumb_wrap" id="boardTypeHtml" name="boardTypeHtml">
+								<p><span><img src="${imageSrc}" alt="대표 이미지" /></span></p>
+							</div>`;
+                    const viewUri = `/board/view/${obj.id}?mainMenuNum=${obj.mainMenuNum.id}&boardMenuNum=${obj.boardMenuNum.id}&search=on`;
+                    html += `
+						<li>
+							${divClass}
+							<div class="cont">
+								<span class="cate">${obj.mainMenuNum.name} - ${obj.boardMenuNum.name}</span>
+								<div class="title">${obj.title}</div>
+								<div class="desc">${obj.createdDate = dayjs(obj.createdDate).format('YYYY-MM-DD HH:mm')}</div>
+							</div>
+							<a href="${viewUri}">자세히 보기</a>
+						</li>
+
+					`;
+                });
+
+                findById('list').innerHTML = html;
+
+                const paginationInfo = {
+                    page: page,
+                    size: params.size,
+                    pageSize: 10,
+                    totalElements: response.totalElements,
+                    totalPages: response.totalPages
+                }
+
+                drawPages(paginationInfo, 'findPaginationAll');
+            });
+        }
+
+        /*]]>*/
+    </script>
+</th:block>
+</html>

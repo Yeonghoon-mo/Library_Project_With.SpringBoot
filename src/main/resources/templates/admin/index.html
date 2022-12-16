@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="">
+
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+    <link rel="stylesheet" href="/admin/css/default.css" type="text/css" />
+    <link rel="stylesheet" href="/admin/css/common.css" type="text/css" />
+    <link rel="stylesheet" href="/admin/css/content.css" type="text/css" />
+    <link rel="stylesheet" href="/admin/css/button.css" type="text/css" />
+    <title>Library Project - 로그인</title>
+</head>
+
+<body>
+<div id="login_wrap">
+    <div id="login_box">
+        <div class="login_con">
+            <div class="login_tit">
+                <h2>Library Project</h2>
+                <p>LOG<i>IN</i></p>
+            </div>
+            <!-- 로그인 form -->
+            <div class="login_input">
+                <form id="form" name="form" onsubmit="return false;">
+                    <ul>
+                        <li>
+                            <label for="loginId" class="skip_info">아이디</label>
+                            <input type="text" title="아이디" placeholder="아이디" id="loginId" name="loginId" />
+                        </li>
+                        <li>
+                            <label for="password" class="skip_info">비밀번호</label>
+                            <input type="password" title="비밀번호" placeholder="비밀번호" id="password" name="password" />
+                        </li>
+                    </ul>
+                    <input type="button" id="loginBtn" name="loginBtn" onclick="loginAdmin()" value="로그인" class="login_btn" />
+                </form>
+            </div>
+            <!-- // 로그인 form -->
+        </div>
+        <p class="copyright">Library Project - MYH</p>
+    </div>
+</div>
+</body>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        window.onload = () => {
+            addEnterLoginEvent();
+        }
+
+        function findById(id) {
+            return document.getElementById(id);
+        }
+
+        // 유효성 검사
+        function isValid() {
+            const form = findById('form');
+
+            if(!form.loginId.value.trim()) {
+                alert('아이디를 입력해주세요.');
+                form.loginId.focus();
+                return false;
+            }
+
+            if(!form.password.value.trim()) {
+                alert('비밀번호를 입력해주세요.');
+                form.password.focus();
+                return false;
+            }
+
+            return true;
+        }
+
+        // 로그인 함수
+        function loginAdmin() {
+            if(!isValid()) {
+                return false;
+            }
+
+            const form = findById('form');
+            const params = {
+                loginId : form.loginId.value,
+                password : form.password.value,
+                memberType : 'ADMIN'
+            };
+            fetch('/api/members/login', {
+                method : 'POST',
+                headers  : {
+                    'Content-Type' : 'application/json'
+                },
+                body : JSON.stringify(params)
+
+            }).then(response => {
+                if(!response.ok){
+                    throw new Error("아이디 또는 비밀번호가 틀렸습니다.");
+                }
+                location.assign("/manager/manager?mnId=1");
+            }).catch(error => {
+                alert(error.message);
+            });
+        }
+
+        // 엔터 검색 이벤트 바인딩 함수 - Login
+        function addEnterLoginEvent() {
+            findById('loginId').addEventListener('keyup', (e) => {
+                if (e.keyCode === 13) {
+                    loginAdmin();
+                }
+            });
+
+            findById('password').addEventListener('keyup', (e) => {
+                if (e.keyCode === 13) {
+                    loginAdmin();
+                }
+            });
+        }
+
+        /*]]>*/
+    </script>
+</th:block>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" layout:decorate="/layout/adminLayout" xmlns:layout="http://www.w3.org/1999/xhtml">
+<th:block layout:fragment="main">
+    <div id="container">
+        <div class="innerwrap">
+            <div class="page_tits">
+                <h3>공지사항</h3>
+                <p class="path"><strong>현재위치 :</strong> <span>회원관리</span> <span>정회원 가입 요청관리</span></p>
+            </div>
+            <div id="main">
+                <div class="section">
+                    <table class="tb tb_row">
+                        <colgroup>
+                            <col style="width:10%;" />
+                            <col style="width:23%;" />
+                            <col style="width:10%;" />
+                            <col style="width:23%;" />
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            <th scope="row">회원번호</th>
+                            <td id="id"></td>
+                            <th scope="row">승인여부</th>
+                            <td id="authorityYn"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">아이디</th>
+                            <td id="loginId"></td>
+                            <th scope="row">이름</th>
+                            <td id="name"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">연락처</th>
+                            <td id="phone"></td>
+                            <th scope="row">등록일</th>
+                            <td id="createdDate"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p class="btn_set">
+                        <button type="button" onclick="authorityApprove()" class="btns btn_bdr1 btn_mid">정회원 승인</button>
+                        <button type="button" onclick="authorityNotApprove()" class="btns btn_bdr1 btn_mid">정회원 승인 거부</button>
+                        <button type="button" onclick="goList()" class="btns btn_st1 btn_mid">목록</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        window.onload = () => {
+            findMember();
+        }
+
+        /** 정회원 가입요청 정보조회 */
+        function findMember() {
+            const id = [[ ${id} ]];
+
+            fetch(`/api/members/${id}`).then(response => {
+                return response.json();
+            }).then(json => {
+                json.createdDate = dayjs(json.createdDate).format('YYYY-MM-DD HH:mm:ss');
+
+                Object.keys(json).forEach(key => {
+                    const elem = findById(key);
+                    if (elem) {
+                        elem.innerText = json[key];
+                    }
+                });
+            }).catch(error => {
+                console.log(error);
+            });
+        }
+
+        /** 정회원 승인 */
+        function authorityApprove() {
+            const id = [[ ${id} ]];
+
+            if (!confirm(`${id}번 회원을 승인하시겠습니까?`)) {
+                return false;
+            }
+
+            fetch(`/api/members/authority/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Request Failed...');
+                }
+                alert('정상적으로 처리되었습니다.');
+                goList();
+
+            }).catch(error => {
+                alert('오류가 발생하였습니다.');
+            });
+        }
+
+        /** 정회원 승인 거절*/
+        function authorityNotApprove() {
+            const id = [[ ${id} ]];
+
+            if (!confirm(`${id}번 회원 승인을 거절하시겠습니까?`)) {
+                return false;
+            }
+
+            fetch(`/api/members/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Request Failed...');
+                }
+                alert('정상적으로 처리되었습니다.');
+                goList();
+
+            }).catch(error => {
+                alert('오류가 발생하였습니다.');
+            });
+        }
+
+        /** 정회원 가입 요청관리 리스트로 이동 */
+        function goList() {
+            location.href = '/manager/regular-member-authority' + location.search;
+        }
+
+        /*]]>*/
+    </script>
+</th:block>
+</html>

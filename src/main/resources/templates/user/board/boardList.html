@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko" layout:decorate="/layout/userLayout" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<th:block layout:fragment="main">
+	<!-- 서브비쥬얼 -->
+	<div class="sub_vis01" id="sub_visual">
+		<div class="innerwrap">
+			<div class="visual">
+				<div class="tit_group">
+					<span id="titleName" name="titleName"></span>
+				</div>
+				<div class="imgs" id="titleImg" name="titleImg"> </div>
+
+			</div>
+		</div>
+		<div class="bg"></div>
+	</div>
+	<!-- // 서브비쥬얼 -->
+	<div class="container" id="contents">
+		<div class="innerwrap">
+			<div class="pagetitle" id="subTitleName" name="subTitleName">
+
+				<div class="menulink" id="menulink" name="menulink">
+
+				</div>
+
+			</div>
+
+			<div class="con tent">
+				<form id="form" name="form" onsubmit="return false;">
+					<div class="bbs_head">
+						<div class="sort">
+							<select id="orderByName" name="orderByName" onchange="findPaginationAll()">
+								<option value="general">일반</option>
+								<option value="hits">조회순</option>
+								<option value="createdDate">작성일자순</option>
+							</select>
+						</div>
+						<!-- 검색 영역 -->
+						<div class="search_box">
+							<fieldset>
+								<legend class="skip_info">검색박스</legend>
+								<div class="sch_word">
+									<label class="skip_info" for="keyword">검색어를 입력해주세요.</label>
+									<input id="keyword" name="keyword" title="검색어입력" type="text" value="" />
+									<button class="btns" onclick="findPaginationAll()" type="button"><i class="fab fa-sistrix"></i><span class="skip_info">검색</span></button>
+								</div>
+							</fieldset>
+						</div>
+						<!-- // 검색 영역 -->
+					</div>
+
+					<!-- 게시판 리스트 -->
+					<table class="bbs bbs_list">
+						<caption>게시판</caption>
+						<colgroup>
+							<col style="width:70px;" />
+							<col style="width:auto;" />
+							<col style="width:120px;" />
+							<col style="width:90px;" />
+							<col style="width:80px;" />
+						</colgroup>
+						<thead>
+						<tr>
+							<th class="b_num" scope="col">번호</th>
+							<th class="b_tit" scope="col">제목</th>
+							<th class="b_date" scope="col">등록일</th>
+							<th class="b_hit" scope="col">조회수</th>
+							<th class="b_like" scope="col">좋아요</th>
+						</tr>
+						</thead>
+						<tbody id="list" name="list">
+
+						</tbody>
+					</table>
+					<!-- // 게시판 리스트 -->
+					<p class="btn_set tr" id="buttonSet" name="buttonSet">
+
+					</p>
+
+					<!-- paging -->
+					<div class="paging">
+						<ul>
+
+						</ul>
+					</div>
+					<!-- paging END -->
+				</form>
+			</div>
+		</div>
+	</div>
+</th:block>
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+
+		window.onload = () => {
+			subMenuList();
+			titleSelect();
+			setQueryStringParams();
+			addEnterSearchEvent();
+			boardWriteQueryString();
+			findPaginationAll();
+		}
+
+		/** Query String Parameter Setting (이전 페이지 유지) */
+		function setQueryStringParams() {
+			if (!location.search) {
+				return false;
+			}
+			const form = findById('form');
+			new URLSearchParams(location.search).forEach((value, key) => {
+				if (form[key]) {
+					form[key].value = value;
+				}
+			})
+		}
+
+		/** 게시글 작성 버튼 쿼리스트링 값 전달하는 함수 */
+		function boardWriteQueryString() {
+			let mainMenuNum = new URLSearchParams(location.search).get('mainMenuNum');
+			const loginMember = ([[ ${session.loginMember} ]]) ? [[ ${session.loginMember} ]] : undefined;
+			const boardMenuNum = new URLSearchParams(location.search).get('boardMenuNum');
+
+			// 공지사항 게시판일 때
+			if ( !loginMember || boardMenuNum === '1' ) {
+				return false;
+			}
+			// 정회원 게시판일 때
+			if (boardMenuNum === '3' && loginMember.type !== 'REGULAR') {
+				return false;
+			}
+			let writeUri = '/board/write?boardMenuNum=' + boardMenuNum + '&mainMenuNum=' + mainMenuNum;
+			let html = `<a href="${writeUri}" class="btns btn_st1"><span>글쓰기</span></a>`;
+			findById('buttonSet').innerHTML = html;
+		}
+
+		/** 게시글 리스트 출력(Paging) */
+		function findPaginationAll(page) {
+			const form = findById('form');
+			const pageParam = Number(new URLSearchParams(location.search).get('page'));
+			let boardMenuNum = new URLSearchParams(location.search).get('boardMenuNum');
+			let mainMenuNum = new URLSearchParams(location.search).get('mainMenuNum');
+			page = (page) ? page : ((pageParam) ? pageParam : 1);
+			const params = {
+				page: page - 1,
+				size: 15,
+				searchType: '',
+				keyword: form.keyword.value,
+				mainMenuNum : mainMenuNum,
+				boardMenuNum: boardMenuNum,
+				noticeYn: 'Y',
+				orderByName: form.orderByName.value
+			}
+
+			// 이전 페이지 유지 History API
+			const queryString = new URLSearchParams(params).toString();
+			const replaceUri = location.pathname + '?' + queryString;
+			history.replaceState({}, '', replaceUri);
+
+			getJson('/api/boards', params).then(response => {
+				if (!response.content.length) {
+					findById('list').innerHTML = '<tr class="no_data"><td colspan="5"><p class="no_data_msg">등록된 게시글이 없습니다.</p></td></tr>';
+					removePages();
+					return false;
+				}
+
+				let html = '';
+				let num = response.totalElements - ((params.page) * params.size);
+				const tr = { Y : '<tr class="th_notice">', N : '<tr>'};
+
+				response.content.forEach((obj) => {
+					let today = dayjs(new Date().toLocaleString("en-US", {timeZone: "Asia/Seoul"})).format('YYYY-MM-DD HH:mm:ss')
+					let result = dayjs(obj.createdDate).diff(today, "day", true);
+					let d_day = Math.floor(result);
+					const newBoardIcon = (d_day > -4) ?  '<span class="new_ico">새글</span>' : '';
+					const tdClass = { Y : '<td class="b_num"><span class="nt_icon">공지</span></td>', N : `<td class="b_num">${num--}</td>`};
+					const viewUri = `/board/view/${obj.id}` + '?' + queryString;
+					html += `
+						${tr[obj.noticeYn]}
+							${tdClass[obj.noticeYn]}
+							<td class="b_tit"><a href="${viewUri}"><div>${obj.title}${newBoardIcon}</div></a></td>
+							<td class="b_date">${dayjs(obj.createdDate).format('YYYY-MM-DD')}</td>
+							<td class="b_hit">${obj.hits}</td>
+							<td class="b_like">0</td>
+						</tr>`;
+				});
+
+				findById('list').innerHTML = html;
+
+				const paginationInfo = {
+					page: page,
+					size: params.size,
+					pageSize: 10,
+					totalElements: response.totalElements,
+					totalPages: response.totalPages
+				}
+
+				drawPages(paginationInfo, 'findPaginationAll');
+			});
+		}
+
+		/*]]>*/
+	</script>
+</th:block>
+</html>

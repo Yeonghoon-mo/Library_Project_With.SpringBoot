@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" layout:decorate="/layout/userLayout" xmlns:layout="http://www.w3.org/1999/xhtml">
+<th:block layout:fragment="main">
+	<div id="contents" class="container">
+		<div class="innerwrap">
+			<div class="content">
+				<div class="login_wrap idpw_search">
+					<!-- 탭메뉴 -->
+					<div id="tabmenu">
+						<ul>
+							<li><a href="/login/search-id" class="on"><span>아이디 찾기</span></a></li>
+							<li><a href="/login/search-password"><span>비밀번호 찾기</span></a></li>
+						</ul>
+					</div>
+					<!-- // 탭메뉴 -->
+					<form method="post" name="Frm" id="Frm">
+					<!-- 아이디 찾기 -->
+					<div class="idpw_box">
+						<h4>아이디 찾기</h4>
+						<p>아이디를 잊으신 경우 아래의 정보로 본인확인을 합니다.</p>
+						<!-- 입력폼 -->
+						<ul class="find_input">
+							<li>
+								<label for="DT101_01" class="skip_info">이름</label>
+								<div><input type="text" title="이름" id="DT101_01" name="DT101_01" placeholder="이름" /></div>
+							</li>
+							<li>
+								<label for="DT101_02" class="skip_info">이메일 아이디</label>
+								<div><input type="email" id="DT101_02" name="DT101_02" placeholder="이메일 아이디" /></div>
+							</li>
+						</ul>	
+						<p class="tc"><button type="button" class="btns btn_mem" onclick="location.href='/login/search-id-info'">아이디 찾기</button></p>
+						<!-- // 입력폼 -->
+					</div>
+					<!-- // 아이디 찾기 -->
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</th:block>
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+
+		/*]]>*/
+	</script>
+</th:block>
+</html>

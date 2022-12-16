@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+	<meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+	<link href="/admin/css/default.css" rel="stylesheet" type="text/css" />
+	<link href="/admin/css/common.css" rel="stylesheet" type="text/css" />
+	<link href="/admin/css/content.css" rel="stylesheet" type="text/css" />
+	<link href="/admin/css/button.css" rel="stylesheet" type="text/css" />
+	<title>Library Project - 관리자 페이지</title>
+</head>
+
+<body>
+<div id="adm_wrap">
+	<header>
+		<div class="head">
+			<div class="innerwrap">
+				<h1>Library Project</h1>
+				<div class="top_menu">
+					<p class="login_user"><span><strong>[[ ${session.login.name} ]]</strong> 님 반갑습니다.</span></p>
+					<ul>
+						<li><a class="tmenu tm02" href="/manager" onclick="logoutAdmin()"><span>로그아웃</span></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div id="gnb">
+			<h2 class="skip_info">상단메뉴</h2>
+			<div class="innerwrap">
+				<ul class="menu" id="menu" name="menus">
+					<li class="depth1-menu1" id="depth1-menu1" name="depth1-menu1"><a href="/manager/manager?mnId=1"><i class="fas fa-info-circle"></i>기준정보관리</a>
+						<ul>
+							<li><a href="/manager/manager?mnId=1">관리자 관리</a></li>
+						</ul>
+					</li>
+					<li class="depth1-menu2" id="depth1-menu2" name="depth1-menu2"><a href="/manager/member-list?mnId=2"><i class="fas fa-user-edit"></i>회원관리</a>
+						<ul>
+							<li><a href="/manager/member-list?mnId=2">회원관리</a></li>
+							<li><a href="/manager/regular-member-authority?mnId=2">정회원 가입 요청관리</a></li>
+						</ul>
+					</li>
+					<li class="depth1-menu3" id="depth1-menu3" name="depth1-menu3"><a href="/manager/board-manager-list?mnId=3&mainMenuId=1&boardMenuNum=1&boardType=0"><i class="fas fa-chart-line"></i>게시판관리</a>
+						<ul>
+							<li><a href="/manager/board-manager-list?mainMenuId=1&boardMenuNum=3&mnId=3&boardType=0">게시판</a></li>
+							<li><a href="/manager/board-manager-list?mainMenuId=2&boardMenuNum=4&mnId=3&boardType=1">썸네일형 게시판</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</header>
+
+	<th:block layout:fragment="main">
+
+	</th:block>
+
+	<footer>Library Project - MYH</footer>
+
+</div>
+
+<script src="/admin/js/jquery-1.11.1.min.js"></script>
+<script src="/admin/js/common.js"></script>
+<script crossorigin="anonymous" src="https://kit.fontawesome.com/79613ae794.js"></script>
+<script src="/admin/js/dayjs.js"></script>
+<script src="/admin/js/script-handler.js"></script>
+<script src="/admin/js/adminMenu.js"></script>
+<!--[if lt IE 9]>
+<script src="/admin/js/html5shiv.js"></script>
+<![endif]-->
+
+<!--/* JavaScript 영역 */-->
+<th:block layout:fragment="script"></th:block>
+	<script th:inline="javascript">
+		/*<[CDATA[*/
+
+		const loginAdmin = ([[ ${session.login} ]]) ? [[ ${session.login} ]] : undefined;
+
+		/*]]>*/
+	</script>
+</body>
+</html>

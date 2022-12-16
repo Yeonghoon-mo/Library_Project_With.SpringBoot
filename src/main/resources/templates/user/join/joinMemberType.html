@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" layout:decorate="/layout/userLayout" xmlns:layout="http://www.w3.org/1999/xhtml">
+<th:block layout:fragment="main">
+	<div id="contents" class="container">
+		<div class="innerwrap">
+			<div class="content">
+				<div class="login_wrap">
+					<form id="mtForm" name="mtForm" onsubmit="return false;">
+						<h4 class="ac">회원가입 유형을 선택해주세요.</h4>
+						<!-- 회원구분선택 -->
+						<div class="mem_type new_mem">
+							<ul class="radio_group ">
+								<li class="f_1">
+									<p class="radios">
+										<input type="radio" id="generalType" name="type" class="authGn" value="GENERAL" onclick="location.href='general-create'"/>
+										<label for="generalType">일반회원</label><span class="check"></span>
+									</p>
+								</li>
+								<li>
+									<p class="radios">
+										<input type="radio" id="regularType" name="type" class="authGn" value="REGULAR" onclick="location.href='regular-create'" />
+										<label for="regularType">정회원</label><span class="check"></span>
+									</p>
+								</li>
+							</ul>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</th:block>
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+
+
+		/*]]>*/
+	</script>
+</th:block>
+</html>

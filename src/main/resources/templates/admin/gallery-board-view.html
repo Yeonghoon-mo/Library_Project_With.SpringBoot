@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko" layout:decorate="/layout/adminLayout" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<th:block layout:fragment="main">
+    <div id="container">
+        <div class="innerwrap">
+            <div class="page_tits">
+                <h3>갤러리 게시판</h3>
+                <p class="path"><strong>현재위치 :</strong> <span>게시판관리</span> <span>갤러리 게시글 상세정보</span></p>
+            </div>
+            <div id="main">
+                <div class="section">
+                    <table class="tb tb_row">
+                        <colgroup>
+                            <col style="width:10%;" />
+                            <col style="width:23%;" />
+                            <col style="width:10%;" />
+                            <col style="width:23%;" />
+                        </colgroup>
+
+                        <!-- 게시판 상세정보 출력 리스트 렌더링 부분 -->
+                        <tbody id="galleryBoardBody" name="galleryBoardBody">
+                            <tr>
+                                <th scope="row">게시글번호</th>
+                                <td id="id" name="id"></td>
+                                <th scope="row">작성자</th>
+                                <td id="writer" name="writer"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">제목</th>
+                                <td id="title"></td>
+                                <th scope="row">등록일</th>
+                                <td id="createdDate" name="createdDate"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">대표 이미지</th>
+                                <td colspan="5" id="repImageDown" name="repImageDown"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">첨부파일</th>
+                                <td colspan="5" id="fileList" name="fileList"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">내용</th>
+                                <td colspan="3"><div cols="90" id="content" name="content" readonly rows="10"></div></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">키워드</th>
+                                <td colspan="3"><div cols="90" id="boardKeyword" name="boardKeyword" readonly rows="10"></div></td>
+                            </tr>
+                        </tbody>
+                        <!-- END -->
+
+                    </table>
+                    <p class="btn_set">
+                        <button class="btns btn_st1 btn_mid" onclick="goList()" type="button">목록</button>
+                        <button class="btns btn_bdr1 btn_mid" onclick="goWrite()" type="button">수정</button>
+                        <button class="btns btn_bdr1 btn_mid" onclick="deleteBoard()" type="button">삭제</button>
+                    </p>
+
+                    <!-- 댓글 리스트 영역 -->
+                    <div class="cm_list" id="commentList">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        window.onload = () => {
+            findBoard();
+            findComments();
+            printFileList();
+        }
+
+        // 게시글 조회
+        function findBoard() {
+            const id = [[ ${id} ]];
+
+            fetch(`/api/boards/${id}`).then(response => {
+                if (!response.ok) {
+                    throw new Error("Request Error...");
+                }
+                return response.json();
+            }).then(json => {
+                Object.keys(json).forEach(key => {
+                    const elem = findById(key);
+                    if (elem) {
+                        elem.innerText = json[key];
+                    }
+
+                    const boardKeyword = (json.boardKeyword === null || json.boardKeyword === '') ? '등록된 키워드가 없습니다.' : `<p>${json.boardKeyword}</p>`
+                    const repImageDownload = ( json.repImage === "" || json.repImage === null ) ? `<td colspan="5"> 업로드된 이미지가 없습니다.</td>` : `<a href="/api/file-download?originalFilename=${json.repImage}&savedFilename=${json.saveNameImage}"><td colspan="5"></td>${json.repImage}</a>`;
+                    json.createdDate = dayjs(json.createdDate).format('YYYY-MM-DD HH:mm:ss');
+                    findById('repImageDown').innerHTML = repImageDownload;
+                    findById('boardKeyword').innerHTML = boardKeyword;
+                });
+            }).catch(error => {
+                alert(error.message);
+            });
+        }
+
+        // 게시글 수정 페이지 이동
+        function goWrite() {
+            location.href = '/manager/gallery-board-write' + location.search + `&id=[[ ${id} ]]`;
+        }
+
+        // 게시글 리스트로 이동
+        function goList() {
+            location.href = '/manager/board-manager-list' + location.search;
+        }
+
+        // 게시글 삭제
+        function deleteBoard() {
+            const id = [[ ${id} ]];
+            if (!confirm(`${id}번 게시글을 삭제할까요?`)) {
+                alert('삭제를 취소하였습니다.');
+                return false;
+            }
+
+            fetch(`/api/boards/${id}/admin`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Request Failed...');
+                }
+                alert('삭제되었습니다.');
+                goList();
+            }).catch(error => {
+                alert('오류가 발생하였습니다.');
+            });
+        }
+
+        // 댓글 리스트 조회
+        async function findComments() {
+            const boardId = [[ ${id} ]]
+            const params = {
+                boardId: boardId
+                , commentLevel: 0
+            }
+            const parentComments = await getJson('/api/comments', params);
+            if ( !parentComments.length ) {
+                findById('commentList').innerHTML = `<div class="cm_none"><p>댓글이 없습니다.</div>`;
+                return false;
+            }
+
+            let html = '';
+            params.commentLevel = 1; // 자식 댓글
+
+            for (let i = 0; i < parentComments.length; i++) {
+                const parentComment = parentComments[i]; // 부모 댓글
+                params.parentCommentId = parentComment.commentId; // 부모 댓글 번호
+
+                let profileImage = (parentComment.memberProfileImage) ? parentComment.memberProfileImage : '/user/images/board/default_profile.png';
+                html += `
+					<div>
+                        <div>
+							<p class="writer">${parentComment.memberName} <span class="date">${dayjs(parentComment.createdDate).format('YYYY-MM-DD HH:mm')}</span><span class="bt"><button type="button" class="btns" onclick="deleteComment(${parentComment.commentId})"><span class="icons icon_del">삭제</span></button></p>
+							<div class="cont">
+								<p class="txt_con">${parentComment.content}</p>
+							</div>
+						</div>`;
+
+                const childComments = await getJson('/api/comments', params); // 자식 댓글 리스트
+                html += `<p class="cm_bt">답글 ${childComments.length}</p>`;
+
+                for (let j = 0; j < childComments.length; j++) {
+                    const childComment = childComments[j]; // 자식 댓글
+                    profileImage = (childComment.memberProfileImage) ? childComment.memberProfileImage : '/user/images/board/default_profile.png';
+
+                    html += `
+						<div class="cm_answer">
+							<p class="writer">${childComment.memberName} <span class="date">${dayjs(childComment.createdDate).format('YYYY-MM-DD HH:mm')}</span><span class="bt"><button type="button" class="btns" onclick="deleteComment(${childComment.commentId})"><span class="icons icon_del">삭제</span></button></p>
+							<div class="cont">
+								<p class="txt_con">${childComment.content}</p>
+							</div>
+						</div>`;
+                }
+
+                html += '</div>';
+                findById('commentList').innerHTML = html;
+            } // end of foreach
+
+            // 답글 버튼 open event
+            $(".cm_re_info > button").click(function(){
+                var submenu = $(this).parent().next("div.hide_view");
+                if( submenu.is(":visible") ){
+                    submenu.removeClass("open");
+                } else {
+                    submenu.addClass("open");
+                }
+            });
+        }
+
+        /** 댓글 삭제 */
+        function deleteComment(id) {
+            if (!confirm(`댓글을 삭제할까요?`)) {
+                return false;
+            }
+
+            fetch(`/api/comments/${id}/admin`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('권한이 없습니다.');
+                }
+                alert('정상적으로 처리되었습니다.');
+                findComments();
+
+            }).catch(error => {
+                alert(error.message);
+            });
+        }
+
+        // 파일 리스트 조회
+        async function printFileList() {
+            const id = [[ ${id} ]];
+            let fileListHtml = '';
+
+            await fetch(`/api/boards/${id}/files`).then(response => {
+                return response.json();
+            }).then(fileList => {
+                if (fileList.length < 1) {
+                    fileListHtml += `<a>업로드된 파일이 없습니다.</a>`;
+                } else {
+                    for (let i = 0; i < fileList.length; i++) {
+                        let fileLists = fileList[i];
+                        fileListHtml += `<a href="/api/file-download?originalFilename=${fileLists.originalName}&savedFilename=${fileLists.saveName}"<td colspan="5" id="id">${fileLists.originalName}</td></a><br>`;
+                    }
+                }
+                findById('fileList').innerHTML = fileListHtml;
+            }).catch(error => {
+                console.log(error);
+            });
+        }
+
+        /*]]>*/
+    </script>
+</th:block>
+</html>

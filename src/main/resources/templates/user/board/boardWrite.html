@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko" layout:decorate="/layout/userLayout" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<th:block layout:fragment="main">
+
+	<!-- 서브비쥬얼 -->
+	<div class="sub_vis01" id="sub_visual">
+		<div class="innerwrap">
+			<div class="visual">
+				<div class="tit_group">
+					<span id="titleName" name="titleName"></span>
+				</div>
+				<div class="imgs" id="titleImg" name="titleImg">
+
+				</div>
+			</div>
+		</div>
+		<div class="bg"></div>
+	</div>
+	<!-- // 서브비쥬얼 -->
+	
+	<div class="container" id="contents">
+		<div class="innerwrap">
+			<div class="pagetitle" id="subTitleName" name="subTitleName">
+
+				<div class="menulink" id="menulink" name="menulink">
+
+				</div>
+
+			</div>
+	
+			<div class="content">
+				<form id="form" name="form" onsubmit="return false;">
+					<!-- 상세내용 -->
+					<table class="tb bbs_wr">
+					<caption>게시글 입력</caption>
+					<colgroup>
+						<col style="width:25%;" /><col style="width:auto;" />
+					</colgroup>
+						<tbody>
+						<tr>
+							<th scope="row">작성자 <span class="es">필수입력</span></th>
+							<td id="writer" th:text="${session.loginMember.name}"></td>
+						</tr>
+						<tr>
+							<th scope="row">제목 <span class="es">필수입력</span></th>
+							<td><input id="title" name="title" placeholder="제목을 입력하세요." type="text" /></td>
+						</tr>
+						<tr>
+							<th scope="row">내용 <span class="es">필수입력</span></th>
+							<td><div class="wr_con"><textarea cols="140" id="content" name="content" rows="15"></textarea></div></td>
+						</tr>
+						<tr>
+							<th scope="row">대표 이미지</th>
+							<td>
+								<p class="info_txt">대표 이미지 1개를 입력하시길 권장드립니다.</p>
+								<div class="file_input">
+									<input type="hidden" id="saveNameImage" name="saveNameImage" />
+									<input id="repImage" name="repImage" placeholder="파일 찾기" readonly title="첨부파일" type="text" />
+
+									<label for="thumbnail"> 첨부파일
+										<input type="file" id="thumbnail" name="thumbnail" onchange="changeFileName(this)" accept="image/*" />
+									</label>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">첨부파일</th>
+							<td>
+								<ul class="filegroup" id="files" name="files">
+									<li data-name="file_input">
+										<div class="file_input">
+											<input type="text" placeholder="파일 찾기" readonly title="첨부파일" />
+											<label for="file_0"> 첨부파일
+												<input type="file" id="file_0" name="attachFiles" onchange="changeFileName(this)" />
+											</label>
+										</div>
+										<div class="btn_group">
+											<button class="btns btn1_1 primary addfile" onclick="addFile()" type="button"><i class="fas fa-plus-circle"></i></button>
+											<button class="btns btn1_2 primary addfile" id="firstFileRemoveBtn" onclick="removeFile(this)" type="button"><i class="fas fa-minus-circle"></i></button>
+										</div>
+									</li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">키워드</th>
+							<td>
+								<p class="info_txt">키워드 콤마(,)로 구분</p>
+								<div><input id="boardKeyword" name="boardKeyword" placeholder="키워드 콤마(,)로 구분" type="text" /></div>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+					<!-- // 상세내용 -->
+					<!-- 버튼 -->
+					<p class="btn_set">
+						<button class="btns btn_st1" onclick="save()" type="button">등록</button>
+						<button class="btns btn_st2" onclick="goList()" type="button">취소</button>
+					</p>
+					<!-- // 버튼 -->
+				</form>
+			</div>
+		</div>
+	</div>
+	</th:block>
+	<th:block layout:fragment="script">
+		<script th:inline="javascript">
+			/*<![CDATA[*/
+
+			window.onload = () => {
+				subMenuList();
+				titleSelect();
+				findBoard();
+				printFileList();
+			}
+
+			/** 유효성 검사 */
+			function isValid() {
+				const form = findById('form');
+
+				if (!form.title.value.trim()) {
+					alert('제목을 입력해 주세요.');
+					form.title.value = '';
+					form.title.focus();
+					return false;
+				}
+
+				if (!form.content.value.trim()) {
+					alert('내용을 입력해 주세요.');
+					form.content.value = '';
+					form.content.focus();
+					return false;
+				}
+
+				return true;
+			}
+
+			/** 게시글 등록 & 수정 */
+			function save() {
+				if (!isValid()) {
+					return false;
+				}
+
+				const boardMenuNum = new URLSearchParams(location.search).get('boardMenuNum');
+				const formData = new FormData(findById('form'));
+				let id = [[ ${id} ]];
+				const uri = (id) ? `/api/boards/${id}` : '/api/boards';
+
+				formData.append('boardMenuNum', boardMenuNum);
+				formData.append('deleteYn', 'N');
+				formData.append('noticeYn', 'N');
+				formData.append('writer', findById('writer').innerText);
+				formData.append('removeFileIds', removeFileIds.getAll());
+
+				callApi(uri, 'POST', formData, true).then(response => {
+					alert("저장되었습니다.");
+					goList();
+				}).catch(error => alert(error.message));
+			}
+
+			/** 기존 게시글 정보 Response */
+			function findBoard() {
+
+				const id = [[ ${id} ]];
+				if (!id) {
+					return false;
+				}
+
+				fetch(`/api/boards/${id}`).then(response => {
+					if(!response.ok) {
+						throw new Error("Request failed...");
+					}
+					return response.json();
+				}).then(json => {
+					Object.keys(json).forEach(key =>{
+						const elem = findById(key);
+						if(elem){
+							elem.value = json[key];
+						}
+					});
+				}).catch(error =>{
+					alert('게시글 정보를 찾을 수 없습니다.');
+					location.href = '/board/list' + location.search;
+				});
+			}
+
+			/** 기존 파일 정보 Response*/
+			function printFileList() {
+				const id = [[ ${id} ]];
+				let fileListHtml = '';
+
+				if(!id) {
+					return false;
+				}
+				fetch(`/api/boards/${id}/files`).then(response => {
+					if(!response.ok) {
+						throw new Error("Request Error...");
+					}
+					return response.json();
+				}).then(fileList => {
+					for(let i = 0; i< fileList.length; i++) {
+						let fileLists = fileList[i];
+						let fileAddBtn = (i < 1) ? '<button type="button" class="btns btn1_1 primary addfile" onclick="addFile()"><i class="fas fa-plus-circle"></i></button>' : '';
+						fileListHtml +=
+						`<li data-name="file_input">
+							<div class="file_input">
+								<input type="text" title="첨부파일" id="fileList" name="fileList" value="${fileLists.originalName}" readonly />
+								<label for="file_${i+1}"> 첨부파일
+									<input type="file" class="files" id="file_${i+1}" name="attachFiles" onchange="changeFileName(this, ${fileLists.id})" />
+								</label>
+							</div>
+							<div class="btn_group">
+								${fileAddBtn}
+								<button type="button" class="btns btn1_2 primary addfile" onclick="removeFile(this, ${fileLists.id})"><i class="fas fa-minus-circle" aria-hidden="true"></i></button>
+							</div>
+						</li>`;
+
+						fileSeq.up();
+						findById('files').innerHTML = fileListHtml;
+						document.querySelector('#files > li:first-child > .btn_group > button:last-child').setAttribute('id', 'firstFileRemoveBtn');
+					}
+				});
+			}
+
+			/** 파일 추가등록 */
+			function addFile() {
+				const fileDivs = document.querySelectorAll('li[data-name="file_input"]');
+				if (fileDivs.length > 9) {
+					alert('파일은 최대 10개까지 업로드 할 수 있습니다.')
+					return false;
+				}
+
+				fileSeq.up();
+				const fileHtml =
+					`<li data-name="file_input" style="margin-top: 15px;">
+						<div class="file_input">
+							<input type="text" title="첨부파일" placeholder="파일 찾기" readonly />
+							<label for="file_${fileSeq.get()}"> 첨부파일
+								<input type="file" id="file_${fileSeq.get()}" name="attachFiles" onchange="changeFileName(this)">
+							</label>
+						</div>
+						<div class="btn_group">
+							<button type="button" class="btns btn1_2 primary addfile" onclick="removeFile(this)"><i class="fas fa-minus-circle" aria-hidden="true"></i></button>
+						</div>
+					</li>`;
+
+				console.log(fileSeq);
+				$('#files').append(fileHtml);
+			}
+
+			/** 추가등록 파일 삭제 */
+			function removeFile(elem, fileId) {
+				if (fileId) {
+					elem.setAttribute('onclick', 'removeFile(this);');
+					document.querySelectorAll('input[name="attachFiles"]')[0].setAttribute('onchange', 'changeFileName(this)');
+					removeFileIds.add(fileId);
+					console.log(fileId);
+				}
+
+				const li = elem.closest('li')
+
+				if (elem.id) {
+					li.querySelectorAll('input').forEach(e => e.value = '');
+					return false;
+				}
+
+				li.remove();
+			}
+
+			/** 뒤로가기 */
+			function goList() {
+				const search = new URLSearchParams(location.search).get('search');
+				const mainMenuNum = new URLSearchParams(location.search).get('mainMenuNum');
+
+				if(!search) {
+					location.href = (mainMenuNum === '2') ?	'/board/gallery-list' + location.search : '/board/list' + location.search ;
+				} else {
+					location.href = '/board/search';
+				}
+			}
+
+			/*]]>*/
+		</script>
+	</th:block>
+</html>

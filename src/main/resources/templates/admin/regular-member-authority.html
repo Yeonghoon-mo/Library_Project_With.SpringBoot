@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" layout:decorate="/layout/adminLayout" xmlns:layout="http://www.w3.org/1999/xhtml">
+<th:block layout:fragment="main">
+    <div id="container">
+        <div class="innerwrap">
+            <div class="page_tits">
+                <h3>회원관리</h3>
+                <p class="path"><strong>현재위치 :</strong> <span>회원관리</span> <span>정회원 요청관리</span></p>
+            </div>
+            <div id="main">
+                <div class="section">
+                    <!-- 검색 영역 -->
+                    <form id="searchForm" onsubmit="return false;">
+                        <div class="search_box">
+                            <div class="sch_group fl">
+                                <select id="searchType" name="searchType" title="검색종류 선택">
+                                    <option value="">전체검색</option>
+                                    <option value="name">회원이름</option>
+                                    <option value="loginId">아이디</option>
+                                </select>
+                                <input type="text" id="keyword" name="keyword" placeholder="키워드를 입력해 주세요." value="" />
+                                <button type="button" class="btn bt_search" onclick="findPaginationAll()"><span>검색</span></button>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- // 검색 영역 -->
+                    <table class="tb tb_col">
+                        <colgroup>
+                            <col style="width:10%;" />
+                            <col style="width:10%;" />
+                            <col style="width:10%;" />
+                            <col style="width:10%;" />
+                            <col style="width:15%;" />
+                            <col style="width:10%;" />
+                            <col style="width:10%;" />
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th scope="col">번호</th>
+                            <th scope="col">회원이름</th>
+                            <th scope="col">아이디</th>
+                            <th scope="col">연락처</th>
+                            <th scope="col" colspan="3">가입요청 시간</th>
+                        </tr>
+                        </thead>
+                        <!-- 게시글 리스트 렌더링 -->
+                        <tbody id="list">
+
+                        </tbody>
+                    </table>
+                    <div class="paging">
+                        <ul>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        window.onload = () => {
+            setQueryStringParams();
+            findPaginationAll();
+            addEnterSearchEvent();
+        }
+
+        /** Query String Parameter Setting (이전 페이지 유지) */
+        function setQueryStringParams() {
+            if (!location.search) {
+                return false;
+            }
+            const form = findById('searchForm');
+            new URLSearchParams(location.search).forEach((value, key) => {
+                if (form[key]) {
+                    form[key].value = value;
+                }
+            })
+        }
+
+        /** 키워드 (엔터 검색 이벤트 바인딩) */
+        function addEnterSearchEvent() {
+            findById('keyword').addEventListener('keyup', (e) => {
+                if (e.keyCode === 13) {
+                    findPaginationAll(1);
+                }
+            });
+        }
+
+        /** 정회원 회원가입 리스트 출력(Paging) */
+        function findPaginationAll(page) {
+
+            const form = findById('searchForm');
+            const pageParam = Number(new URLSearchParams(location.search).get('page'));
+            page = (page) ? page : ((pageParam) ? pageParam : 1);
+            const params = {
+                page: page - 1,
+                size: 10,
+                searchType: form.searchType.value,
+                keyword: form.keyword.value,
+                authorityYn : 'N',
+                deleteYn : 'N',
+                mnId : '2'
+            }
+
+            const queryString = new URLSearchParams(params).toString();
+            const replaceUri = location.pathname + '?' + queryString;
+            history.replaceState({}, '', replaceUri);
+
+            getJson('/api/members', params).then(response => {
+                if (!response.content.length) {
+                    findById('list').innerHTML = '<td colspan="10">정회원으로 회원가입한 회원이 없습니다.</td>';
+                    removePages();
+                    return false;
+                }
+
+                let html = '';
+                let num = response.totalElements - ((params.page) * params.size);
+                response.content.forEach((obj) => {
+                    const viewUri = `/manager/regular-member-authority-view/${obj.id}` + '?' + queryString;
+                    html += `
+						<tr>
+							<td>${num--}</td>
+							<td><a href="${viewUri}" style="font-weight: bold; color: blue"</a>${obj.name}</td>
+							<td>${obj.loginId}</td>
+							<td>${obj.phone}</td>
+							<td colspan="3">${dayjs(obj.createdDate).format('YYYY-MM-DD HH:mm:ss')}</td>
+						</tr>
+					`;
+                });
+
+                findById('list').innerHTML = html;
+                const paginationInfo = {
+                    page: page,
+                    size: params.size,
+                    pageSize: 10,
+                    totalElements: response.totalElements,
+                    totalPages: response.totalPages
+                }
+
+                drawPages(paginationInfo, 'findPaginationAll');
+            })
+        }
+
+
+        /*]]>*/
+    </script>
+</th:block>
+</html>

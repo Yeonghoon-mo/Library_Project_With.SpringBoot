@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" layout:decorate="/layout/userLayout" xmlns:layout="http://www.w3.org/1999/xhtml">
+<th:block layout:fragment="main">
+	<div id="contents" class="main_container">
+		<form id="form" name="form" onsubmit="return false;">
+			<div class="innerwrap">
+				<div class="s03">
+					<!-- 공지사항 -->
+					<div class="mainbbs">
+						<h2>공지사항</h2>
+						<ul id="noticeParams" name="noticeParams">
+						</ul>
+						<a href="/board/list?mainMenuNum=1&boardMenuNum=1" class="more"><span><i class="fas fa-arrow-right"></i></span></a>
+					</div>
+					<!-- // 공지사항 -->
+				</div>
+				<!-- 최근자료 -->
+				<div class="mainbbs_gall">
+						<h2>최근자료</h2>
+						<ul id="recentlyParams" name="recentlyParams">
+
+						</ul>
+						<a href="/board/gallery-list?mainMenuNum=2&boardMenuNum=5" class="bbs_more"><span><i class="fas fa-long-arrow-alt-right"></i> 더보기</span></a>
+				</div>
+				<!-- // 최근자료 -->
+				<!-- 인기자료 -->
+				<div class="mainbbs_gall">
+					<h2>인기자료</h2>
+					<ul id="popularityParams" name="popularityParams">
+
+					</ul>
+					<a href="/board/gallery-list?mainMenuNum=2&boardMenuNum=5" class="bbs_more"><span><i class="fas fa-long-arrow-alt-right"></i> 더보기</span></a>
+				</div>
+				<!-- // 인기자료 -->
+				<div class="s02">
+					<div class="mainbbs">
+						<h2>게시판</h2>
+						<div class="menulink">
+							<a href="/board/list?mainMenuNum=1&boardMenuNum=2">자유게시판</a>
+							<a href="/board/list?mainMenuNum=1&boardMenuNum=3">정회원 게시판</a>
+							<a href="/board/list?mainMenuNum=1&boardMenuNum=4">기타 게시판</a>
+						</div>
+						<ul id="sexList" name="sexList">
+
+						</ul>
+					</div>
+					<div class="mainbbs">
+						<h2>썸네일형 게시판</h2>
+						<div class="menulink v2">
+							<a href="/board/list?mainMenuNum=3&boardMenuNum=5">동영상</a>
+							<a href="/board/list?mainMenuNum=3&boardMenuNum=6">파워포인트</a>
+							<a href="/board/list?mainMenuNum=3&boardMenuNum=7">엑셀</a>
+							<a href="/board/list?mainMenuNum=3&boardMenuNum=8">기타 자료</a>
+						</div>
+						<ul id="lifeParams" name="lifeParams">
+
+						</ul>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- // 인덱스 페이지 게시글 리스트 그리는 부분 -->
+</th:block>
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+
+		window.onload = () => {
+			findIndexList();
+		}
+
+		/** 인덱스 페이지 게시글 리스트 그리는 함수 */
+		function findIndexList() {
+			const noticeParams = {startMenuNum: 1, endMenuNum: 1, listLimit: 5, orderByName: "createdDate"}; // 공지사항 리스트
+			const rcnData = {startMenuNum: 5, endMenuNum: 8, listLimit: 4, orderByName: "createdDate"}; // 최근 썸네일형 게시글 리스트
+			const popularityParams = {startMenuNum: 5, endMenuNum: 8, listLimit: 4, orderByName: "hits"}; // 썸네일형 게시글 인기자료 리스트
+			const boardParams = {startMenuNum: 2, endMenuNum: 4, listLimit: 5, orderByName: "createdDate"}; // 게시판 리스트
+			const thumbnailParams = {startMenuNum: 5, endMenuNum: 8, listLimit: 5, orderByName: "createdDate"}; // 썸네일형 게시판 리스트
+
+			getJson('/api/boards/index/list', noticeParams).then(response => {
+				let html = '';
+				if (!response.length) {
+					findById('noticeParams').innerHTML = '<li><div class="no_data_msg">등록된 글이 없습니다.</div></li>';
+					return false;
+				}
+
+				response.forEach((obj) => {
+					let today = dayjs(new Date().toLocaleString("en-US", {timeZone: "Asia/Seoul"})).format('YYYY-MM-DD HH:mm:ss')
+					let result = dayjs(obj.createdDate).diff(today, "day", true);
+					let d_day = Math.floor(result);
+					const newBoardIcon = (d_day > -4) ?  '<span class="new_ico">새글</span>' : '';
+					const viewUri = `/board/view/${obj.id}?mainMenuNum=1&boardMenuNum=${obj.boardMenuNum.id}`;
+
+					html +=
+							`<li>
+							<a href="${viewUri}">
+								<div class="innerbox">
+									<div class="title"><span>${obj.title} ${newBoardIcon}</span></div>
+									<div class="date">${dayjs(obj.createdDate).format('YYYY-MM-DD')}</div>
+								</div>
+							</a>
+							</li>`;
+				});
+
+				findById('noticeParams').innerHTML = html;
+			});
+
+			getJson('/api/boards/index/list', rcnData).then(response => {
+				let html = '';
+				if (!response.length) {
+					findById('recentlyParams').innerHTML = '<li><div class="no_data_msg">등록된 글이 없습니다.</div></li>';
+					return false;
+				}
+
+				response.forEach((obj) => {
+					const viewUri = `/board/view/${obj.id}?mainMenuNum=2&boardMenuNum=${obj.boardMenuNum.id}`;
+					const boardImageSrc = (obj.repImage) ? `/api/image-files?savedFilename=${obj.saveNameImage}` : '/user/images/board/no_img.gif';
+					const profileImageSrc = (obj.member.profileImage) ? `/api/image-files?savedFilename=${obj.member.profileImage}` : '/user/images/board/default_profile.png';
+					html +=
+							`<li>
+								<a href="${viewUri}">
+									<div class="innerbox">
+										<div class="thumb_wrap">
+											<p><span><img src="${boardImageSrc}" /></span></p>
+										</div>
+										<div class="title">${obj.title}</div>
+										<div class="writer"><span class="pimg"><img src="${profileImageSrc}" /></span>${obj.writer}</div>
+										<div class="date">${dayjs(obj.createdDate).format('YYYY-MM-DD')}</div>
+									</div>
+								</a>
+							</li>`;
+				});
+
+				findById('recentlyParams').innerHTML = html;
+			});
+
+			getJson('/api/boards/index/list', popularityParams).then(response => {
+				let html = '';
+				if (!response.length) {
+					findById('popularityParams').innerHTML = '<li><div class="no_data_msg">등록된 글이 없습니다.</div></li>';
+					return false;
+				}
+
+				response.forEach((obj) => {
+					const viewUri = `/board/view/${obj.id}?mainMenuNum=2&boardMenuNum=${obj.boardMenuNum.id}`;
+					const boardImageSrc = (obj.repImage) ? `/api/image-files?savedFilename=${obj.saveNameImage}` : '/user/images/board/no_img.gif';
+					const profileImageSrc = (obj.member.profileImage) ? `/api/image-files?savedFilename=${obj.member.profileImage}` : '/user/images/board/default_profile.png';
+
+					html +=
+							`<li>
+								<a href="${viewUri}">
+									<div class="innerbox">
+										<div class="thumb_wrap">
+											<p><span><img src="${boardImageSrc}" /></span></p>
+										</div>
+										<div class="title">${obj.title}</div>
+										<div class="writer"><span class="pimg"><img src="${profileImageSrc}" /></span>${obj.writer}</div>
+										<div class="date">${dayjs(obj.createdDate).format('YYYY-MM-DD')}</div>
+									</div>
+								</a>
+							</li>`;
+				});
+
+				findById('popularityParams').innerHTML = html;
+			});
+
+			getJson('/api/boards/index/list', boardParams).then(response => {
+				let html = '';
+				if (!response.length) {
+					findById('sexList').innerHTML = '<li><div class="no_data_msg">등록된 글이 없습니다.</div></li>';
+					return false;
+				}
+
+				response.forEach((obj) => {
+					let today = dayjs(new Date().toLocaleString("en-US", {timeZone: "Asia/Seoul"})).format('YYYY-MM-DD HH:mm:ss')
+					let result = dayjs(obj.createdDate).diff(today, "day", true);
+					let d_day = Math.floor(result);
+					const newBoardIcon = (d_day > -4) ? '<span class="new_ico">새글</span>' : '';
+					const viewUri = `/board/view/${obj.id}?mainMenuNum=1&boardMenuNum=${obj.boardMenuNum.id}`;
+					html +=
+							`<li>
+								<a href="${viewUri}">
+									<div class="innerbox">
+										<div class="title"><span>${obj.title} ${newBoardIcon}</span></div>
+										<div class="date">${dayjs(obj.createdDate).format('YYYY-MM-DD')}</div>
+										<div class="writer"><span>${obj.writer}</span></div>
+									</div>
+								</a>
+							</li>`;
+				});
+
+				findById('sexList').innerHTML = html;
+			});
+
+			getJson('/api/boards/index/list', thumbnailParams).then(response => {
+				let html = '';
+				if (!response.length) {
+					findById('lifeParams').innerHTML = '<li><div class="no_data_msg">등록된 글이 없습니다.</div></li>';
+					return false;
+				}
+
+				response.forEach((obj) => {
+					let today = dayjs(new Date().toLocaleString("en-US", {timeZone: "Asia/Seoul"})).format('YYYY-MM-DD HH:mm:ss')
+					let result = dayjs(obj.createdDate).diff(today, "day", true);
+					let d_day = Math.floor(result);
+					const newBoardIcon = (d_day > -4) ? '<span class="new_ico">새글</span>' : '';
+					const viewUri = `/board/view/${obj.id}?mainMenuNum=2&boardMenuNum=${obj.boardMenuNum.id}`;
+
+					html +=
+							`<li>
+								<a href="${viewUri}">
+									<div class="innerbox">
+										<div class="title"><span>${obj.title} ${newBoardIcon}</span></div>
+										<div class="date">${dayjs(obj.createdDate).format('YYYY-MM-DD')}</div>
+										<div class="writer"><span>${obj.writer}</span></div>
+									</div>
+								</a>
+							</li>`;
+				});
+
+				findById('lifeParams').innerHTML = html;
+			});
+
+		}
+
+		/*]]>*/
+	</script>
+	<script src="/user/js/script.js"></script>
+</th:block>
+</html>
