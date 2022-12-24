@@ -99,12 +99,9 @@
 
 ## 6. Package layer
 -------------------------------
-  <image src="https://user-images.githubusercontent.com/54883318/172999597-882bcefe-4a35-4455-a728-f309bb69c84c.png" style="width:450px;display:inline-block;"/>
-  <image src="https://user-images.githubusercontent.com/54883318/172999601-7c30e150-5537-482f-82eb-b4f3b169c427.png" style="width:450px;display:inline-block;"/>
-  <image src="https://user-images.githubusercontent.com/54883318/172999603-8717d233-e27b-477d-9ea9-c208cfdbd98f.png" style="width:450px;display:inline-block;"/>
-  <image src="https://user-images.githubusercontent.com/54883318/172999606-10430483-0d59-4eb9-804e-22391b74206f.PNG" style="width:450px;display:inline-block;"/>
-  <image src="https://user-images.githubusercontent.com/54883318/172999607-6773decf-fe14-4a83-926b-e21710b7721d.PNG" style="width:450px;display:inline-block;"/>
-  <image src="https://user-images.githubusercontent.com/54883318/172999609-03e6b051-90cb-433e-a0bb-fe13d093f239.PNG" style="width:450px;display:inline-block;"/>
+**MVC 디자인 패턴을 사용하였습니다.**
+
+![스크린샷 2022-12-24 22 47 59](https://user-images.githubusercontent.com/54883318/209438736-b30716fe-7cd8-4a2c-a79c-8f6517d5c561.png)
 
 ## 7.Project Function Flow
 -------------------------------
