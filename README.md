@@ -8,7 +8,7 @@
 - **관리자 페이지, 사용자 페이지**를 나누어, 홈페이지 관리자가 관리자 페이지에서 확실히 관리할 수 있으며, 역할이 확실할 수 있도록 나누었습니다.
 - **관리자 페이지**에서는 **관리자 관리, 통합 회원 관리, 회원가입 요청 리스트(정회원), 각 게시판별 게시글 관리**기능이 있습니다. 
 
-## 2. LibraryProject 제작 동기
+## 2. LibraryProject 개발 동기
 ------------------------------
 - **게시판**은 모든 웹 애플리케이션의 필수이자 기본 요소라 생각하기에 제작하게 되었습니다.
 - **Spring boot를 이용한 게시판**은 기본적인 스프링 프레임워크 사용법과 CRUD 기능 구현 능력을 학습하고 활용하는데 가장 적합하며, 추가 응용 및 확장 가능성 또한 많다 생각하여서 선택하게 되었습니다.
@@ -99,12 +99,9 @@
 
 ## 6. Package layer
 -------------------------------
-  <image src="https://user-images.githubusercontent.com/54883318/172999597-882bcefe-4a35-4455-a728-f309bb69c84c.png" style="width:450px;display:inline-block;"/>
-  <image src="https://user-images.githubusercontent.com/54883318/172999601-7c30e150-5537-482f-82eb-b4f3b169c427.png" style="width:450px;display:inline-block;"/>
-  <image src="https://user-images.githubusercontent.com/54883318/172999603-8717d233-e27b-477d-9ea9-c208cfdbd98f.png" style="width:450px;display:inline-block;"/>
-  <image src="https://user-images.githubusercontent.com/54883318/172999606-10430483-0d59-4eb9-804e-22391b74206f.PNG" style="width:450px;display:inline-block;"/>
-  <image src="https://user-images.githubusercontent.com/54883318/172999607-6773decf-fe14-4a83-926b-e21710b7721d.PNG" style="width:450px;display:inline-block;"/>
-  <image src="https://user-images.githubusercontent.com/54883318/172999609-03e6b051-90cb-433e-a0bb-fe13d093f239.PNG" style="width:450px;display:inline-block;"/>
+**MVC 디자인 패턴을 사용하였습니다.**
+
+![스크린샷 2022-12-24 22 47 59](https://user-images.githubusercontent.com/54883318/209438736-b30716fe-7cd8-4a2c-a79c-8f6517d5c561.png)
 
 ## 7.Project Function Flow
 -------------------------------
@@ -228,7 +225,7 @@
         ![tb_attach 테이블 구조](https://user-images.githubusercontent.com/54883318/174428736-5c4f2078-d090-4ccc-8033-b9cf439a2714.JPG)
          
      - **8-5) 파일 조회, 파일 삭제** 
-     - 파일 조회와 삭제는 공통JS파일 안에 파일 시퀀스 처리용, 파일 삭제 처리용 **익명함수**를 두어 관리한다.
+     - 파일 조회와 삭제는 공통JS파일 안에 파일 시퀀스 처리용, 파일 삭제 처리용 **익명함수**를 두어 관리한다.<br>
         ![파일 조회, 삭제_1](https://user-images.githubusercontent.com/54883318/174429357-b8c65dbd-c330-41d1-b32c-296d10c186cc.JPG)
      - 1. 기존 파일 정보를 불러올 때마다(fileList.length를 불러올 때마다) 파일 시퀀스 처리용 익명함수 내에 있는 up메서드를 불러오며, **각 파일마다 시퀀스**를 준다. 파일 시퀀스를            통하여 파일 번호를 확인 후 file에 id값을 준다.
      - 2. 파일 삭제는 **파일의 ID가 있을 경우**, 파일의 ID를 가져온 후 해당하는 파일 ID를 삭제한 후, 파일에 있는 data-value를 조회하여 해당하는 data-value를 remove하여 **사용            자에게 보여지는** 리스트에서도 삭제한다. <br>
