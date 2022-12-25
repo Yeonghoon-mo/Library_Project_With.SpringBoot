@@ -21,8 +21,8 @@ public class LoginConfigMember implements WebMvcConfigurer {
                         "/board/view/*",
                         "/board/gallery-write"
                 )
-                // 접근 불가 페이지 제외
-//                 TODO 인터셉터 적용이 된 페이지를 제외한 모든 페이지 접근을 가능하게 하기 위한 주석처리
+//                 접근 불가 페이지 제외
+//                 인터셉터 적용이 된 페이지를 제외한 모든 페이지 접근을 가능하게 하기 위한 주석처리
 //                .excludePathPatterns("/**")
         ;
     }

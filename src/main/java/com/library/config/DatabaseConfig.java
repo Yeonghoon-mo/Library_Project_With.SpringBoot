@@ -38,6 +38,7 @@ public class DatabaseConfig {
         return new HikariDataSource(hikariConfig());
     }
 
+    // MyBatis Setting
     @Bean
     public SqlSessionFactory sqlSessionFactory() throws Exception {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
@@ -46,6 +47,7 @@ public class DatabaseConfig {
         return factoryBean.getObject();
     }
 
+    // SQLSession Bean 생성
     @Bean
     public SqlSessionTemplate sqlSession() throws Exception {
         return new SqlSessionTemplate(sqlSessionFactory());

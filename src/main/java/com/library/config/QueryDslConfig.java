@@ -10,7 +10,7 @@ import javax.persistence.PersistenceContext;
 @Configuration
 public class QueryDslConfig {
 
-    @PersistenceContext // Spring Autowired와 유사함.
+    @PersistenceContext // @Autowired 종속성 등록과 유사함.
     private EntityManager entityManager;
 
     @Bean
