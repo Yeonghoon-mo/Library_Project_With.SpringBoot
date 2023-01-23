@@ -9,7 +9,7 @@ import java.util.List;
 
 import static com.library.domain.attach.QAttach.attach;
 
-public class AttachRepositoryImpl implements AttachRepositoryCustom{
+public class AttachRepositoryImpl implements AttachRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
