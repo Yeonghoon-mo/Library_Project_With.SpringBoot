@@ -5,15 +5,18 @@ buildscript {
 }
 
 plugins {
+	id 'war'
 	id 'org.springframework.boot' version '2.7.0'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 	id 'java'
+	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10" // QueryDSL
 }
 
-group = 'com.example'
+
+group = 'com.library'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -34,28 +37,28 @@ dependencies {
 	implementation 'commons-io:commons-io:2.11.0' /* Apache Commons IO */
 	implementation 'commons-fileupload:commons-fileupload:1.4' /* Apache Commons File Upload */
 	implementation 'org.apache.commons:commons-lang3' // Apache Commons Lang
+	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}" // QueryDSL
+	implementation "com.querydsl:querydsl-apt:${queryDslVersion}" // QueryDSL
 	implementation 'com.navercorp.lucy:lucy-xss-servlet:2.0.1' // XSS
-	implementation 'org.apache.commons:commons-text:1.10.0' // XSS
+	implementation 'org.apache.commons:commons-text:1.9' // XSS
 	implementation 'org.springframework.boot:spring-boot-starter-mail' // Email
-	implementation 'org.springframework.boot:spring-boot-starter-validation' /* Validation Check */
-	implementation 'org.apache.tika:tika-core:2.5.0' /* Tika */
+	implementation 'org.springframework.boot:spring-boot-starter-validation' /* 중복 체크 */
+	implementation 'org.apache.tika:tika-core:2.3.0' /* Tika */
 	implementation 'org.springframework.security:spring-security-core' /* Spring Security Core */
-	implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1' /* MariaDB */
-
-	// QueryDSL dependencies
-	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
-	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
 
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client' // MariaDB
-//	runtimeOnly 'mysql:mysql-connector-java' // MySQL
+	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-// script for querydsl
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+// QueryDSL
 def querydslDir = "$buildDir/generated/querydsl"
 querydsl {
 	jpa = true
@@ -64,9 +67,12 @@ querydsl {
 sourceSets {
 	main.java.srcDir querydslDir
 }
-configurations {
-	querydsl.extendsFrom compileClasspath
-}
 compileQuerydsl {
 	options.annotationProcessorPath = configurations.querydsl
+}
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+	querydsl.extendsFrom compileClasspath
 }

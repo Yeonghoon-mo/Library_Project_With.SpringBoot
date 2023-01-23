@@ -15,7 +15,7 @@ async function mainMenuList() {
         let html = '';
 
         if (!json.length) {
-            alert('에러');
+            alert('DB에 메뉴가 없습니다.');
         } else {
             json.forEach((obj, idx) => {
                 html += `

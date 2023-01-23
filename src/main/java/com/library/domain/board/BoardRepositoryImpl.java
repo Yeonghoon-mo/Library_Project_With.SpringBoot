@@ -14,7 +14,6 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 import static com.library.domain.board.QBoard.board;
-import static com.library.domain.like.QLike.like;
 
 public class BoardRepositoryImpl implements BoardRepositoryCustom {
 

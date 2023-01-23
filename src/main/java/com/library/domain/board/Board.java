@@ -2,7 +2,6 @@ package com.library.domain.board;
 
 import com.library.domain.attach.FileResponse;
 import com.library.domain.entity.BaseEntity;
-import com.library.domain.like.Like;
 import com.library.domain.member.Member;
 import com.library.domain.menu.sub.SubMenu;
 import com.library.status.YnStatus;
@@ -12,7 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Getter
 @Entity

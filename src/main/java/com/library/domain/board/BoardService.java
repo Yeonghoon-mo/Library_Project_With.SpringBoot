@@ -4,7 +4,6 @@ import com.library.domain.attach.Attach;
 import com.library.domain.attach.AttachRepository;
 import com.library.domain.attach.AttachResponse;
 import com.library.domain.attach.FileResponse;
-import com.library.domain.like.LikeResponse;
 import com.library.domain.member.Member;
 import com.library.domain.member.MemberResponse;
 import com.library.domain.member.MemberType;
