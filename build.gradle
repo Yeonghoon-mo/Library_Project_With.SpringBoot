@@ -40,10 +40,10 @@ dependencies {
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}" // QueryDSL
 	implementation "com.querydsl:querydsl-apt:${queryDslVersion}" // QueryDSL
 	implementation 'com.navercorp.lucy:lucy-xss-servlet:2.0.1' // XSS
-	implementation 'org.apache.commons:commons-text:1.9' // XSS
+	implementation 'org.apache.commons:commons-text:1.10.0' // XSS
 	implementation 'org.springframework.boot:spring-boot-starter-mail' // Email
 	implementation 'org.springframework.boot:spring-boot-starter-validation' /* 중복 체크 */
-	implementation 'org.apache.tika:tika-core:2.3.0' /* Tika */
+	implementation 'org.apache.tika:tika-core:2.5.0' /* Tika */
 	implementation 'org.springframework.security:spring-security-core' /* Spring Security Core */
 
 	compileOnly 'org.projectlombok:lombok'

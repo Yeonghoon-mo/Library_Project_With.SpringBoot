@@ -33,10 +33,9 @@ public class HtmlCharacterEscapes extends CharacterEscapes {
 
         // 이모지 처리
         if (Character.isHighSurrogate(charAt) || Character.isLowSurrogate(charAt)) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("\\u");
-            sb.append(String.format("%04x", ch));
-            return new SerializedString(sb.toString());
+            String sb = "\\u" +
+                    String.format("%04x", ch);
+            return new SerializedString(sb);
         }
 
         return new SerializedString(StringEscapeUtils.escapeHtml4(Character.toString(charAt)));

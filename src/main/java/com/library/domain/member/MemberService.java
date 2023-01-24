@@ -155,7 +155,7 @@ public class MemberService {
     public Long loginAction(final LoginRequest params, HttpSession session) {
 
         Member member = memberRepository.findByMemberTypeLoginId(params);
-        if ( encoder.matches(params.getPassword(), member.getPassword()) == false ) {
+        if (!encoder.matches(params.getPassword(), member.getPassword())) {
             throw new RuntimeException("아이디 또는 비밀번호를 확인해 주세요.");
         }
 
@@ -171,7 +171,7 @@ public class MemberService {
 
     /** 6자리 이메일 인증번호 난수 생성 Method */
     public static String authToken() {
-        StringBuffer key = new StringBuffer();
+        StringBuilder key = new StringBuilder();
         Random rnd = new Random();
 
         for (int i = 0; i < 6; i++) { // 인증코드 6자리
@@ -179,11 +179,11 @@ public class MemberService {
 
             switch (2) {
                 case 0:
-                    key.append((char) ((int) (rnd.nextInt(26)) + 97));
+                    key.append((char) (rnd.nextInt(26) + 97));
                     //  a~z  (ex. 1+97=98 => (char)98 = 'b')
                     break;
                 case 1:
-                    key.append((char) ((int) (rnd.nextInt(26)) + 65));
+                    key.append((char) (rnd.nextInt(26) + 65));
                     //  A~Z
                     break;
                 case 2:

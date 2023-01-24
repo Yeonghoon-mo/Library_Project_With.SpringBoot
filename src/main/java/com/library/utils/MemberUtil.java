@@ -40,7 +40,7 @@ public class MemberUtil {
 
     // Null Check
     public static Member getSessionMember(boolean allowNull) {
-        if (allowNull == false) {
+        if (!allowNull) {
             if (getSessionMember() == null) {
                 throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
             }

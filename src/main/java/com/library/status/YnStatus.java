@@ -5,6 +5,6 @@ import lombok.Getter;
 @Getter
 public enum YnStatus {
 
-    Y, N;
+    Y, N
 
 }

@@ -21,7 +21,7 @@ public class LoginCheckInterceptorMember implements HandlerInterceptor {
 
         // 비회원인 경우, 인덱스 페이지로 리다이렉트
         if (memberLogin == null) {
-            if (StringUtils.contains(request.getRequestURI(), "view") == false) {
+            if (!StringUtils.contains(request.getRequestURI(), "view")) {
                 response.sendRedirect("/login");
                 return false;
             }

@@ -167,6 +167,6 @@ $("body").click(function (e) {
     if (!$(".text_ul_wrap").has(e.target).length) {
       $(".ul_select_style").removeClass("active");
       $(".select_icon").removeClass("active");
-    };
+    }
   }
 });
