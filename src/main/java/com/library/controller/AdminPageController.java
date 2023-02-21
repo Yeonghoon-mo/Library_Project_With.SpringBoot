@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import springfox.documentation.annotations.ApiIgnore;
 
-@ApiIgnore
 @Controller
 @RequestMapping("/manager")
 public class AdminPageController {
@@ -66,6 +65,7 @@ public class AdminPageController {
         model.addAttribute("id", id);
         return "/admin/admin-manager";
     }
+
 
     // 회원관리 - 회원 리스트
     @GetMapping("member-list")
