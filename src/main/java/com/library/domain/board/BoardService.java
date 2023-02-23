@@ -37,33 +37,6 @@ public class BoardService {
 
     private final FileUtil fileUtil;
 
-    // 첨부파일 정보 생성
-    private void saveAttachFiles(final List<FileResponse> attachFiles, final Board board) {
-
-        if (CollectionUtils.isEmpty(attachFiles)) {
-            return;
-        }
-
-        List<Attach> attachEntities = attachFiles.stream().map(attachFile -> {
-            return Attach.builder()
-                    .board(board)
-                    .originalName(attachFile.getOriginalFilename())
-                    .saveName(attachFile.getSaveFilename())
-                    .size(attachFile.getFileSize())
-                    .build();
-        }).collect(Collectors.toList());
-
-        attachRepository.saveAll(attachEntities);
-    }
-
-    // 첨부파일 삭제
-    private void deleteAttachFiles(final List<Long> removeFileIds) {
-        if (CollectionUtils.isEmpty(removeFileIds)) {
-            return;
-        }
-        attachRepository.deleteAllByAttachIds(removeFileIds);
-    }
-
     // 게시글 생성
     @Transactional
     public Long save(final BoardRequest params) {
@@ -81,14 +54,7 @@ public class BoardService {
 
         Board board = boardRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND)); // 게시글
         Member member = MemberUtil.getLoginSessionMember(); // 회원 (사용자 or 관리자)
-
-        // 관리자가 아닌 경우, 권한 체크
-        if (member.getType() != MemberType.ADMIN) {
-            if (board.getMember().getId().longValue() != member.getId().longValue()) {
-                throw new CustomException(ErrorCode.IS_NOT_CREATOR);
-            }
-        }
-
+        adminAuthorityCheck(board, member);
         FileResponse repImage = fileUtil.uploadFile(params.getThumbnail()); // 대표 이미지
         board.update(params, repImage); // 게시글 정보 수정
         List<FileResponse> attachFiles = fileUtil.uploadFiles(params.getAttachFiles()); // 첨부파일 업로드
@@ -102,14 +68,7 @@ public class BoardService {
     public Long delete(final Long id){
         Board board = boardRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND)); // 게시글
         Member member = MemberUtil.getLoginSessionMember(); // 회원 (사용자 or 관리자)
-
-        // 관리자가 아닌 경우, 권한 체크
-        if (member.getType() != MemberType.ADMIN) {
-            if (board.getMember().getId().longValue() != member.getId().longValue()) {
-                throw new CustomException(ErrorCode.IS_NOT_CREATOR);
-            }
-        }
-
+        adminAuthorityCheck(board, member);
         board.delete(); // 게시글 삭제
         attachRepository.deleteAttach(id); // 파일 삭제
         return id;
@@ -172,4 +131,39 @@ public class BoardService {
         board.increaseHits();
     }
 
+    // 관리자가 아닌 경우, 권한 체크
+    private static void adminAuthorityCheck(Board board, Member member) {
+        if (member.getType() != MemberType.ADMIN) {
+            if (board.getMember().getId().longValue() != member.getId().longValue()) {
+                throw new CustomException(ErrorCode.IS_NOT_CREATOR);
+            }
+        }
+    }
+
+    // 첨부파일 정보 생성
+    private void saveAttachFiles(final List<FileResponse> attachFiles, final Board board) {
+
+        if (CollectionUtils.isEmpty(attachFiles)) {
+            return;
+        }
+
+        List<Attach> attachEntities = attachFiles.stream().map(attachFile -> {
+            return Attach.builder()
+                    .board(board)
+                    .originalName(attachFile.getOriginalFilename())
+                    .saveName(attachFile.getSaveFilename())
+                    .size(attachFile.getFileSize())
+                    .build();
+        }).collect(Collectors.toList());
+
+        attachRepository.saveAll(attachEntities);
+    }
+
+    // 첨부파일 삭제
+    private void deleteAttachFiles(final List<Long> removeFileIds) {
+        if (CollectionUtils.isEmpty(removeFileIds)) {
+            return;
+        }
+        attachRepository.deleteAllByAttachIds(removeFileIds);
+    }
 }
