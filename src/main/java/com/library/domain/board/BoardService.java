@@ -51,7 +51,6 @@ public class BoardService {
     // 게시글 수정
     @Transactional
     public Long update(final Long id, final BoardRequest params) {
-
         Board board = boardRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND)); // 게시글
         Member member = MemberUtil.getLoginSessionMember(); // 회원 (사용자 or 관리자)
         adminAuthorityCheck(board, member);
