@@ -1,6 +1,7 @@
 package com.library.domain.attach;
 
 import com.library.status.YnStatus;
+import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import javax.persistence.EntityManager;
@@ -39,12 +40,22 @@ public class AttachRepositoryImpl implements AttachRepositoryCustom {
     }
 
     // 파일 개수 조회
+//    @Override
+//    public Long selectAttachTotalCount(Long id) {
+//        return queryFactory
+//                .selectFrom(attach)
+//                .where(attach.deleteYn.eq(YnStatus.N), attach.board.id.eq(id))
+//                .fetchCount();
+//    }
+
+    // 파일 개수 조회
     @Override
     public Long selectAttachTotalCount(Long id) {
         return queryFactory
-                .selectFrom(attach)
+                .select(Wildcard.count)
+                .from(attach)
                 .where(attach.deleteYn.eq(YnStatus.N), attach.board.id.eq(id))
-                .fetchCount();
+                .fetch().get(0);
     }
 
     // 파일 목록 조회
