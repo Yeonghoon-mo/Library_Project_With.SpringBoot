@@ -23,8 +23,7 @@
 > ### Front-End
 - JavaScript
 - jQuery 3.6.0
-- Day.js
-- Thymeleaf (Spring Boot Library)
+- Thymeleaf
 
 > ### Back-End
 - JavaSE 1.8
