@@ -18,7 +18,7 @@ public class AttachRepositoryImpl implements AttachRepositoryCustom {
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
 
-    // 파일 삭제처리
+    // 파일 삭제 처리
     @Override
     public void deleteAttach(Long boardId) {
         queryFactory
@@ -39,7 +39,7 @@ public class AttachRepositoryImpl implements AttachRepositoryCustom {
                 .execute();
     }
 
-    // 파일 개수 조회
+//     파일 개수 조회
 //    @Override
 //    public Long selectAttachTotalCount(Long id) {
 //        return queryFactory
