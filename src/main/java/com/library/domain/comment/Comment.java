@@ -37,7 +37,7 @@ public class Comment extends BaseEntity {
     private YnStatus deleteYn; // 삭제 여부
 
     @Builder
-    public Comment(Board board, Member member, Long parentCommentId, Integer commentLevel, String content, YnStatus deleteYn){
+    public Comment(Board board, Member member, Long parentCommentId, Integer commentLevel, String content, YnStatus deleteYn) {
         this.board = board;
         this.member = member;
         this.parentCommentId = parentCommentId;

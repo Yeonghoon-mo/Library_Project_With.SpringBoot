@@ -15,7 +15,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-    public CommentRepositoryImpl(EntityManager entityManager){
+    public CommentRepositoryImpl(EntityManager entityManager) {
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
 
@@ -33,7 +33,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                         comment.content,
                         comment.deleteYn,
                         comment.createdDate
-                    ))
+                ))
                 .from(comment)
                 .innerJoin(member).on(comment.member.id.eq(member.id))
                 .where(

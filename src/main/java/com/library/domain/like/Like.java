@@ -30,7 +30,7 @@ public class Like {
     private long likeType; // 좋아요, 싫어요 구분
 
     @Builder
-    public Like(Board board, Member member, long likeType){
+    public Like(Board board, Member member, long likeType) {
         this.board = board;
         this.member = member;
         this.likeType = likeType;

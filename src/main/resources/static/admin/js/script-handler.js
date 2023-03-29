@@ -18,7 +18,7 @@ function drawPages(paginationInfo, findPaginationAll) {
     let totalPages = parseInt((paginationInfo.totalElements - 1) / paginationInfo.size) + 1;
 
     // 전체 데이터 개수 저장 ( 통합검색에 사용 )
-    if(pageParam === 'on') {
+    if (pageParam === 'on') {
         let totalCount = `${paginationInfo.totalElements}개`;
         document.getElementById('emtmt').innerText = totalCount;
     }
@@ -103,7 +103,7 @@ async function getJson(uri, params) {
 function logoutAdmin() {
     fetch('/api/members/logout')
         .then(response => {
-            if(!response.ok){
+            if (!response.ok) {
                 throw new Error("Request failed...");
             }
             location.assign("/manager");
@@ -116,7 +116,7 @@ function logoutAdmin() {
 function logoutMember() {
     fetch('/api/members/logout')
         .then(response => {
-            if(!response.ok){
+            if (!response.ok) {
                 throw new Error("Request failed...");
             }
             location.assign("/login");
@@ -163,14 +163,14 @@ function addEnterSearchEvent() {
  */
 async function callApi(uri, method, params, isFormData) {
 
-    const options = { method: method };
+    const options = {method: method};
 
-    if ( !isFormData ) {
-        options.headers = { 'Content-Type': 'application/json' };
+    if (!isFormData) {
+        options.headers = {'Content-Type': 'application/json'};
     }
 
     if (params !== undefined) {
-        options.body = ( !isFormData ) ? JSON.stringify(params) : params;
+        options.body = (!isFormData) ? JSON.stringify(params) : params;
     }
 
     const response = await fetch(uri, options);
@@ -185,7 +185,7 @@ async function callApi(uri, method, params, isFormData) {
 }
 
 // 파일 삭제 처리용 익명함수
-const removeFileIds = (function() {
+const removeFileIds = (function () {
     const ids = [];
     return {
         add(id) {
@@ -198,7 +198,7 @@ const removeFileIds = (function() {
 }());
 
 // 파일 시퀀스 처리용 익명함수
-const fileSeq = (function() {
+const fileSeq = (function () {
     let seq = 0;
     return {
         up() {

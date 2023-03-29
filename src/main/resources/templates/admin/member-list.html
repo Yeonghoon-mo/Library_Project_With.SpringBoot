@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" layout:decorate="/layout/adminLayout" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" layout:decorate="/layout/adminLayout"
+      xmlns:layout="http://www.w3.org/1999/xhtml">
 <th:block layout:fragment="main">
     <div id="container">
         <div class="innerwrap">
@@ -23,21 +24,22 @@
                                     <option value="name">회원이름</option>
                                     <option value="loginId">아이디</option>
                                 </select>
-                                <input type="text" id="keyword" name="keyword" placeholder="키워드를 입력해 주세요." value="" />
-                                <button type="button" class="btn bt_search" onclick="findPaginationAll()"><span>검색</span></button>
+                                <input type="text" id="keyword" name="keyword" placeholder="키워드를 입력해 주세요." value=""/>
+                                <button type="button" class="btn bt_search" onclick="findPaginationAll()">
+                                    <span>검색</span></button>
                             </div>
                         </div>
                     </form>
                     <!-- // 검색 영역 -->
                     <table class="tb tb_col">
                         <colgroup>
-                            <col style="width:10%;" />
-                            <col style="width:10%;" />
-                            <col style="width:10%;" />
-                            <col style="width:10%;" />
-                            <col style="width:15%;" />
-                            <col style="width:10%;" />
-                            <col style="width:10%;" />
+                            <col style="width:10%;"/>
+                            <col style="width:10%;"/>
+                            <col style="width:10%;"/>
+                            <col style="width:10%;"/>
+                            <col style="width:15%;"/>
+                            <col style="width:10%;"/>
+                            <col style="width:10%;"/>
                         </colgroup>
                         <thead>
                         <tr>
@@ -101,13 +103,13 @@
             const pageParam = Number(new URLSearchParams(location.search).get('page'));
             page = (page) ? page : ((pageParam) ? pageParam : 1);
             const params = {
-                page: page - 1,
-                size: 10,
+                page      : page - 1,
+                size      : 10,
                 searchType: form.searchType.value,
                 memberType: form.memberType.value,
-                keyword: form.keyword.value,
-                deleteYn : 'N',
-                mnId : 2
+                keyword   : form.keyword.value,
+                deleteYn  : 'N',
+                mnId      : 2
             }
 
             const queryString = new URLSearchParams(params).toString();
@@ -123,7 +125,7 @@
 
                 let html = '';
                 let num = response.totalElements - ((params.page) * params.size);
-                const memberType = { REGULAR : '정회원', GENERAL : '일반회원'};
+                const memberType = {REGULAR: '정회원', GENERAL: '일반회원'};
                 response.content.forEach((obj) => {
                     const viewUri = `/manager/member-view/${obj.id}` + '?' + queryString;
                     html += `
@@ -140,17 +142,16 @@
                 findById('list').innerHTML = html;
 
                 const paginationInfo = {
-                    page: page,
-                    size: params.size,
-                    pageSize: 10,
+                    page         : page,
+                    size         : params.size,
+                    pageSize     : 10,
                     totalElements: response.totalElements,
-                    totalPages: response.totalPages
+                    totalPages   : response.totalPages
                 }
 
                 drawPages(paginationInfo, 'findPaginationAll');
             })
         }
-
 
 
         /*]]>*/

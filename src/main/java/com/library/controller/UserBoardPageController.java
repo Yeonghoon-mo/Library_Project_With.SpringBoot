@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -70,7 +69,7 @@ public class UserBoardPageController {
     }
 
     // 쿠키 저장 Method ( 게시글 조회수 증가 중복체크 사용 )
-    private void cookieProcessing(Long id ,HttpServletRequest request, HttpServletResponse response) {
+    private void cookieProcessing(Long id, HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
         Cookie cookie = null;
 

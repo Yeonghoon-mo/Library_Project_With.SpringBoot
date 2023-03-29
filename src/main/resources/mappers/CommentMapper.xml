@@ -5,41 +5,41 @@
 
     <!-- SELECT 결과 Map -->
     <resultMap id="CommentResultMap" type="com.library.domain.comment.CommentListResponse">
-        <result column="comment_id" property="commentId" />
-        <result column="member_id" property="memberId" />
-        <result column="member_name" property="memberName" />
-        <result column="profile_image" property="profileImage" />
-        <result column="content" property="content" />
-        <result column="created_date" property="createdDate" />
+        <result column="comment_id" property="commentId"/>
+        <result column="member_id" property="memberId"/>
+        <result column="member_name" property="memberName"/>
+        <result column="profile_image" property="profileImage"/>
+        <result column="content" property="content"/>
+        <result column="created_date" property="createdDate"/>
     </resultMap>
 
     <select id="findAllComments" parameterType="com.library.domain.comment.CommentSearch" resultMap="CommentResultMap">
         SELECT
-               C.id AS comment_id -- 댓글 번호
-             , C.member_id -- 회원 번호
-             , M.name AS member_name  -- 회원명
-             , M.profile_image -- 회원 프로필 사진
-             , C.content -- 댓글 내용
-             , C.created_date -- 댓글 생성일
+        C.id AS comment_id -- 댓글 번호
+        , C.member_id -- 회원 번호
+        , M.name AS member_name -- 회원명
+        , M.profile_image -- 회원 프로필 사진
+        , C.content -- 댓글 내용
+        , C.created_date -- 댓글 생성일
         FROM
-            tb_comment AS C -- 댓글
-            INNER JOIN tb_member AS M ON C.member_id = M.id -- 회원
+        tb_comment AS C -- 댓글
+        INNER JOIN tb_member AS M ON C.member_id = M.id -- 회원
         WHERE
-            C.delete_yn = 'N'
-            AND C.board_id = #{boardId}
-            AND C.comment_level = #{commentLevel}
-            <if test="parentCommentId != null">
+        C.delete_yn = 'N'
+        AND C.board_id = #{boardId}
+        AND C.comment_level = #{commentLevel}
+        <if test="parentCommentId != null">
             AND C.parent_comment_id = #{parentCommentId}
-            </if>
+        </if>
         GROUP BY
-             C.id
-           , C.member_id
-           , M.name
-           , M.profile_image
-           , C.content
-           , C.created_date
+        C.id
+        , C.member_id
+        , M.name
+        , M.profile_image
+        , C.content
+        , C.created_date
         ORDER BY
-            C.id DESC
+        C.id DESC
     </select>
 
 </mapper>

@@ -1,17 +1,20 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" layout:decorate="/layout/userLayout" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" layout:decorate="/layout/userLayout"
+      xmlns:layout="http://www.w3.org/1999/xhtml">
 <th:block layout:fragment="main">
-	<div id="contents" class="container">
-		<div class="innerwrap">
-			<div class="content">
-				<form id="form" name="form" onsubmit="return false;">
-					<div class="login_wrap join_wrap">
-						<section class="join_agree">
-							<p class="tits"><span class="chk"><input type="checkbox" id="chk_all" name="chk_all" /><i></i> <label for="chk_all">약관 전체 동의하기</label></span></p>
-							<!-- 약관동의 -->
-							<div>
-								<h4>이용약관 동의 <i>(필수)</i></h4>
-								<div class="agree_in">
+    <div id="contents" class="container">
+        <div class="innerwrap">
+            <div class="content">
+                <form id="form" name="form" onsubmit="return false;">
+                    <div class="login_wrap join_wrap">
+                        <section class="join_agree">
+                            <p class="tits"><span class="chk"><input type="checkbox" id="chk_all"
+                                                                     name="chk_all"/><i></i> <label for="chk_all">약관 전체 동의하기</label></span>
+                            </p>
+                            <!-- 약관동의 -->
+                            <div>
+                                <h4>이용약관 동의 <i>(필수)</i></h4>
+                                <div class="agree_in">
 									<textarea cols="70" rows="20" readonly>
 		제1조 목적
 
@@ -137,14 +140,15 @@
 
 		이 약관은 <사이트 개설일>부터 시행합니다.
 									</textarea>
-									<p class="chk"><input type="checkbox" id="agreeChk_1" name="agreeChk" /><i></i> <label for="agreeChk_1">이용약관에 동의합니다.</label></p>
-								</div>
-							</div>
-							<!-- // 약관동의 -->
-							<!-- 개인정보 수집 및 이용 동의 -->
-							<div>
-								<h4>개인정보 수집 및 이용 동의 <i>(필수)</i></h4>
-								<div class="agree_in">
+                                    <p class="chk"><input type="checkbox" id="agreeChk_1" name="agreeChk"/><i></i>
+                                        <label for="agreeChk_1">이용약관에 동의합니다.</label></p>
+                                </div>
+                            </div>
+                            <!-- // 약관동의 -->
+                            <!-- 개인정보 수집 및 이용 동의 -->
+                            <div>
+                                <h4>개인정보 수집 및 이용 동의 <i>(필수)</i></h4>
+                                <div class="agree_in">
 									<textarea cols="70" rows="20" readonly>
 		회사명(이하 ‘회사’라 한다)는 개인정보 보호법 제30조에 따라 정보 주체의 개인정보를 보호하고 이와 관련한 고충을 신속하고 원활하게 처리할 수 있도록 하기 위하여 다음과 같이 개인정보 처리지침을 수립, 공개합니다.
 
@@ -302,42 +306,43 @@
 		제13조(개인정보 처리방침 시행 및 변경)
 		이 개인정보 처리방침은 20XX. X. X부터 적용됩니다.
 									</textarea>
-									<p class="chk"><input type="checkbox" id="agreeChk_2" name="agreeChk" /><i></i> <label for="agreeChk_2">개인정보 수집 및 이용에 동의합니다.</label></p>
-								</div>
-							</div>
-							<!-- // 개인정보 수집 및 이용 동의 -->
-						</section>
-						<button type="button" class="btns btn_mem" onclick="isValid()">회원가입</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+                                    <p class="chk"><input type="checkbox" id="agreeChk_2" name="agreeChk"/><i></i>
+                                        <label for="agreeChk_2">개인정보 수집 및 이용에 동의합니다.</label></p>
+                                </div>
+                            </div>
+                            <!-- // 개인정보 수집 및 이용 동의 -->
+                        </section>
+                        <button type="button" class="btns btn_mem" onclick="isValid()">회원가입</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </th:block>
 <th:block layout:fragment="script">
-	<script th:inline="javascript">
-		/*<![CDATA[*/
+    <script th:inline="javascript">
+        /*<![CDATA[*/
 
-		/** 회원가입 이용약관 동의 유효성 체크 */
-		function isValid() {
-			const form = findById('form');
+        /** 회원가입 이용약관 동의 유효성 체크 */
+        function isValid() {
+            const form = findById('form');
 
-			if(form.agreeChk_1.checked === false) {
-				alert("회원가입을 진행하려면 이용약관 동의가 필요합니다.");
-				form.agreeChk_1.focus();
-				return false;
-			}
+            if (form.agreeChk_1.checked === false) {
+                alert("회원가입을 진행하려면 이용약관 동의가 필요합니다.");
+                form.agreeChk_1.focus();
+                return false;
+            }
 
-			if(form.agreeChk_2.checked === false) {
-				alert("회원가입을 진행하려면 개인정보 수집 및 이용 동의가 필요합니다.")
-				form.agreeChk_2.focus();
-				return false;
-			}
-			location.href = '/join/member-type';
-			return true;
-		}
+            if (form.agreeChk_2.checked === false) {
+                alert("회원가입을 진행하려면 개인정보 수집 및 이용 동의가 필요합니다.")
+                form.agreeChk_2.focus();
+                return false;
+            }
+            location.href = '/join/member-type';
+            return true;
+        }
 
-		/*]]>*/
-	</script>
+        /*]]>*/
+    </script>
 </th:block>
 </html>

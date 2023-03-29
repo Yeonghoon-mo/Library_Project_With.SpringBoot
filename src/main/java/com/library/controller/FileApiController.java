@@ -32,6 +32,7 @@ public class FileApiController {
 
     /**
      * 첨부파일 이미지 프린트
+     *
      * @param savedFilename - 업로드 파일명
      */
     @GetMapping("/api/image-files")
@@ -60,8 +61,9 @@ public class FileApiController {
 
     /**
      * 첨부파일 다운로드
+     *
      * @param originalFilename - 원본 파일명
-     * @param savedFilename - 업로드 파일명
+     * @param savedFilename    - 업로드 파일명
      */
     @GetMapping("/api/file-download")
     public ResponseEntity<Resource> downloadFile(@RequestParam final String originalFilename, @RequestParam final String savedFilename) throws MalformedURLException {

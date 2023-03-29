@@ -32,7 +32,7 @@ public class BoardRequest {
     private MultipartFile thumbnail;                               // 대표 이미지
     private List<MultipartFile> attachFiles = new ArrayList<>();   // 첨부파일 리스트
 
-    public Board toEntity(Member member, FileResponse repImage){
+    public Board toEntity(Member member, FileResponse repImage) {
         return Board.builder()
                 .member(member)
                 .boardMenuNum(boardMenuNum)

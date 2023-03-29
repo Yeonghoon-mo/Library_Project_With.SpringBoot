@@ -60,7 +60,7 @@ public class FileUtil {
     // 서버에 첨부 파일을 생성하고, 업로드 파일 목록 반환
     public List<FileResponse> uploadFiles(List<MultipartFile> files) {
 
-        if(CollectionUtils.isEmpty(files)) {
+        if (CollectionUtils.isEmpty(files)) {
             return Collections.emptyList();
         }
 

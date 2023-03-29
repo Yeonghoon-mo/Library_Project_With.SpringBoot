@@ -31,7 +31,7 @@ public class Member extends BaseEntity {
     private YnStatus deleteYn;              // 삭제 여부
 
     @Builder
-    public Member(MemberType type, String loginId, String password, String name, String profileImage, String authorityYn, YnStatus deleteYn){
+    public Member(MemberType type, String loginId, String password, String name, String profileImage, String authorityYn, YnStatus deleteYn) {
         this.type = type;
         this.loginId = loginId;
         this.password = password;
@@ -59,7 +59,7 @@ public class Member extends BaseEntity {
     }
 
     // 회원 탈퇴
-    public void delete(){
+    public void delete() {
         this.deleteYn = YnStatus.Y;
     }
 

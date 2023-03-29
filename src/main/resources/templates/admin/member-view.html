@@ -1,56 +1,57 @@
 <!DOCTYPE html>
-<html lang="ko" layout:decorate="/layout/adminLayout" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" layout:decorate="/layout/adminLayout" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <th:block layout:fragment="main">
-  <div id="container">
-    <div class="innerwrap">
-      <div class="page_tits">
-        <h3>공지사항</h3>
-        <p class="path"><strong>현재위치 :</strong> <span>회원관리</span> <span>회원관리</span></p>
-      </div>
-      <div id="main">
-        <div class="section">
-          <table class="tb tb_row">
-            <colgroup>
-              <col style="width:10%;" />
-              <col style="width:23%;" />
-              <col style="width:10%;" />
-              <col style="width:23%;" />
-            </colgroup>
-            <tbody id="viewBody" name="viewBody">
+    <div id="container">
+        <div class="innerwrap">
+            <div class="page_tits">
+                <h3>공지사항</h3>
+                <p class="path"><strong>현재위치 :</strong> <span>회원관리</span> <span>회원관리</span></p>
+            </div>
+            <div id="main">
+                <div class="section">
+                    <table class="tb tb_row">
+                        <colgroup>
+                            <col style="width:10%;"/>
+                            <col style="width:23%;"/>
+                            <col style="width:10%;"/>
+                            <col style="width:23%;"/>
+                        </colgroup>
+                        <tbody id="viewBody" name="viewBody">
 
-            </tbody>
-          </table>
-          <p class="btn_set">
-            <button class="btns btn_bdr1 btn_mid" onclick="deleteMember()" type="button">탈퇴</button>
-            <button class="btns btn_st1 btn_mid" onclick="goList()" type="button">목록</button>
-          </p>
+                        </tbody>
+                    </table>
+                    <p class="btn_set">
+                        <button class="btns btn_bdr1 btn_mid" onclick="deleteMember()" type="button">탈퇴</button>
+                        <button class="btns btn_st1 btn_mid" onclick="goList()" type="button">목록</button>
+                    </p>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </th:block>
 <th:block layout:fragment="script">
-  <script th:inline="javascript">
-    /*<![CDATA[*/
+    <script th:inline="javascript">
+        /*<![CDATA[*/
 
-    window.onload = () => {
-      findMemberTypeHtml();
-      findMember();
-    }
-
-    /** 멤버 타입별 HTML */
-    function findMemberTypeHtml() {
-      const id = [[ ${id} ]]
-      let html = '';
-
-      fetch(`/api/members/${id}`).then(response => {
-        if (!response.ok) {
-          throw new Error("Request Error...");
+        window.onload = () => {
+            findMemberTypeHtml();
+            findMember();
         }
-        return response.json();
-      }).then(json => {
-        if(json.type === 'GENERAL') {
-          html = `
+
+        /** 멤버 타입별 HTML */
+        function findMemberTypeHtml() {
+            const id = [[ ${id}]]
+            let html = '';
+
+            fetch(`/api/members/${id}`).then(response => {
+                if (!response.ok) {
+                    throw new Error("Request Error...");
+                }
+                return response.json();
+            }).then(json => {
+                if (json.type === 'GENERAL') {
+                    html = `
                   <tr>
                     <th scope="row">회원번호</th>
                       <td id="id"></td>
@@ -68,10 +69,10 @@
                       <td colspan="3" id="createdDate"></td>
                     </tr>
           `;
-          findById('viewBody').innerHTML = html;
-        }
-        if(json.type === 'REGULAR') {
-          html = `
+                    findById('viewBody').innerHTML = html;
+                }
+                if (json.type === 'REGULAR') {
+                    html = `
             <tr>
             <th scope="row">회원번호</th>
               <td id="id"></td>
@@ -96,83 +97,83 @@
             </tr>
                   `;
 
-          findById('viewBody').innerHTML = html;
+                    findById('viewBody').innerHTML = html;
+                }
+            }).catch(error => {
+                console.log(error);
+            });
         }
-      }).catch(error => {
-        console.log(error);
-      });
-    }
 
-    /** 회원 조회 */
-    function findMember() {
-      const id = [[ ${id} ]];
-      let repHtml = '';
+        /** 회원 조회 */
+        function findMember() {
+            const id = [[ ${id}]];
+            let repHtml = '';
 
-      fetch(`/api/members/${id}`).then(response => {
-        if (!response.ok) {
-          throw new Error("Request Error...");
+            fetch(`/api/members/${id}`).then(response => {
+                if (!response.ok) {
+                    throw new Error("Request Error...");
+                }
+                return response.json();
+            }).then(json => {
+                Object.keys(json).forEach(key => {
+                    const elem = findById(key);
+                    const memberType = {REGULAR: '정회원', GENERAL: '일반회원'};
+                    if (elem) {
+                        elem.innerText = json[key];
+
+                    }
+
+                    if (json.type === 'REGULAR') {
+                        if (json.image === "" || json.image === null) {
+                            repHtml = `<p><a>회원가입 시 등록한 프로필 이미지가 없습니다.</a></p>`;
+                        } else {
+                            repHtml = `<p><a href="/regular-image-download?id=${json.id}"><i class="far fa-file-archive"></i> 정회원 사진 다운로드</a></p>`;
+                        }
+                        findById('image').innerHTML = repHtml;
+                    }
+
+                    json.createdDate = dayjs(json.createdDate).format('YYYY-MM-DD HH:mm:ss');
+                    findById('type').innerHTML = memberType[json.type];
+
+                });
+            }).catch(error => {
+                console.log(error);
+            });
         }
-        return response.json();
-      }).then(json => {
-        Object.keys(json).forEach(key => {
-          const elem = findById(key);
-          const memberType = { REGULAR : '정회원', GENERAL : '일반회원'};
-          if (elem) {
-            elem.innerText = json[key];
 
-          }
+        /** 회원 탈퇴 */
+        function deleteMember() {
+            const id = [[ ${id}]];
 
-          if(json.type === 'REGULAR') {
-            if(json.image === "" || json.image === null) {
-              repHtml = `<p><a>회원가입 시 등록한 프로필 이미지가 없습니다.</a></p>`;
-            } else {
-              repHtml = `<p><a href="/regular-image-download?id=${json.id}"><i class="far fa-file-archive"></i> 정회원 사진 다운로드</a></p>`;
+            if (!confirm(`${id}번 회원을 삭제할까요?`)) {
+                return false;
             }
-            findById('image').innerHTML = repHtml;
-          }
 
-          json.createdDate = dayjs(json.createdDate).format('YYYY-MM-DD HH:mm:ss');
-          findById('type').innerHTML = memberType[json.type];
+            fetch(`/api/members/${id}`, {
+                method : 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
 
-        });
-      }).catch(error => {
-        console.log(error);
-      });
-    }
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Request Failed...');
+                }
 
-    /** 회원 탈퇴 */
-    function deleteMember() {
-      const id = [[ ${id} ]];
+                alert('정상적으로 처리되었습니다.');
+                goList();
 
-      if (!confirm(`${id}번 회원을 삭제할까요?`)) {
-        return false;
-      }
-
-      fetch(`/api/members/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-
-      }).then(response => {
-        if (!response.ok) {
-          throw new Error('Request Failed...');
+            }).catch(error => {
+                console.log(error);
+            });
         }
 
-        alert('정상적으로 처리되었습니다.');
-        goList();
+        /** 회원 리스트로 이동 */
+        function goList() {
+            location.href = '/manager/member-list' + location.search;
+        }
 
-      }).catch(error => {
-        console.log(error);
-      });
-    }
-
-    /** 회원 리스트로 이동 */
-    function goList() {
-      location.href = '/manager/member-list' + location.search;
-    }
-
-    /*]]>*/
-  </script>
+        /*]]>*/
+    </script>
 </th:block>
 </html>

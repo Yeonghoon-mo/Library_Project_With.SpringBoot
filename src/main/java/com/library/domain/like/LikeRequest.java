@@ -13,7 +13,7 @@ public class LikeRequest {
     private Long boardId; // 게시글 번호(FK)
     private int likeType; // 좋아요, 싫어요 구분
 
-    public Like toEntity(Board board, Member member){
+    public Like toEntity(Board board, Member member) {
         return Like.builder()
                 .board(board)
                 .member(member)

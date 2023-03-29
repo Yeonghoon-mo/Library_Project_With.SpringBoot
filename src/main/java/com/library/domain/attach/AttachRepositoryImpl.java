@@ -14,7 +14,7 @@ public class AttachRepositoryImpl implements AttachRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-    public AttachRepositoryImpl(EntityManager entityManager){
+    public AttachRepositoryImpl(EntityManager entityManager) {
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
 

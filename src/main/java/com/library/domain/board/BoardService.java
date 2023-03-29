@@ -64,7 +64,7 @@ public class BoardService {
 
     // 게시글 삭제
     @Transactional
-    public Long delete(final Long id){
+    public Long delete(final Long id) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND)); // 게시글
         Member member = MemberUtil.getLoginSessionMember(); // 회원 (사용자 or 관리자)
         adminAuthorityCheck(board, member);
@@ -74,7 +74,7 @@ public class BoardService {
     }
 
     // 게시글 상세정보 조회
-    public BoardResponse findById(final Long id){
+    public BoardResponse findById(final Long id) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
         MemberResponse member = new MemberResponse(board.getMember());
         board.increaseHits();
@@ -87,7 +87,7 @@ public class BoardService {
     }
 
     // 게시글 리스트 조회
-    public Page<BoardResponse> findAll(final BoardInquirySearchCondition condition, final Pageable pageable){
+    public Page<BoardResponse> findAll(final BoardInquirySearchCondition condition, final Pageable pageable) {
         return boardRepository.findAll(condition, pageable).map(board -> {
             SubMenuResponse subMenuResponse = new SubMenuResponse(board.getBoardMenuNum());
             MainMenuResponse mainMenuResponse = new MainMenuResponse(board.getBoardMenuNum().getMainMenuId());
@@ -117,7 +117,7 @@ public class BoardService {
     // 파일 리스트 조회
     public List<AttachResponse> getAttachFileList(final Long boardId) {
         Long fileTotalCount = attachRepository.selectAttachTotalCount(boardId);
-        if(fileTotalCount < 1) {
+        if (fileTotalCount < 1) {
             return Collections.emptyList();
         }
         return attachRepository.findByAttachList(boardId).stream().map(AttachResponse::new).collect(Collectors.toList());

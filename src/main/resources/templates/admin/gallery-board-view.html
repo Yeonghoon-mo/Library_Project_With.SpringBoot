@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" layout:decorate="/layout/adminLayout" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" layout:decorate="/layout/adminLayout" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <th:block layout:fragment="main">
     <div id="container">
         <div class="innerwrap">
@@ -11,42 +12,46 @@
                 <div class="section">
                     <table class="tb tb_row">
                         <colgroup>
-                            <col style="width:10%;" />
-                            <col style="width:23%;" />
-                            <col style="width:10%;" />
-                            <col style="width:23%;" />
+                            <col style="width:10%;"/>
+                            <col style="width:23%;"/>
+                            <col style="width:10%;"/>
+                            <col style="width:23%;"/>
                         </colgroup>
 
                         <!-- 게시판 상세정보 출력 리스트 렌더링 부분 -->
                         <tbody id="galleryBoardBody" name="galleryBoardBody">
-                            <tr>
-                                <th scope="row">게시글번호</th>
-                                <td id="id" name="id"></td>
-                                <th scope="row">작성자</th>
-                                <td id="writer" name="writer"></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">제목</th>
-                                <td id="title"></td>
-                                <th scope="row">등록일</th>
-                                <td id="createdDate" name="createdDate"></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">대표 이미지</th>
-                                <td colspan="5" id="repImageDown" name="repImageDown"></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">첨부파일</th>
-                                <td colspan="5" id="fileList" name="fileList"></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">내용</th>
-                                <td colspan="3"><div cols="90" id="content" name="content" readonly rows="10"></div></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">키워드</th>
-                                <td colspan="3"><div cols="90" id="boardKeyword" name="boardKeyword" readonly rows="10"></div></td>
-                            </tr>
+                        <tr>
+                            <th scope="row">게시글번호</th>
+                            <td id="id" name="id"></td>
+                            <th scope="row">작성자</th>
+                            <td id="writer" name="writer"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">제목</th>
+                            <td id="title"></td>
+                            <th scope="row">등록일</th>
+                            <td id="createdDate" name="createdDate"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">대표 이미지</th>
+                            <td colspan="5" id="repImageDown" name="repImageDown"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">첨부파일</th>
+                            <td colspan="5" id="fileList" name="fileList"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">내용</th>
+                            <td colspan="3">
+                                <div cols="90" id="content" name="content" readonly rows="10"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">키워드</th>
+                            <td colspan="3">
+                                <div cols="90" id="boardKeyword" name="boardKeyword" readonly rows="10"></div>
+                            </td>
+                        </tr>
                         </tbody>
                         <!-- END -->
 
@@ -78,7 +83,7 @@
 
         // 게시글 조회
         function findBoard() {
-            const id = [[ ${id} ]];
+            const id = [[ ${id}]];
 
             fetch(`/api/boards/${id}`).then(response => {
                 if (!response.ok) {
@@ -93,7 +98,7 @@
                     }
 
                     const boardKeyword = (json.boardKeyword === null || json.boardKeyword === '') ? '등록된 키워드가 없습니다.' : `<p>${json.boardKeyword}</p>`
-                    const repImageDownload = ( json.repImage === "" || json.repImage === null ) ? `<td colspan="5"> 업로드된 이미지가 없습니다.</td>` : `<a href="/api/file-download?originalFilename=${json.repImage}&savedFilename=${json.saveNameImage}"><td colspan="5"></td>${json.repImage}</a>`;
+                    const repImageDownload = (json.repImage === "" || json.repImage === null) ? `<td colspan="5"> 업로드된 이미지가 없습니다.</td>` : `<a href="/api/file-download?originalFilename=${json.repImage}&savedFilename=${json.saveNameImage}"><td colspan="5"></td>${json.repImage}</a>`;
                     json.createdDate = dayjs(json.createdDate).format('YYYY-MM-DD HH:mm:ss');
                     findById('repImageDown').innerHTML = repImageDownload;
                     findById('boardKeyword').innerHTML = boardKeyword;
@@ -115,15 +120,15 @@
 
         // 게시글 삭제
         function deleteBoard() {
-            const id = [[ ${id} ]];
+            const id = [[ ${id}]];
             if (!confirm(`${id}번 게시글을 삭제할까요?`)) {
                 alert('삭제를 취소하였습니다.');
                 return false;
             }
 
             fetch(`/api/boards/${id}/admin`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' }
+                method : 'DELETE',
+                headers: {'Content-Type': 'application/json'}
             }).then(response => {
                 if (!response.ok) {
                     throw new Error('Request Failed...');
@@ -137,13 +142,13 @@
 
         // 댓글 리스트 조회
         async function findComments() {
-            const boardId = [[ ${id} ]]
+            const boardId = [[ ${id}]]
             const params = {
-                boardId: boardId
+                boardId       : boardId
                 , commentLevel: 0
             }
             const parentComments = await getJson('/api/comments', params);
-            if ( !parentComments.length ) {
+            if (!parentComments.length) {
                 findById('commentList').innerHTML = `<div class="cm_none"><p>댓글이 없습니다.</div>`;
                 return false;
             }
@@ -186,9 +191,9 @@
             } // end of foreach
 
             // 답글 버튼 open event
-            $(".cm_re_info > button").click(function(){
+            $(".cm_re_info > button").click(function () {
                 var submenu = $(this).parent().next("div.hide_view");
-                if( submenu.is(":visible") ){
+                if (submenu.is(":visible")) {
                     submenu.removeClass("open");
                 } else {
                     submenu.addClass("open");
@@ -203,7 +208,7 @@
             }
 
             fetch(`/api/comments/${id}/admin`, {
-                method: 'DELETE',
+                method : 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -221,7 +226,7 @@
 
         // 파일 리스트 조회
         async function printFileList() {
-            const id = [[ ${id} ]];
+            const id = [[ ${id}]];
             let fileListHtml = '';
 
             await fetch(`/api/boards/${id}/files`).then(response => {

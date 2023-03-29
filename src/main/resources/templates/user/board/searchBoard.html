@@ -79,13 +79,13 @@
             const pageParam = Number(new URLSearchParams(location.search).get('page'));
             page = (page) ? page : ((pageParam) ? pageParam : 1);
             const params = {
-                page: page - 1,
-                size: 10,
+                page        : page - 1,
+                size        : 10,
                 boardMenuNum: 19970709,
-                keyword: form.keyword.value,
-                searchType: '',
-                orderByName: form.orderByName.value,
-                search: 'on'
+                keyword     : form.keyword.value,
+                searchType  : '',
+                orderByName : form.orderByName.value,
+                search      : 'on'
             }
 
             const queryString = new URLSearchParams(params).toString();
@@ -118,11 +118,11 @@
                 findById('list').innerHTML = html;
 
                 const paginationInfo = {
-                    page: page,
-                    size: params.size,
-                    pageSize: 10,
+                    page         : page,
+                    size         : params.size,
+                    pageSize     : 10,
                     totalElements: response.totalElements,
-                    totalPages: response.totalPages
+                    totalPages   : response.totalPages
                 }
 
                 drawPages(paginationInfo, 'findPaginationAll');

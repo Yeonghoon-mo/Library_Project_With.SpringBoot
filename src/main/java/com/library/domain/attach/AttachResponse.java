@@ -19,7 +19,7 @@ public class AttachResponse {
     private LocalDateTime createdDate; // 생성일
     private LocalDateTime modifiedDate; // 삭제일
 
-    public AttachResponse(Attach entity){
+    public AttachResponse(Attach entity) {
         this.id = entity.getId();
         this.originalName = entity.getOriginalName();
         this.saveName = entity.getSaveName();

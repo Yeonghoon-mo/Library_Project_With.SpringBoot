@@ -25,7 +25,7 @@ public class MemberApiController {
 
     // 관리자 수정
     @PostMapping("/admin/{id}")
-    public Long updateAdmin(@PathVariable Long id , final MemberRequest params) {
+    public Long updateAdmin(@PathVariable Long id, final MemberRequest params) {
         return memberService.updateAdmin(id, params);
     }
 
@@ -37,19 +37,19 @@ public class MemberApiController {
 
     // 회원 수정
     @PostMapping("/{id}")
-    public Long updateMember(@PathVariable final Long id, final MemberRequest params){
+    public Long updateMember(@PathVariable final Long id, final MemberRequest params) {
         return memberService.updateMember(id, params);
     }
 
     // 회원 삭제
     @DeleteMapping("/{id}")
-    public Long deleteMember(@PathVariable final Long id){
+    public Long deleteMember(@PathVariable final Long id) {
         return memberService.deleteMember(id);
     }
 
     // 회원 상세정보 조회
     @GetMapping("/{id}")
-    public MemberResponse findById(@PathVariable final Long id){
+    public MemberResponse findById(@PathVariable final Long id) {
         return memberService.findByMember(id);
     }
 
@@ -67,7 +67,7 @@ public class MemberApiController {
 
     // 리스트 조회
     @GetMapping
-    public Page<MemberResponse> findAll(final MemberInquirySearchCondition condition, final Pageable pageable){
+    public Page<MemberResponse> findAll(final MemberInquirySearchCondition condition, final Pageable pageable) {
         return memberService.findAll(condition, pageable);
     }
 

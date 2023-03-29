@@ -30,7 +30,7 @@ public class Attach extends BaseEntity {
     private YnStatus deleteYn; // 삭제 여부
 
     @Builder
-    public Attach(Board board, String originalName, String saveName, long size){
+    public Attach(Board board, String originalName, String saveName, long size) {
         this.board = board;
         this.originalName = originalName;
         this.saveName = saveName;

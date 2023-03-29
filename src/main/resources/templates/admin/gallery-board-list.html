@@ -1,124 +1,127 @@
 <!DOCTYPE html>
-<html lang="ko" layout:decorate="/layout/adminLayout" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" layout:decorate="/layout/adminLayout" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <th:block layout:fragment="main">
-	<div id="container">
-		<div class="innerwrap">
-			<div class="submenu">
-				<ul id="menulink" name="menulink">
+    <div id="container">
+        <div class="innerwrap">
+            <div class="submenu">
+                <ul id="menulink" name="menulink">
 
-				</ul>
-			</div>
+                </ul>
+            </div>
 
-			<div class="page_tits">
-				<h3>게시판관리</h3>
-				<p class="path"><strong>현재위치 :</strong> <span>게시판관리</span> <span id="subtitle1" name="subtitle1"> </span></p>
-			</div>
-			<div id="content">
-				<div class="section">
-					<!-- 검색 영역 -->
-					<div class="search_box">
-					<form id="searchForm" name="searchForm" onsubmit="return false;">
-						<div class="sch_group fl">
-							<select id="searchType" name="searchType" title="검색종류 선택">
-								<option value="">전체검색</option>
-								<option value="name">회원이름</option>
-								<option value="title">게시글 제목</option>
-							</select>
-							<input id="keyword" name="keyword" placeholder="키워드를 입력해 주세요." type="text" value="" />
-							<button class="btn bt_search" onclick="findPaginationAll()" type="button"><span>검색</span></button>
-						</div>
-						<p class="fr" id="fr" name="fr">
+            <div class="page_tits">
+                <h3>게시판관리</h3>
+                <p class="path"><strong>현재위치 :</strong> <span>게시판관리</span> <span id="subtitle1"
+                                                                                 name="subtitle1"> </span></p>
+            </div>
+            <div id="content">
+                <div class="section">
+                    <!-- 검색 영역 -->
+                    <div class="search_box">
+                        <form id="searchForm" name="searchForm" onsubmit="return false;">
+                            <div class="sch_group fl">
+                                <select id="searchType" name="searchType" title="검색종류 선택">
+                                    <option value="">전체검색</option>
+                                    <option value="name">회원이름</option>
+                                    <option value="title">게시글 제목</option>
+                                </select>
+                                <input id="keyword" name="keyword" placeholder="키워드를 입력해 주세요." type="text" value=""/>
+                                <button class="btn bt_search" onclick="findPaginationAll()" type="button">
+                                    <span>검색</span></button>
+                            </div>
+                            <p class="fr" id="fr" name="fr">
 
-						</p>
-					</form>
-					</div>
-					<!-- // 검색 영역 -->
-					
-					<!-- list -->
-					<div class="bbs_gall">
-						<ul id="list" name="list">
+                            </p>
+                        </form>
+                    </div>
+                    <!-- // 검색 영역 -->
 
-						</ul>
+                    <!-- list -->
+                    <div class="bbs_gall">
+                        <ul id="list" name="list">
 
-						<br><br>
-					</div>
-					<!-- //list -->
-					
-					<!-- paging -->
-					<div class="paging" style="margin-top:0;">
-						<ul>
+                        </ul>
 
-						</ul>
-					</div>
-					<!-- // paging -->		
-				</div>
-				
-			</div>
-		</div>
-	</div>
+                        <br><br>
+                    </div>
+                    <!-- //list -->
+
+                    <!-- paging -->
+                    <div class="paging" style="margin-top:0;">
+                        <ul>
+
+                        </ul>
+                    </div>
+                    <!-- // paging -->
+                </div>
+
+            </div>
+        </div>
+    </div>
 
 </th:block>
 <th:block layout:fragment="script">
-	<script th:inline="javascript">
-		/*<![CDATA[*/
+    <script th:inline="javascript">
+        /*<![CDATA[*/
 
-		window.onload = () => {
-			subMenuList();
-			setQueryStringParams();
-			addEnterSearchEvent();
-			findPaginationAll();
-		}
+        window.onload = () => {
+            subMenuList();
+            setQueryStringParams();
+            addEnterSearchEvent();
+            findPaginationAll();
+        }
 
-		// Query String Parameter Setting (이전 페이지 유지)
-		function setQueryStringParams() {
-			if (!location.search) {
-				return false;
-			}
-			const form = findById('searchForm');
-			new URLSearchParams(location.search).forEach((value, key) => {
-				if (form[key]) {
-					form[key].value = value;
-				}
-			})
-		}
+        // Query String Parameter Setting (이전 페이지 유지)
+        function setQueryStringParams() {
+            if (!location.search) {
+                return false;
+            }
+            const form = findById('searchForm');
+            new URLSearchParams(location.search).forEach((value, key) => {
+                if (form[key]) {
+                    form[key].value = value;
+                }
+            })
+        }
 
-		// 게시글 리스트 Paging, Search
-		function findPaginationAll(page) {
-			const form = findById('searchForm');
-			let boardMenuNum = new URLSearchParams(location.search).get('boardMenuNum');
-			let mainMenuId = new URLSearchParams(location.search).get('mainMenuId');
-			let boardType = new URLSearchParams(location.search).get('boardType');
+        // 게시글 리스트 Paging, Search
+        function findPaginationAll(page) {
+            const form = findById('searchForm');
+            let boardMenuNum = new URLSearchParams(location.search).get('boardMenuNum');
+            let mainMenuId = new URLSearchParams(location.search).get('mainMenuId');
+            let boardType = new URLSearchParams(location.search).get('boardType');
 
-			const pageParam = Number(new URLSearchParams(location.search).get('page'));
-			page = (page) ? page : ((pageParam) ? pageParam : 1);
-			const params = {
-				page: page - 1,
-				size: 8,
-				searchType: form.searchType.value,
-				keyword: form.keyword.value,
-				mnId : 3,
-				boardMenuNum : boardMenuNum,
-				mainMenuId : mainMenuId,
-				boardType : boardType
-			}
+            const pageParam = Number(new URLSearchParams(location.search).get('page'));
+            page = (page) ? page : ((pageParam) ? pageParam : 1);
+            const params = {
+                page        : page - 1,
+                size        : 8,
+                searchType  : form.searchType.value,
+                keyword     : form.keyword.value,
+                mnId        : 3,
+                boardMenuNum: boardMenuNum,
+                mainMenuId  : mainMenuId,
+                boardType   : boardType
+            }
 
-			const queryString = new URLSearchParams(params).toString();
-			const replaceUri = location.pathname + '?' + queryString;
-			history.replaceState({}, '', replaceUri);
+            const queryString = new URLSearchParams(params).toString();
+            const replaceUri = location.pathname + '?' + queryString;
+            history.replaceState({}, '', replaceUri);
 
-			getJson('/api/boards', params).then(response => {
-				if (!response.content.length) {
-					findById('list').innerHTML = '<li class="no_data_msg">등록된 게시글이 없습니다.</li>';
-					removePages();
-					return false;
-				}
+            getJson('/api/boards', params).then(response => {
+                if (!response.content.length) {
+                    findById('list').innerHTML = '<li class="no_data_msg">등록된 게시글이 없습니다.</li>';
+                    removePages();
+                    return false;
+                }
 
-				let html = '';
-				response.content.forEach((obj) => {
-					const viewUri = `/manager/gallery-board-view/${obj.id}` + '?' + queryString;
-					const imageSrc = (obj.repImage) ? `/api/image-files?savedFilename=${obj.saveNameImage}` : '/admin/images/no_img.gif';
-					if(obj.noticeYn === 'N'){
-						html += `   <li>
+                let html = '';
+                response.content.forEach((obj) => {
+                    const viewUri = `/manager/gallery-board-view/${obj.id}` + '?' + queryString;
+                    const imageSrc = (obj.repImage) ? `/api/image-files?savedFilename=${obj.saveNameImage}` : '/admin/images/no_img.gif';
+                    if (obj.noticeYn === 'N') {
+                        html += `   <li>
 										<a href="${viewUri}">
 											<div class="imgs">
 												<div class="thumb_wrap"><p><span><img src="${imageSrc}" alt="게시글 대표 이미지" /></span></p></div>
@@ -128,23 +131,23 @@
 											</div>
 										</a>
 									</li>`;
-					}
-				});
+                    }
+                });
 
-				findById('list').innerHTML = html;
-				const paginationInfo = {
-					page: page,
-					size: params.size,
-					pageSize: 10,
-					totalElements: response.totalElements,
-					totalPages: response.totalPages,
-				}
+                findById('list').innerHTML = html;
+                const paginationInfo = {
+                    page         : page,
+                    size         : params.size,
+                    pageSize     : 10,
+                    totalElements: response.totalElements,
+                    totalPages   : response.totalPages,
+                }
 
-				drawPages(paginationInfo, 'findPaginationAll');
-			});
-		}
+                drawPages(paginationInfo, 'findPaginationAll');
+            });
+        }
 
-		/*]]>*/
-	</script>
+        /*]]>*/
+    </script>
 </th:block>
 </html>

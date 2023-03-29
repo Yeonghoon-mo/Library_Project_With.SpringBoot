@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" layout:decorate="/layout/adminLayout" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" layout:decorate="/layout/adminLayout" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <th:block layout:fragment="main">
     <div id="container">
         <div class="innerwrap">
@@ -12,17 +13,18 @@
                     <div class="section">
                         <table class="tb tb_row">
                             <colgroup>
-                                <col style="width:12%;" />
-                                <col style="width:auto;" />
-                                <col style="width:12%;" />
-                                <col style="width:38%;" />
+                                <col style="width:12%;"/>
+                                <col style="width:auto;"/>
+                                <col style="width:12%;"/>
+                                <col style="width:38%;"/>
                             </colgroup>
                             <tbody>
                             <tr>
                                 <th scope="row">제목<span class="es">필수입력</span></th>
-                                <td colspan="3"><input id="title" name="title" type="text" value="" /></td>
+                                <td colspan="3"><input id="title" name="title" type="text" value=""/></td>
                                 <th scope="row">작성자<span class="es">필수입력</span></th>
-                                <td colspan="1"><input id="writer" name="writer" type="text" th:value="${session.login.name}" readonly /></td>
+                                <td colspan="1"><input id="writer" name="writer" type="text"
+                                                       th:value="${session.login.name}" readonly/></td>
                             </tr>
 
                             <tr id="noticeUseYn" name="noticeUseYn">
@@ -34,7 +36,7 @@
                                             <label for="DT002_6_01">사용</label><span class="check"></span>
                                         </p>
                                         <p class="radios">
-                                            <input id="DT002_6_02" name="noticeYn" type="radio" value="N"  />
+                                            <input id="DT002_6_02" name="noticeYn" type="radio" value="N"/>
                                             <label for="DT002_6_02">미사용</label><span class="check"></span>
                                         </p>
                                     </div>
@@ -42,17 +44,20 @@
                             </tr>
                             <tr>
                                 <th scope="row">내용<span class="es">필수입력</span></th>
-                                <td colspan="5"><textarea cols="90" id="content" name="content" rows="10"></textarea></td>
+                                <td colspan="5"><textarea cols="90" id="content" name="content" rows="10"></textarea>
+                                </td>
                             </tr>
                             <tr>
                                 <th scope="row">대표 이미지</th>
                                 <td colspan="5">
                                     <div class="file_input">
-                                        <input type="hidden" id="saveNameImage" name="saveNameImage" />
-                                        <input id="repImage" name="repImage" placeholder="파일 찾기" readonly title="첨부파일" type="text" />
+                                        <input type="hidden" id="saveNameImage" name="saveNameImage"/>
+                                        <input id="repImage" name="repImage" placeholder="파일 찾기" readonly title="첨부파일"
+                                               type="text"/>
 
                                         <label for="thumbnail"> 첨부파일
-                                            <input type="file" id="thumbnail" name="thumbnail" onchange="changeFileName(this)" accept="image/*" />
+                                            <input type="file" id="thumbnail" name="thumbnail"
+                                                   onchange="changeFileName(this)" accept="image/*"/>
                                         </label>
                                     </div>
                                 </td>
@@ -63,14 +68,19 @@
                                     <ul class="filegroup" id="files" name="files">
                                         <li data-name="file_input">
                                             <div class="file_input">
-                                                <input type="text" placeholder="파일 찾기" readonly title="첨부파일" />
+                                                <input type="text" placeholder="파일 찾기" readonly title="첨부파일"/>
                                                 <label for="file_0"> 첨부파일
-                                                    <input type="file" id="file_0" name="attachFiles" onchange="changeFileName(this)" />
+                                                    <input type="file" id="file_0" name="attachFiles"
+                                                           onchange="changeFileName(this)"/>
                                                 </label>
                                             </div>
                                             <div class="file_btns">
-                                                <button class="btns primary addfile" onclick="addFile()" type="button">파일 추가등록</button>
-                                                <button class="btns primary addfile" id="firstFileRemoveBtn" onclick="removeFile(this)" type="button">파일삭제</button>
+                                                <button class="btns primary addfile" onclick="addFile()" type="button">
+                                                    파일 추가등록
+                                                </button>
+                                                <button class="btns primary addfile" id="firstFileRemoveBtn"
+                                                        onclick="removeFile(this)" type="button">파일삭제
+                                                </button>
                                             </div>
                                         </li>
                                     </ul>
@@ -78,7 +88,8 @@
                             </tr>
                             <tr>
                                 <th scope="row">키워드</th>
-                                <td colspan="5"><input id="boardKeyword" name="boardKeyword" placeholder="키워드는 콤마(,)로 구분합니다." type="text" value="" /></td>
+                                <td colspan="5"><input id="boardKeyword" name="boardKeyword"
+                                                       placeholder="키워드는 콤마(,)로 구분합니다." type="text" value=""/></td>
                             </tr>
                             </tbody>
                         </table>
@@ -136,10 +147,10 @@
 
             let boardMenuNum = new URLSearchParams(location.search).get('boardMenuNum');
             const formData = new FormData(findById('form'));
-            let id = [[ ${id} ]];
+            let id = [[ ${id}]];
             const uri = (id) ? `/api/boards/${id}` : '/api/boards';
 
-            if(boardMenuNum !== '1') {
+            if (boardMenuNum !== '1') {
                 formData.append('noticeYn', 'N');
             }
             formData.append('boardMenuNum', boardMenuNum);
@@ -154,28 +165,28 @@
 
         // 기존 게시글 정보 Response
         function findBoard() {
-            const id = [[ ${id} ]];
+            const id = [[ ${id}]];
             if (!id) {
                 return false;
             }
             let boardMenuNum = new URLSearchParams(location.search).get('boardMenuNum');
-            if(boardMenuNum !== '1') {
+            if (boardMenuNum !== '1') {
                 findById('noticeUseYn').innerHTML = '';
             }
 
             fetch(`/api/boards/${id}`).then(response => {
-                if(!response.ok) {
+                if (!response.ok) {
                     throw new Error("Request failed...");
                 }
                 return response.json();
             }).then(json => {
-                Object.keys(json).forEach(key =>{
+                Object.keys(json).forEach(key => {
                     const elem = findById(key);
-                    if(elem){
+                    if (elem) {
                         elem.value = json[key];
                     }
                 });
-            }).catch(error =>{
+            }).catch(error => {
                 alert('게시글 정보를 찾을 수 없습니다.');
                 location.href = '/manager/board-manager-list' + location.search;
             });
@@ -184,27 +195,27 @@
         // 기존 파일 정보 Response
         function printFileList() {
 
-            const id = [[ ${id} ]];
-            if( !id ) {
+            const id = [[ ${id}]];
+            if (!id) {
                 return false;
             }
 
             fetch(`/api/boards/${id}/files`).then(response => {
-                if(!response.ok) {
+                if (!response.ok) {
                     throw new Error("Request Error...");
                 }
                 return response.json();
             }).then(fileList => {
                 let fileListHtml = '';
-                for(let i = 0; i < fileList.length; i++) {
+                for (let i = 0; i < fileList.length; i++) {
                     let fileLists = fileList[i];
                     let fileAddBtn = (i < 1) ? '<button onclick="addFile()" type="button" class="btns primary addfile">파일 추가등록</button>' : '';
                     fileListHtml += `
                         <li data-name="file_input">
                             <div class="file_input">
                                 <input type="text" title="첨부파일" id="fileList" name="fileList" placeholder="파일 찾기" value="${fileLists.originalName}"  readonly />
-                                <label for="file_${i+1}"> 첨부파일
-                                    <input type="file" id="file_${i+1}" name="attachFiles" onchange="changeFileName(this, ${fileLists.id})" />
+                                <label for="file_${i + 1}"> 첨부파일
+                                    <input type="file" id="file_${i + 1}" name="attachFiles" onchange="changeFileName(this, ${fileLists.id})" />
                                 </label>
                             </div>
                             <div class="file_btns">
@@ -263,8 +274,8 @@
         }
 
         // 목록으로 다시 돌아가기 ( 이전 페이지 유지 )
-        function goList(){
-            const id = [[ ${id} ]];
+        function goList() {
+            const id = [[ ${id}]];
             location.href = (!id) ? '/manager/board-manager-list' + location.search : `/manager/board-manager-view/${id}` + location.search;
         }
 

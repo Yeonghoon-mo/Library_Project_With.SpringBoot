@@ -59,7 +59,7 @@ public class Board extends BaseEntity {
     }
 
     // 게시글 수정
-    public void update(BoardRequest params, FileResponse repImage){
+    public void update(BoardRequest params, FileResponse repImage) {
         this.title = params.getTitle();
         this.content = params.getContent();
         this.repImage = (repImage == null) ? this.repImage : repImage.getOriginalFilename();
@@ -69,13 +69,13 @@ public class Board extends BaseEntity {
     }
 
     // 게시글 삭제
-    public void delete(){
+    public void delete() {
         this.deleteYn = YnStatus.Y;
         this.noticeYn = "N";
     }
 
     // 조회수 증가
-    public void increaseHits(){
+    public void increaseHits() {
         this.hits++;
     }
 

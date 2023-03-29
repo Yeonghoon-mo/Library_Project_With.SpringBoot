@@ -1,108 +1,115 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
-    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi" name="viewport" />
-    <meta content="Library Project" name="keywords" />
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi"
+          name="viewport"/>
+    <meta content="Library Project" name="keywords"/>
     <meta content="Library Project" property="og:title">
     <meta content="Library Project" property="og:description">
     <meta content="/user/images/common/ogimg.jpg" property="og:image">
     <title>Library Project</title>
-    <link href="/user/css/default.css" rel="stylesheet" type="text/css" />
-    <link href="/user/css/common.css" rel="stylesheet" type="text/css" />
-    <link href="/user/css/main.css" rel="stylesheet" type="text/css" />
-    <link href="/user/css/content.css" rel="stylesheet" type="text/css" />
-    <link href="/user/css/board.css" rel="stylesheet" type="text/css" />
+    <link href="/user/css/default.css" rel="stylesheet" type="text/css"/>
+    <link href="/user/css/common.css" rel="stylesheet" type="text/css"/>
+    <link href="/user/css/main.css" rel="stylesheet" type="text/css"/>
+    <link href="/user/css/content.css" rel="stylesheet" type="text/css"/>
+    <link href="/user/css/board.css" rel="stylesheet" type="text/css"/>
 </head>
 
 <body>
-    <header>
-        <div class="tmenu">
-            <div class="innerwrap">
-                <ul>
-                    <li><a href="/login" th:if="${session.loginMember} == null"><i class="far fa-user"></i> 로그인</a></li>
-                    <li><a href="javascript: logoutMember()" th:unless="${session.loginMember} == null"><i class="far fa-user"></i> 로그아웃</a></li>
+<header>
+    <div class="tmenu">
+        <div class="innerwrap">
+            <ul>
+                <li><a href="/login" th:if="${session.loginMember} == null"><i class="far fa-user"></i> 로그인</a></li>
+                <li><a href="javascript: logoutMember()" th:unless="${session.loginMember} == null"><i
+                        class="far fa-user"></i> 로그아웃</a></li>
 
-                    <li id="myPageMenu" name="myPageMenu" th:if="${session.loginMember} == null"><a href="/join/agree"><i class="far fa-edit"></i> 회원가입</a>
-                    <li><a href="/mypage" th:unless="${session.loginMember} == null"><i class="far fa-edit"></i> 마이페이지</a></li>
+                <li id="myPageMenu" name="myPageMenu" th:if="${session.loginMember} == null"><a href="/join/agree"><i
+                        class="far fa-edit"></i> 회원가입</a>
+                <li><a href="/mypage" th:unless="${session.loginMember} == null"><i class="far fa-edit"></i> 마이페이지</a>
+                </li>
 
-                    <li><a href="/sitemap"><i class="fas fa-bars"></i> Site map</a></li>
-                    <li><a href="/contact"><i class="far fa-comments"></i> Contact us</a></li>
-                    <li>
-                        <button class="btns msearch_btn" type="button"><i class="fab fa-sistrix"></i></button>
-                        <!-- 통합검색 -->
-                        <div class="home_total_sch" id="total_sch">
-                            <button class="btns close_btn" type="button"><i class="far fa-times-circle"></i></button>
-                            <form id="totalSearchForm" name="totalSearchForm" onsubmit="return false;">
-                                <fieldset>
-                                    <legend>통합검색</legend>
-                                    <div class="total_sch_input">
-                                        <div class="inputs">
-                                            <label class="skip_info" for="allSearchKeyword">검색어를 입력하세요.</label>
-                                            <input id="allSearchKeyword" name="allSearchKeyword" onkeyup="totalSearch()" placeholder="검색어를 입력해주세요." title="통합검색" type="text" />
-                                            <input id="keywordResult" name="keywordResult" type="hidden" value=""/>
-                                        </div>
-                                        <!-- <button> -->
-                                        <div id="allSearchDiv" name="allSearchDiv">
-
-                                        </div>
+                <li><a href="/sitemap"><i class="fas fa-bars"></i> Site map</a></li>
+                <li><a href="/contact"><i class="far fa-comments"></i> Contact us</a></li>
+                <li>
+                    <button class="btns msearch_btn" type="button"><i class="fab fa-sistrix"></i></button>
+                    <!-- 통합검색 -->
+                    <div class="home_total_sch" id="total_sch">
+                        <button class="btns close_btn" type="button"><i class="far fa-times-circle"></i></button>
+                        <form id="totalSearchForm" name="totalSearchForm" onsubmit="return false;">
+                            <fieldset>
+                                <legend>통합검색</legend>
+                                <div class="total_sch_input">
+                                    <div class="inputs">
+                                        <label class="skip_info" for="allSearchKeyword">검색어를 입력하세요.</label>
+                                        <input id="allSearchKeyword" name="allSearchKeyword" onkeyup="totalSearch()"
+                                               placeholder="검색어를 입력해주세요." title="통합검색" type="text"/>
+                                        <input id="keywordResult" name="keywordResult" type="hidden" value=""/>
+                                    </div>
+                                    <!-- <button> -->
+                                    <div id="allSearchDiv" name="allSearchDiv">
 
                                     </div>
-                                </fieldset>
-                            </form>
-                        </div>
-                        <!-- 통합검색 -->
-                        <p class="sch_overlay"></p>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="gnb_wrap">
-            <h1><a href="/">Library Project</a></h1>
-            <nav>
-                <!-- 메뉴 -->
-                <div>
-                    <!-- GNB -->
-                    <div class="mb_topmenu" id="topmenu">
-                        <ul id="gnb">
 
-                        </ul>
+                                </div>
+                            </fieldset>
+                        </form>
                     </div>
-                    <!-- // GNB -->
+                    <!-- 통합검색 -->
+                    <p class="sch_overlay"></p>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="gnb_wrap">
+        <h1><a href="/">Library Project</a></h1>
+        <nav>
+            <!-- 메뉴 -->
+            <div>
+                <!-- GNB -->
+                <div class="mb_topmenu" id="topmenu">
+                    <ul id="gnb">
+
+                    </ul>
                 </div>
-                <h2 class="toggleMenu"><button type="button">전체메뉴</button></h2>
-                <p class="gnb_overlay"></p>
-            </nav>
-        </div>
-    </header>
-
-
-    <th:block layout:fragment="main"></th:block>
-
-
-    <!-- footer Start -->
-    <footer>
-        <div class="foot_menu">
-            <div class="innerwrap">
-                <ul>
-                    <li><a href="/sitemap">사이트맵</a></li>
-                    <li><a href="/contact">Contact us</a></li>
-                    <li><a href="javascript:layerPop('pop_agreement')">이용약관</a></li>
-                    <li><a class="privacy" href="javascript:layerPop('pop_privacy')">개인정보처리방침</a></li>
-                </ul>
+                <!-- // GNB -->
             </div>
-        </div>
-        <div class="foot_group">
-            <div class="innerwrap">
-                <div class="foot_logo"><a href="/">Library Project - MYH Portfolio</a></div>
-            </div>
-        </div>
-    </footer>
+            <h2 class="toggleMenu">
+                <button type="button">전체메뉴</button>
+            </h2>
+            <p class="gnb_overlay"></p>
+        </nav>
+    </div>
+</header>
 
-    <div class="popLayer" id="pop_agreement">
-        <h3>이용약관</h3>
-        <div class="pop_container">
+
+<th:block layout:fragment="main"></th:block>
+
+
+<!-- footer Start -->
+<footer>
+    <div class="foot_menu">
+        <div class="innerwrap">
+            <ul>
+                <li><a href="/sitemap">사이트맵</a></li>
+                <li><a href="/contact">Contact us</a></li>
+                <li><a href="javascript:layerPop('pop_agreement')">이용약관</a></li>
+                <li><a class="privacy" href="javascript:layerPop('pop_privacy')">개인정보처리방침</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="foot_group">
+        <div class="innerwrap">
+            <div class="foot_logo"><a href="/">Library Project - MYH Portfolio</a></div>
+        </div>
+    </div>
+</footer>
+
+<div class="popLayer" id="pop_agreement">
+    <h3>이용약관</h3>
+    <div class="pop_container">
             <textarea cols="70" readonly rows="20">
 제1조 목적
 
@@ -228,14 +235,14 @@
 
 이 약관은 <사이트 개설일>부터 시행합니다.
 		</textarea>
-        </div>
-        <button class="btn_close" onclick="layerPopClose()" type="button"><span>닫기</span></button>
     </div>
-    <!-- // 이용약관 -->
-    <!-- 개인정보처리방침 -->
-    <div class="popLayer" id="pop_privacy">
-        <h3>개인정보처리방침</h3>
-        <div class="pop_container">
+    <button class="btn_close" onclick="layerPopClose()" type="button"><span>닫기</span></button>
+</div>
+<!-- // 이용약관 -->
+<!-- 개인정보처리방침 -->
+<div class="popLayer" id="pop_privacy">
+    <h3>개인정보처리방침</h3>
+    <div class="pop_container">
             <textarea cols="70" readonly rows="20">
 회사명(이하 ‘회사’라 한다)는 개인정보 보호법 제30조에 따라 정보 주체의 개인정보를 보호하고 이와 관련한 고충을 신속하고 원활하게 처리할 수 있도록 하기 위하여 다음과 같이 개인정보 처리지침을 수립, 공개합니다.
 
@@ -393,32 +400,32 @@ IP주소, 쿠키, MAC주소, 서비스 이용기록, 방문기록, 불량 이용
 제13조(개인정보 처리방침 시행 및 변경)
 이 개인정보 처리방침은 20XX. X. X부터 적용됩니다.
 		</textarea>
-        </div>
-        <button class="btn_close" onclick="layerPopClose()" type="button"><span>닫기</span></button>
     </div>
+    <button class="btn_close" onclick="layerPopClose()" type="button"><span>닫기</span></button>
+</div>
 
-    <!-- footer END -->
+<!-- footer END -->
 
-    <script src="/admin/js/dayjs.js"></script>
-    <script src="/admin/js/script-handler.js"></script>
-    <script src="/user/js/jquery-1.11.1.min.js"></script>
-    <script src="/user/js/common.js"></script>
-    <script crossorigin="anonymous" src="https://kit.fontawesome.com/79613ae794.js"></script>
-    <!--[if lt IE 9]>
-    <script src="/user/js/respond.min.js"></script>
-    <script src="/user/js/html5shiv.js"></script>
-    <![endif]-->
-    <script src="/user/js/script.js"></script>
-    <script src="/user/js/userMenu.js"></script>
+<script src="/admin/js/dayjs.js"></script>
+<script src="/admin/js/script-handler.js"></script>
+<script src="/user/js/jquery-1.11.1.min.js"></script>
+<script src="/user/js/common.js"></script>
+<script crossorigin="anonymous" src="https://kit.fontawesome.com/79613ae794.js"></script>
+<!--[if lt IE 9]>
+<script src="/user/js/respond.min.js"></script>
+<script src="/user/js/html5shiv.js"></script>
+<![endif]-->
+<script src="/user/js/script.js"></script>
+<script src="/user/js/userMenu.js"></script>
 
 <th:block layout:fragment="script"></th:block>
-    <script th:inline="javascript">
-        /*<[CDATA[*/
+<script th:inline="javascript">
+    /*<[CDATA[*/
 
-        const loginMember = ([[ ${session.loginMember} ]]) ? [[ ${session.loginMember} ]] : undefined;
+    const loginMember = ([[ ${session.loginMember}]]) ? [[ ${session.loginMember}]] : undefined;
 
-        /*]]>*/
-    </script>
+    /*]]>*/
+</script>
 </body>
 </html>
 

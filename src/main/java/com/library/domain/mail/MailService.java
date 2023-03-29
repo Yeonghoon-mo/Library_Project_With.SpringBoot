@@ -18,7 +18,9 @@ public class MailService {
 
     private final JavaMailSender javaMailSender;
 
-    /** 회원가입 메일 보내기 */
+    /**
+     * 회원가입 메일 보내기
+     */
     @Async
     public void sendJoinMail(String email, String authToken) throws MessagingException {
         SimpleMailMessage smm = new SimpleMailMessage();
@@ -33,9 +35,11 @@ public class MailService {
         javaMailSender.send(mm);
     }
 
-    /** 비밀번호 찾기 메일 보내기 */
+    /**
+     * 비밀번호 찾기 메일 보내기
+     */
     @Async
-    public void sendPasswordFindMail(String email, String authToken) throws  MessagingException {
+    public void sendPasswordFindMail(String email, String authToken) throws MessagingException {
         SimpleMailMessage smm = new SimpleMailMessage();
         MimeMessage mm = javaMailSender.createMimeMessage();
         MimeMessageHelper mmHelper = new MimeMessageHelper(mm, true, "UTF-8");

@@ -1,320 +1,331 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" layout:decorate="/layout/userLayout" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" layout:decorate="/layout/userLayout"
+      xmlns:layout="http://www.w3.org/1999/xhtml">
 <th:block layout:fragment="main">
-	<div id="contents" class="container">
-		<div class="innerwrap">
-			<div class="content">
-				<div class="login_wrap join_wrap">
-					<form id="form" name="form" onsubmit="return false;">
+    <div id="contents" class="container">
+        <div class="innerwrap">
+            <div class="content">
+                <div class="login_wrap join_wrap">
+                    <form id="form" name="form" onsubmit="return false;">
 
-						<input type="hidden" id="isDuplicate" name="isDuplicate" value="Y"/> <!-- ID 중복체크 -->
-						<input type="hidden" id="mailCheckYn" name="mailCheckYn" value="N"/> <!-- 이메일 인증여부 -->
+                        <input type="hidden" id="isDuplicate" name="isDuplicate" value="Y"/> <!-- ID 중복체크 -->
+                        <input type="hidden" id="mailCheckYn" name="mailCheckYn" value="N"/> <!-- 이메일 인증여부 -->
 
-						<h4>회원정보입력</h4>
-						<div class="join_input">
-							<ul>
-								<li>
-									<label for="thumbnail" class="skip_info">프로필 사진</label>
-									<div>
-										<div class="file_preview">
-											<div class="thumb_wrap">
-												<p><span><img id="preview-image" src="/user/images/board/default_profile.png" alt="" /></span></p>
-											</div>
-											<div class="file_upload">
-												<label> <i>파일 업로드</i>
-													<input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/jpg, image/png, image/gif, image/svg+xml"
-														   onchange="changeFileName(this)" />
-												</label>
-											</div>
-										</div>
-									</div>
-								</li>
-								<li id="mailCheck">
-									<label for="loginId">이메일 아이디 <span class="es">필수입력</span></label>
-									<div class="add_in v2">
-										<div class="add_in"><input type="email" id="loginId" name="loginId" placeholder="이메일 주소 입력" />
-											<button type="button" class="btns add_btn" onclick="checkDuplicate()">중복확인</button>
-										</div>
-										<button type="button" class="btns add_btn emailchk" onclick="certifiedMail()">인증</button>
-									</div>
-								</li>
-								<li id="certNumCheck" class="emailchk_num" style="display: none;">
+                        <h4>회원정보입력</h4>
+                        <div class="join_input">
+                            <ul>
+                                <li>
+                                    <label for="thumbnail" class="skip_info">프로필 사진</label>
+                                    <div>
+                                        <div class="file_preview">
+                                            <div class="thumb_wrap">
+                                                <p><span><img id="preview-image"
+                                                              src="/user/images/board/default_profile.png"
+                                                              alt=""/></span></p>
+                                            </div>
+                                            <div class="file_upload">
+                                                <label> <i>파일 업로드</i>
+                                                    <input type="file" id="thumbnail" name="thumbnail"
+                                                           accept="image/jpeg, image/jpg, image/png, image/gif, image/svg+xml"
+                                                           onchange="changeFileName(this)"/>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li id="mailCheck">
+                                    <label for="loginId">이메일 아이디 <span class="es">필수입력</span></label>
+                                    <div class="add_in v2">
+                                        <div class="add_in"><input type="email" id="loginId" name="loginId"
+                                                                   placeholder="이메일 주소 입력"/>
+                                            <button type="button" class="btns add_btn" onclick="checkDuplicate()">중복확인
+                                            </button>
+                                        </div>
+                                        <button type="button" class="btns add_btn emailchk" onclick="certifiedMail()">
+                                            인증
+                                        </button>
+                                    </div>
+                                </li>
+                                <li id="certNumCheck" class="emailchk_num" style="display: none;">
 
-								</li>
-								<li>
-									<label for="password">비밀번호 <span class="es">필수입력</span></label>
-									<div><input type="password" id="password" name="password" placeholder="8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요." /></div>
-								</li>
-								<li>
-									<label for="password_checked">비밀번호 확인 <span class="es">필수입력</span></label>
-									<div><input type="password" id="password_checked" name="password_checked" placeholder="" /></div>
-								</li>
-								<li>
-									<label for="name">이름 <span class="es">필수입력</span></label>
-									<div><input type="text" id="name" name="name" placeholder="이름" maxlength="5" /></div>
-								</li>
-								<li>
-									<label for="phone">연락처 <span class="es">필수입력</span></label>
-									<div><span><input type="tel" title="연락처" id="phone" name="phone" maxlength="11" placeholder="숫자만 입력해 주세요." /></span></div>
-								</li>
-							</ul>
-						</div>
-						<button type="button" class="btns btn_mem" onclick="saveMember()">회원가입</button>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
+                                </li>
+                                <li>
+                                    <label for="password">비밀번호 <span class="es">필수입력</span></label>
+                                    <div><input type="password" id="password" name="password"
+                                                placeholder="8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요."/></div>
+                                </li>
+                                <li>
+                                    <label for="password_checked">비밀번호 확인 <span class="es">필수입력</span></label>
+                                    <div><input type="password" id="password_checked" name="password_checked"
+                                                placeholder=""/></div>
+                                </li>
+                                <li>
+                                    <label for="name">이름 <span class="es">필수입력</span></label>
+                                    <div><input type="text" id="name" name="name" placeholder="이름" maxlength="5"/></div>
+                                </li>
+                                <li>
+                                    <label for="phone">연락처 <span class="es">필수입력</span></label>
+                                    <div><span><input type="tel" title="연락처" id="phone" name="phone" maxlength="11"
+                                                      placeholder="숫자만 입력해 주세요."/></span></div>
+                                </li>
+                            </ul>
+                        </div>
+                        <button type="button" class="btns btn_mem" onclick="saveMember()">회원가입</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </th:block>
 <th:block layout:fragment="script">
-	<script th:inline="javascript">
-		/*<![CDATA[*/
+    <script th:inline="javascript">
+        /*<![CDATA[*/
 
-		window.onload = () => {
-			readImage();
-		}
+        window.onload = () => {
+            readImage();
+        }
 
-		/** 유효성 검사 */
-		function isValid() {
-			const form = findById('form');
-			const nRegex = /^[가-힣]{2,15}$/; 												// 이름 유효성검사 정규식
-			const pRegex = /^.*(?=^.{8,20}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;	// 비밀번호 유효성검사 정규식
-			const phoneRegex = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;				// 휴대폰번호 유효성검사 정규식
+        /** 유효성 검사 */
+        function isValid() {
+            const form = findById('form');
+            const nRegex = /^[가-힣]{2,15}$/; 												// 이름 유효성검사 정규식
+            const pRegex = /^.*(?=^.{8,20}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;	// 비밀번호 유효성검사 정규식
+            const phoneRegex = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;				// 휴대폰번호 유효성검사 정규식
 
 
-			// ================= ID 유효성 검사 ================= //
+            // ================= ID 유효성 검사 ================= //
 
-			// 아이디 미입력 시
-			if (!form.loginId.value.trim()) {
-				alert('아이디를 입력해 주세요.');
-				form.loginId.value = '';
-				form.loginId.focus();
-				return false;
-			}
+            // 아이디 미입력 시
+            if (!form.loginId.value.trim()) {
+                alert('아이디를 입력해 주세요.');
+                form.loginId.value = '';
+                form.loginId.focus();
+                return false;
+            }
 
-			// 아이디 중복 확인
-			if(form.isDuplicate.value === 'Y') {
-				alert('아이디 중복 확인을 해주세요.');
-				form.loginId.focus();
-				return false;
-			}
+            // 아이디 중복 확인
+            if (form.isDuplicate.value === 'Y') {
+                alert('아이디 중복 확인을 해주세요.');
+                form.loginId.focus();
+                return false;
+            }
 
-			// 이메일 인증여부
-			if(form.mailCheckYn.value === 'N') {
-				alert('이메일 인증을 진행해주세요.')
-				return false;
-			}
+            // 이메일 인증여부
+            if (form.mailCheckYn.value === 'N') {
+                alert('이메일 인증을 진행해주세요.')
+                return false;
+            }
 
-			// ================= PASSWORD 유효성 검사 ================= //
+            // ================= PASSWORD 유효성 검사 ================= //
 
-			// 비밀번호 미입력시
-			if(!form.password.value.trim()) {
-				alert('비밀번호를 입력해 주세요.');
-				form.password.value = '';
-				form.password.focus();
-				return false;
-			}
+            // 비밀번호 미입력시
+            if (!form.password.value.trim()) {
+                alert('비밀번호를 입력해 주세요.');
+                form.password.value = '';
+                form.password.focus();
+                return false;
+            }
 
-			// 비밀번호 확인 미입력시
-			if(!form.password_checked.value.trim()) {
-				alert('비밀번호 확인을 입력해 주세요.');
-				form.password_checked.value = '';
-				form.password_checked.focus();
-				return false;
-			}
+            // 비밀번호 확인 미입력시
+            if (!form.password_checked.value.trim()) {
+                alert('비밀번호 확인을 입력해 주세요.');
+                form.password_checked.value = '';
+                form.password_checked.focus();
+                return false;
+            }
 
-			// password === passwordCheck 확인
-			if(form.password.value !== form.password_checked.value) {
-				alert('입력하신 비밀번호와 비밀번호 확인 값이 일치하지 않습니다.')
-				form.password.value = '';
-				form.password_checked.value = '';
-				form.password.focus();
-				return false;
-			}
+            // password === passwordCheck 확인
+            if (form.password.value !== form.password_checked.value) {
+                alert('입력하신 비밀번호와 비밀번호 확인 값이 일치하지 않습니다.')
+                form.password.value = '';
+                form.password_checked.value = '';
+                form.password.focus();
+                return false;
+            }
 
-			// 비밀번호 유효성 검사
-			if(form.password.value.length < 8 || form.password.value.length > 20){
-				alert("비밀번호는 8자리 ~ 20자리 이내로 입력해주세요.");
-				return false;
-			}else if(form.password.value.search(/\s/) !== -1){
-				alert("비밀번호는 공백 없이 입력해주세요.");
-				return false;
-			}else if(!pRegex.test(form.password.value)){
-				alert("영문,숫자, 특수문자를 혼합하여 입력해주세요.");
-				return false;
-			}
+            // 비밀번호 유효성 검사
+            if (form.password.value.length < 8 || form.password.value.length > 20) {
+                alert("비밀번호는 8자리 ~ 20자리 이내로 입력해주세요.");
+                return false;
+            } else if (form.password.value.search(/\s/) !== -1) {
+                alert("비밀번호는 공백 없이 입력해주세요.");
+                return false;
+            } else if (!pRegex.test(form.password.value)) {
+                alert("영문,숫자, 특수문자를 혼합하여 입력해주세요.");
+                return false;
+            }
 
-			// ================= 이름 유효성 검사 ================= //
+            // ================= 이름 유효성 검사 ================= //
 
-			// 이름 미입력시
-			if(!form.name.value.trim()) {
-				alert('이름을 입력해 주세요.');
-				form.name.value = '';
-				form.name.focus();
-				return false;
-			}
+            // 이름 미입력시
+            if (!form.name.value.trim()) {
+                alert('이름을 입력해 주세요.');
+                form.name.value = '';
+                form.name.focus();
+                return false;
+            }
 
-			// 이름 유효성 검사
-			if(!nRegex.test(form.name.value)) {
-				alert('특수문자,영어,숫자는 사용할수 없습니다. 한글만 입력해 주세요.');
-				form.name.focus();
-				return false;
-			}
+            // 이름 유효성 검사
+            if (!nRegex.test(form.name.value)) {
+                alert('특수문자,영어,숫자는 사용할수 없습니다. 한글만 입력해 주세요.');
+                form.name.focus();
+                return false;
+            }
 
-			// ================= Regular Member 유효성 검사 ================= //
+            // ================= Regular Member 유효성 검사 ================= //
 
-			// 연락처 미입력시
-			if(!form.phone.value.trim()) {
-				alert('연락처를 입력해주세요.');
-				form.phone.focus();
-				return false;
-			}
+            // 연락처 미입력시
+            if (!form.phone.value.trim()) {
+                alert('연락처를 입력해주세요.');
+                form.phone.focus();
+                return false;
+            }
 
-			// 연락처 유효성 검사
-			if(!phoneRegex.test(form.phone.value)) {
-				alert('휴대폰번호 형식이 올바르지 않습니다.');
-				form.phone.focus();
-				return false;
-			}
+            // 연락처 유효성 검사
+            if (!phoneRegex.test(form.phone.value)) {
+                alert('휴대폰번호 형식이 올바르지 않습니다.');
+                form.phone.focus();
+                return false;
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		/** 회원가입 버튼 클릭 시 실행되는 함수 */
-		function saveMember() {
-			if(!isValid()) {
-				return false;
-			}
+        /** 회원가입 버튼 클릭 시 실행되는 함수 */
+        function saveMember() {
+            if (!isValid()) {
+                return false;
+            }
 
-			const formData = new FormData(findById('form'));
-			formData.append('type', 'REGULAR'); 		// 회원 유형
-			formData.append('deleteYn', 'N'); 			// 삭제여부
-			formData.append('authorityYn', 'N'); 		// 정회원 승인여부
+            const formData = new FormData(findById('form'));
+            formData.append('type', 'REGULAR'); 		// 회원 유형
+            formData.append('deleteYn', 'N'); 			// 삭제여부
+            formData.append('authorityYn', 'N'); 		// 정회원 승인여부
 
-			callApi('/api/members', 'POST', formData, true).then(response => {
-				location.href = "/join/regular-confirm";
-			}).catch(error => alert(error.message));
-		}
+            callApi('/api/members', 'POST', formData, true).then(response => {
+                location.href = "/join/regular-confirm";
+            }).catch(error => alert(error.message));
+        }
 
-		/** 이메일 인증 버튼 클릭 시 */
-		function certifiedMail () {
-			const form = findById('form');
-			if(form.isDuplicate.value === 'Y') {
-				alert('아이디 중복 확인 진행 후 이메일 인증이 가능합니다.');
-				return false;
-			}
+        /** 이메일 인증 버튼 클릭 시 */
+        function certifiedMail() {
+            const form = findById('form');
+            if (form.isDuplicate.value === 'Y') {
+                alert('아이디 중복 확인 진행 후 이메일 인증이 가능합니다.');
+                return false;
+            }
 
-			const params = {
-				email : form.loginId.value,
-				mailType : '0'
-			};
+            const params = {
+                email: form.loginId.value,
+                mailType: '0'
+            };
 
-			callApi('/api/members/authentication-number', 'POST', params, false).then(response => {
+            callApi('/api/members/authentication-number', 'POST', params, false).then(response => {
 
-				const li = findById('certNumCheck');
-				li.innerHTML = `
+                const li = findById('certNumCheck');
+                li.innerHTML = `
 					<p class="info_txt">입력하신 이메일로 보내드린 인증번호를 입력해주세요.</p>
 					<label for="DT101_01_01">인증번호 입력 <span class="es">필수입력</span></label>
 					<div class="add_in"><input type="email" id="email" name="email" placeholder="인증번호 8자리 입력" /> <button type="button" class="btns add_btn" onclick="mailCheckYnClick()">확인</button></div>
 				`;
 
-				li.style.display = 'block';
-				form.loginId.readOnly = true;
-				alert('이메일 아이디로 인증번호가 전송되었습니다.');
+                li.style.display = 'block';
+                form.loginId.readOnly = true;
+                alert('이메일 아이디로 인증번호가 전송되었습니다.');
 
-			}).catch(error => alert(error.message));
-		}
+            }).catch(error => alert(error.message));
+        }
 
-		/** 이메일 인증번호 입력 확인 버튼 클릭 시 */
-		async function mailCheckYnClick() {
-			const form = findById('form');
-			if(!form.email.value.trim()) {
-				alert('인증번호를 입력 후 확인을 클릭해주세요.');
-				form.loginId.focus();
-				return false;
-			}
+        /** 이메일 인증번호 입력 확인 버튼 클릭 시 */
+        async function mailCheckYnClick() {
+            const form = findById('form');
+            if (!form.email.value.trim()) {
+                alert('인증번호를 입력 후 확인을 클릭해주세요.');
+                form.loginId.focus();
+                return false;
+            }
 
-			let uri = '/api/members/confirm-email?' + 'email=' + form.loginId.value + '&authToken=' + form.email.value;
+            let uri = '/api/members/confirm-email?' + 'email=' + form.loginId.value + '&authToken=' + form.email.value;
 
-			fetch(uri).then(response => {
-				if (!response.ok) {
-					throw new Error("Request Error...");
-				}
+            fetch(uri).then(response => {
+                if (!response.ok) {
+                    throw new Error("Request Error...");
+                }
 
-			}).then(response => {
-				form.email.readOnly = true;
-				form.mailCheckYn.value = 'Y';
-				alert("인증번호 입력이 완료되었습니다.");
-			}).catch(error => {
-				alert('인증번호가 틀렸습니다.');
-			});
-		}
+            }).then(response => {
+                form.email.readOnly = true;
+                form.mailCheckYn.value = 'Y';
+                alert("인증번호 입력이 완료되었습니다.");
+            }).catch(error => {
+                alert('인증번호가 틀렸습니다.');
+            });
+        }
 
-		/** 아이디 중복 확인 버튼 시 실행되는 함수 */
-		async function checkDuplicate() {
-			const form = findById('form');
-			const eRegex = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/; 			// 이메일 유효성검사 정규식
+        /** 아이디 중복 확인 버튼 시 실행되는 함수 */
+        async function checkDuplicate() {
+            const form = findById('form');
+            const eRegex = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/; 			// 이메일 유효성검사 정규식
 
-			if(!form.loginId.value.trim()) {
-				alert('아이디를 입력 후 중복확인을 해주세요.');
-				form.loginId.focus();
-				return false;
-			}
+            if (!form.loginId.value.trim()) {
+                alert('아이디를 입력 후 중복확인을 해주세요.');
+                form.loginId.focus();
+                return false;
+            }
 
-			// 이메일 유효성 검사
-			if(!eRegex.test(form.loginId.value)) {
-				alert('이메일 아이디 형식이 올바르지 않습니다.');
-				form.loginId.focus();
-				return false;
-			}
+            // 이메일 유효성 검사
+            if (!eRegex.test(form.loginId.value)) {
+                alert('이메일 아이디 형식이 올바르지 않습니다.');
+                form.loginId.focus();
+                return false;
+            }
 
-			const id = findById('loginId');
-			getJson(`/api/members/check/${id.value}`).then(exists => {
-				if(exists) {
-					findById('isDuplicate').value = 'Y';
-					alert('이미 등록된 아이디 입니다.');
-					return false;
-				}
-				alert('사용 가능한 아이디 입니다.');
-				findById('isDuplicate').value = 'N';
-			});
-		}
+            const id = findById('loginId');
+            getJson(`/api/members/check/${id.value}`).then(exists => {
+                if (exists) {
+                    findById('isDuplicate').value = 'Y';
+                    alert('이미 등록된 아이디 입니다.');
+                    return false;
+                }
+                alert('사용 가능한 아이디 입니다.');
+                findById('isDuplicate').value = 'N';
+            });
+        }
 
-		/** 이미지 미리보기 함수 */
-		function readImage(input) {
-			// const inputImage = findById("file1")
-			// inputImage.addEventListener("change", e => {
-			// 	readImage(e.target)
+        /** 이미지 미리보기 함수 */
+        function readImage(input) {
+            // const inputImage = findById("file1")
+            // inputImage.addEventListener("change", e => {
+            // 	readImage(e.target)
 
-			const inputImage = findById("thumbnail")
-			inputImage.addEventListener("change", e => {
+            const inputImage = findById("thumbnail")
+            inputImage.addEventListener("change", e => {
 
-				// 인풋 태그에 파일이 있는 경우
-				if(input.files && input.files[0]) {
-					// 이미지 파일인지 검사 (생략)
-					// FileReader 인스턴스 생성
-					const reader = new FileReader()
-					// 이미지가 로드가 된 경우
-					reader.onload = e => {
-						const previewImage = findById("preview-image")
-						previewImage.src = e.target.result
-					}
-					// reader가 이미지 읽도록 하기
-					reader.readAsDataURL(input.files[0])
-				}
-			})
-		}
+                // 인풋 태그에 파일이 있는 경우
+                if (input.files && input.files[0]) {
+                    // 이미지 파일인지 검사 (생략)
+                    // FileReader 인스턴스 생성
+                    const reader = new FileReader()
+                    // 이미지가 로드가 된 경우
+                    reader.onload = e => {
+                        const previewImage = findById("preview-image")
+                        previewImage.src = e.target.result
+                    }
+                    // reader가 이미지 읽도록 하기
+                    reader.readAsDataURL(input.files[0])
+                }
+            })
+        }
 
-		/** 업로드 파일명 렌더링 */
-		function changeFileName(file) {
-			file = $(file);
-			const filename = file[0].files[0].name;
-			const target = file.parent().prev();
-			target.val(filename);
-			target.prev().remove();
-		}
+        /** 업로드 파일명 렌더링 */
+        function changeFileName(file) {
+            file = $(file);
+            const filename = file[0].files[0].name;
+            const target = file.parent().prev();
+            target.val(filename);
+            target.prev().remove();
+        }
 
-		/*]]>*/
-	</script>
+        /*]]>*/
+    </script>
 </th:block>
 </html>

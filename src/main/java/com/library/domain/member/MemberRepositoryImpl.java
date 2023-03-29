@@ -22,11 +22,13 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-    public MemberRepositoryImpl(EntityManager entityManager){
+    public MemberRepositoryImpl(EntityManager entityManager) {
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
 
-    /** Projections Method */
+    /**
+     * Projections Method
+     */
     private QBean<MemberResponse> projectionMethod() {
         return Projections.fields(MemberResponse.class,
                 member.id,
@@ -42,7 +44,9 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
         );
     }
 
-    /** 회원 페이징, 검색
+    /**
+     * 회원 페이징, 검색
+     *
      * @param condition
      * @param pageable
      * @return
@@ -73,7 +77,9 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
         return PageableExecutionUtils.getPage(list, pageable, count::fetchCount);
     }
 
-    /** 회원 상세페이지
+    /**
+     * 회원 상세페이지
+     *
      * @param id
      * @return
      */
@@ -110,15 +116,17 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     }
 
 
-    /** 회원 검색 조건
+    /**
+     * 회원 검색 조건
+     *
      * @param searchType
      * @param keyword
      * @return
      */
     private BooleanExpression search(String searchType, String keyword) {
-        if(StringUtils.isBlank(keyword)) {
+        if (StringUtils.isBlank(keyword)) {
             return null;
-        } else if(StringUtils.isBlank(searchType)){
+        } else if (StringUtils.isBlank(searchType)) {
             return member.loginId.contains(keyword).or(member.name.contains(keyword));
         }
 
@@ -133,37 +141,43 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     }
 
     private BooleanExpression memberTypeEq(MemberType memberType) {
-        if(memberType == null) {
+        if (memberType == null) {
             return member.type.ne(MemberType.ADMIN);
         }
         return member.type.eq(memberType);
     }
 
-    /** 회원 유형 구분
+    /**
+     * 회원 유형 구분
+     *
      * @param memberType
      * @return
      */
     private BooleanExpression memberType(MemberType memberType) {
-        if(memberType == null) {
+        if (memberType == null) {
             return member.type.eq(MemberType.GENERAL).or(member.type.eq(MemberType.REGULAR)); // NULL의 경우, 관리자를 제외한 일반, 정회원 검색
         }
         return member.type.eq(memberType);
     }
 
-    /** 삭제 여부에 상관없이 출력 ( 관리자 사용, 미사용 표기를 위함 )
+    /**
+     * 삭제 여부에 상관없이 출력 ( 관리자 사용, 미사용 표기를 위함 )
+     *
      * @param deleteYn
      * @return
      */
     private BooleanExpression deleteYnEq(YnStatus deleteYn) {
-        if(deleteYn == null) {
+        if (deleteYn == null) {
             return member.deleteYn.eq(YnStatus.Y).or(member.deleteYn.eq(YnStatus.N));
         }
         return member.deleteYn.eq(deleteYn);
     }
 
-    /** 정회원 회원가입 승인여부 */
+    /**
+     * 정회원 회원가입 승인여부
+     */
     private BooleanExpression authorityYn(String authorityYn) {
-        if(authorityYn == null || authorityYn.equals("Y")) {
+        if (authorityYn == null || authorityYn.equals("Y")) {
             return member.authorityYn.eq("Y");
         }
         return member.authorityYn.eq(authorityYn);

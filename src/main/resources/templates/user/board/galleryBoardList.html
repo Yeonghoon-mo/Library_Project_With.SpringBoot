@@ -1,150 +1,152 @@
 <!DOCTYPE html>
-<html lang="ko" layout:decorate="/layout/userLayout" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" layout:decorate="/layout/userLayout" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <th:block layout:fragment="main">
-	<!-- 서브비쥬얼 -->
-	<div class="sub_vis01" id="sub_visual">
-		<div class="innerwrap">
-			<div class="visual">
-				<div class="tit_group">
-					<span id="titleName" name="titleName"></span>
-				</div>
-			</div>
-		</div>
-		<div class="bg"></div>
-	</div>
-	<!-- // 서브비쥬얼 -->
-	
-	<div class="container" id="contents">
-		<div class="innerwrap">
-			<div class="pagetitle" id="subTitleName" name="subTitleName">
+    <!-- 서브비쥬얼 -->
+    <div class="sub_vis01" id="sub_visual">
+        <div class="innerwrap">
+            <div class="visual">
+                <div class="tit_group">
+                    <span id="titleName" name="titleName"></span>
+                </div>
+            </div>
+        </div>
+        <div class="bg"></div>
+    </div>
+    <!-- // 서브비쥬얼 -->
 
-				<div class="menulink" id="menulink" name="menulink">
+    <div class="container" id="contents">
+        <div class="innerwrap">
+            <div class="pagetitle" id="subTitleName" name="subTitleName">
 
-				</div>
-			</div>
-		
-			<div class="content">
-				<form id="form" name="form" onsubmit="return false;">
-					<div class="bbs_head" id="bbs_head" name="bbs_head">
-						<div class="sort">
-							<select id="orderByName" name="orderByName" onchange="findPaginationAll()">
-								<option value="general">일반</option>
-								<option value="hits">조회순</option>
-								<option value="createdDate">작성일자순</option>
-							</select>
-						</div>
-						<!-- 검색 영역 -->
-						<div class="search_box">
-							<fieldset>
-								<legend class="skip_info">검색박스</legend>
-								<div class="sch_word">
-									<label class="skip_info" for="keyword">검색어를 입력해주세요.</label>
-									<input id="keyword" name="keyword" title="검색어입력" type="text" value="" />
-									<button class="btns" type="button"><i class="fab fa-sistrix"></i><span class="skip_info">검색</span></button>
-								</div>
-							</fieldset>
-						</div>
-						<!-- // 검색 영역 -->
-					</div>
+                <div class="menulink" id="menulink" name="menulink">
 
-					<!-- // 게시판 리스트 (3*3) -->
-					<p class="btn_set tr" id="buttonSet" name="buttonSet">
+                </div>
+            </div>
 
-					</p>
-					<!-- paging -->
-					<div class="paging">
-						<ul>
+            <div class="content">
+                <form id="form" name="form" onsubmit="return false;">
+                    <div class="bbs_head" id="bbs_head" name="bbs_head">
+                        <div class="sort">
+                            <select id="orderByName" name="orderByName" onchange="findPaginationAll()">
+                                <option value="general">일반</option>
+                                <option value="hits">조회순</option>
+                                <option value="createdDate">작성일자순</option>
+                            </select>
+                        </div>
+                        <!-- 검색 영역 -->
+                        <div class="search_box">
+                            <fieldset>
+                                <legend class="skip_info">검색박스</legend>
+                                <div class="sch_word">
+                                    <label class="skip_info" for="keyword">검색어를 입력해주세요.</label>
+                                    <input id="keyword" name="keyword" title="검색어입력" type="text" value=""/>
+                                    <button class="btns" type="button"><i class="fab fa-sistrix"></i><span
+                                            class="skip_info">검색</span></button>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <!-- // 검색 영역 -->
+                    </div>
 
-						</ul>
-					</div>
-					<!-- // paging -->
-				</form>
-			</div>
-		</div>
-	</div>
+                    <!-- // 게시판 리스트 (3*3) -->
+                    <p class="btn_set tr" id="buttonSet" name="buttonSet">
+
+                    </p>
+                    <!-- paging -->
+                    <div class="paging">
+                        <ul>
+
+                        </ul>
+                    </div>
+                    <!-- // paging -->
+                </form>
+            </div>
+        </div>
+    </div>
 </th:block>
 <th:block layout:fragment="script">
-	<script th:inline="javascript">
-		/*<![CDATA[*/
+    <script th:inline="javascript">
+        /*<![CDATA[*/
 
-		window.onload = () => {
-			subMenuList();
-			titleSelect();
-			setQueryStringParams();
-			addEnterSearchEvent();
-			boardWriteQueryString();
-			findPaginationAll();
-		}
+        window.onload = () => {
+            subMenuList();
+            titleSelect();
+            setQueryStringParams();
+            addEnterSearchEvent();
+            boardWriteQueryString();
+            findPaginationAll();
+        }
 
-		/** Query String Parameter Setting (이전 페이지 유지) */
-		function setQueryStringParams() {
-			if (!location.search) {
-				return false;
-			}
-			const form = findById('form');
-			new URLSearchParams(location.search).forEach((value, key) => {
-				if (form[key]) {
-					form[key].value = value;
-				}
-			})
-		}
+        /** Query String Parameter Setting (이전 페이지 유지) */
+        function setQueryStringParams() {
+            if (!location.search) {
+                return false;
+            }
+            const form = findById('form');
+            new URLSearchParams(location.search).forEach((value, key) => {
+                if (form[key]) {
+                    form[key].value = value;
+                }
+            })
+        }
 
-		/** 게시글 작성 버튼 쿼리스트링 값 전달하는 함수 */
-		function boardWriteQueryString() {
-			let mainMenuNum = new URLSearchParams(location.search).get('mainMenuNum');
-			const loginMember = ([[ ${session.loginMember} ]]) ? [[ ${session.loginMember} ]] : undefined;
-			const boardMenuNum = new URLSearchParams(location.search).get('boardMenuNum');
+        /** 게시글 작성 버튼 쿼리스트링 값 전달하는 함수 */
+        function boardWriteQueryString() {
+            let mainMenuNum = new URLSearchParams(location.search).get('mainMenuNum');
+            const loginMember = ([[ ${session.loginMember}]]) ? [[ ${session.loginMember}]] : undefined;
+            const boardMenuNum = new URLSearchParams(location.search).get('boardMenuNum');
 
-			// 공지사항 게시판일 때
-			if ( !loginMember || boardMenuNum === '1' ) {
-				return false;
-			}
-			// 정회원 게시판일 때
-			if (boardMenuNum === '3' && loginMember.type !== 'REGULAR') {
-				return false;
-			}
-			let writeUri = '/board/write?boardMenuNum=' + boardMenuNum + '&mainMenuNum=' + mainMenuNum;
-			let html = `<a href="${writeUri}" class="btns btn_st1"><span>글쓰기</span></a>`;
-			findById('buttonSet').innerHTML = html;
-		}
+            // 공지사항 게시판일 때
+            if (!loginMember || boardMenuNum === '1') {
+                return false;
+            }
+            // 정회원 게시판일 때
+            if (boardMenuNum === '3' && loginMember.type !== 'REGULAR') {
+                return false;
+            }
+            let writeUri = '/board/write?boardMenuNum=' + boardMenuNum + '&mainMenuNum=' + mainMenuNum;
+            let html = `<a href="${writeUri}" class="btns btn_st1"><span>글쓰기</span></a>`;
+            findById('buttonSet').innerHTML = html;
+        }
 
-		/** 게시글 리스트 출력(Paging) */
-		function findPaginationAll(page) {
-			let html = '';
-			const form = findById('form');
-			const pageParam = Number(new URLSearchParams(location.search).get('page'));
-			let boardMenuNum = new URLSearchParams(location.search).get('boardMenuNum');
-			let mainMenuNum = new URLSearchParams(location.search).get('mainMenuNum');
-			page = (page) ? page : ((pageParam) ? pageParam : 1);
-			const params = {
-				page: page - 1,
-				size: 9,
-				mainMenuNum : mainMenuNum,
-				boardMenuNum: boardMenuNum,
-				searchType: '',
-				keyword: form.keyword.value,
-				orderByName: form.orderByName.value
-			}
+        /** 게시글 리스트 출력(Paging) */
+        function findPaginationAll(page) {
+            let html = '';
+            const form = findById('form');
+            const pageParam = Number(new URLSearchParams(location.search).get('page'));
+            let boardMenuNum = new URLSearchParams(location.search).get('boardMenuNum');
+            let mainMenuNum = new URLSearchParams(location.search).get('mainMenuNum');
+            page = (page) ? page : ((pageParam) ? pageParam : 1);
+            const params = {
+                page        : page - 1,
+                size        : 9,
+                mainMenuNum : mainMenuNum,
+                boardMenuNum: boardMenuNum,
+                searchType  : '',
+                keyword     : form.keyword.value,
+                orderByName : form.orderByName.value
+            }
 
-			const queryString = new URLSearchParams(params).toString();
-			const replaceUri = location.pathname + '?' + queryString;
-			history.replaceState({}, '', replaceUri);
+            const queryString = new URLSearchParams(params).toString();
+            const replaceUri = location.pathname + '?' + queryString;
+            history.replaceState({}, '', replaceUri);
 
-			// 가운데 동영상 버튼을 보여주기 위한 조건
-			const divClassType = (boardMenuNum === '5') ? 'class="bbs_gall bbs_media s03"' : 'class="bbs_gall s03"';
-			$('#bbs_head').after(`<div ${divClassType}><ul id="boardBodyHtml" name="boardBodyHtml"></ul></div>`);
+            // 가운데 동영상 버튼을 보여주기 위한 조건
+            const divClassType = (boardMenuNum === '5') ? 'class="bbs_gall bbs_media s03"' : 'class="bbs_gall s03"';
+            $('#bbs_head').after(`<div ${divClassType}><ul id="boardBodyHtml" name="boardBodyHtml"></ul></div>`);
 
-			getJson('/api/boards', params).then(response => {
-				if (!response.content.length) {
-					findById('boardBodyHtml').innerHTML = `<div id="list" name="list" ${divClassType}><ul><li class="no_data_msg">등록된 게시글이 없습니다.</li></ul></div>`;
-					removePages();
-					return false;
-				}
+            getJson('/api/boards', params).then(response => {
+                if (!response.content.length) {
+                    findById('boardBodyHtml').innerHTML = `<div id="list" name="list" ${divClassType}><ul><li class="no_data_msg">등록된 게시글이 없습니다.</li></ul></div>`;
+                    removePages();
+                    return false;
+                }
 
-				response.content.forEach((obj) => {
-					const viewUri = `/board/view/${obj.id}` + '?' + queryString;
-					const boardImageSrc = (obj.repImage) ? `/api/image-files?savedFilename=${obj.saveNameImage}` : '/user/images/board/no_img.gif';
-					html += `
+                response.content.forEach((obj) => {
+                    const viewUri = `/board/view/${obj.id}` + '?' + queryString;
+                    const boardImageSrc = (obj.repImage) ? `/api/image-files?savedFilename=${obj.saveNameImage}` : '/user/images/board/no_img.gif';
+                    html += `
 							<li>
 								<a href="${viewUri}">
 									<div class="imgs">
@@ -159,22 +161,22 @@
 									</div>
 								</a>
 							</li>`;
-				});
+                });
 
-				findById('boardBodyHtml').innerHTML = html;
-				const paginationInfo = {
-					page: page,
-					size: params.size,
-					pageSize: 10,
-					totalElements: response.totalElements,
-					totalPages: response.totalPages
-				}
+                findById('boardBodyHtml').innerHTML = html;
+                const paginationInfo = {
+                    page         : page,
+                    size         : params.size,
+                    pageSize     : 10,
+                    totalElements: response.totalElements,
+                    totalPages   : response.totalPages
+                }
 
-				drawPages(paginationInfo, 'findPaginationAll');
-			})
-		}
+                drawPages(paginationInfo, 'findPaginationAll');
+            })
+        }
 
-		/*]]>*/
-	</script>
+        /*]]>*/
+    </script>
 </th:block>
 </html>

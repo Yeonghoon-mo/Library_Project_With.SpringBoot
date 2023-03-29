@@ -15,7 +15,7 @@ public class AttachRequest {
     private Long size; // 파일 사이즈
 
     @Builder
-    public Attach toEntity(){
+    public Attach toEntity() {
         return Attach.builder()
                 .board(board)
                 .originalName(originalName)

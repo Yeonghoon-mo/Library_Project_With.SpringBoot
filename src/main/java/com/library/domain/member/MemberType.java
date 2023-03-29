@@ -8,7 +8,7 @@ public enum MemberType {
 
     private final String explain;
 
-    MemberType(String explain){
+    MemberType(String explain) {
         this.explain = explain;
     }
 

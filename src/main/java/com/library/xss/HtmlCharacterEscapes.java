@@ -40,5 +40,4 @@ public class HtmlCharacterEscapes extends CharacterEscapes {
 
         return new SerializedString(StringEscapeUtils.escapeHtml4(Character.toString(charAt)));
     }
-
 }

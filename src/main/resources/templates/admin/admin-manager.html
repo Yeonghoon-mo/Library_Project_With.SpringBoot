@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" layout:decorate="/layout/adminLayout" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" layout:decorate="/layout/adminLayout" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <th:block layout:fragment="main">
     <div id="container">
         <div class="innerwrap">
@@ -9,42 +10,45 @@
             </div>
             <div id="main">
                 <form id="form" name="form" onsubmit="return false;">
-                    <input id="isDuplicate" name="isDuplicate" type="hidden" value="Y" /> <!-- ID 중복체크를 위한 input -->
-                    <input id="passwordDuplicate" name="passwordDuplicate" type="hidden" value="Y" /> <!-- Password 중복체크를 위한 input -->
+                    <input id="isDuplicate" name="isDuplicate" type="hidden" value="Y"/> <!-- ID 중복체크를 위한 input -->
+                    <input id="passwordDuplicate" name="passwordDuplicate" type="hidden" value="Y"/>
+                    <!-- Password 중복체크를 위한 input -->
                     <div class="section hidden">
                         <div class="fl w30">
                             <h4>관리자 등록</h4>
                             <table class="tb tb_row">
                                 <colgroup>
-                                    <col style="width:25%;" />
-                                    <col style="width:auto;" />
+                                    <col style="width:25%;"/>
+                                    <col style="width:auto;"/>
                                 </colgroup>
                                 <tbody>
                                 <tr>
                                     <th scope="row">아이디</th>
                                     <td>
-                                        <input class="in1" id="loginId" name="loginId" type="text" />
-                                        <button class="btns btn_st2" id="checkBtn" name="checkBtn" onclick="checkDuplicate()" type="button">중복확인</button>
+                                        <input class="in1" id="loginId" name="loginId" type="text"/>
+                                        <button class="btns btn_st2" id="checkBtn" name="checkBtn"
+                                                onclick="checkDuplicate()" type="button">중복확인
+                                        </button>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th scope="row">비밀번호</th>
-                                    <td><input id="password" maxlength="12" name="password" type="password" /></td>
+                                    <td><input id="password" maxlength="12" name="password" type="password"/></td>
                                 </tr>
                                 <tr>
                                     <th scope="row">관리자명</th>
-                                    <td><input id="name" name="name" type="text" /></td>
+                                    <td><input id="name" name="name" type="text"/></td>
                                 </tr>
                                 <tr>
                                     <th scope="row">사용여부</th>
                                     <td>
                                         <div class="radio_group">
                                             <p class="radios">
-                                                <input checked id="DT002_6_01" name="deleteYn" type="radio" value="N" />
+                                                <input checked id="DT002_6_01" name="deleteYn" type="radio" value="N"/>
                                                 <label for="DT002_6_01">사용</label><span class="check"></span>
                                             </p>
                                             <p class="radios">
-                                                <input id="DT002_6_02" name="deleteYn" type="radio" value="Y" />
+                                                <input id="DT002_6_02" name="deleteYn" type="radio" value="Y"/>
                                                 <label for="DT002_6_02">미사용</label><span class="check"></span>
                                             </p>
                                         </div>
@@ -53,7 +57,8 @@
                                 </tbody>
                             </table>
                             <p class="btn_set">
-                                <button class="btns btn_st1 btn_mid" id="saveBtn" onclick="save()" type="button">저장</button>
+                                <button class="btns btn_st1 btn_mid" id="saveBtn" onclick="save()" type="button">저장
+                                </button>
                                 <button class="btns btn_bdr1 btn_mid" onclick="cancel()" type="button">취소</button>
                             </p>
                         </div>
@@ -67,17 +72,18 @@
                                         <option value="loginId">아이디</option>
                                         <option value="name">관리자명</option>
                                     </select>
-                                    <input id="keyword" name="keyword" type="text" value="" />
-                                    <button class="btn bt_search" onclick="findPaginationAll()" type="button"><span>검색</span></button>
+                                    <input id="keyword" name="keyword" type="text" value=""/>
+                                    <button class="btn bt_search" onclick="findPaginationAll()" type="button">
+                                        <span>검색</span></button>
                                 </div>
                             </div>
                             <!-- // 검색 영역 -->
                             <!-- 관리자 리스트 렌더링 영억 -->
                             <table class="tb tb_col">
                                 <colgroup>
-                                    <col style="width:auto;" />
-                                    <col style="width:33%;" />
-                                    <col style="width:33%;" />
+                                    <col style="width:auto;"/>
+                                    <col style="width:33%;"/>
+                                    <col style="width:33%;"/>
                                 </colgroup>
                                 <thead>
                                 <tr>
@@ -141,7 +147,7 @@
             }
 
             // 아이디 중복체크
-            if(form.isDuplicate.value === 'Y') {
+            if (form.isDuplicate.value === 'Y') {
                 alert('아이디 중복 확인을 해주세요.');
                 form.loginId.focus();
                 return false;
@@ -158,12 +164,12 @@
             }
 
             const formData = new FormData(findById('form'));
-            const uri = (id) ?  `/api/members/admin/${id}` : '/api/members/admin';
+            const uri = (id) ? `/api/members/admin/${id}` : '/api/members/admin';
             formData.set('authorityYn', 'Y');
             formData.set('type', 'ADMIN');
 
             callApi(uri, 'POST', formData, true).then(response => {
-                const msg = ( !id ) ? '등록' : '정보 수정';
+                const msg = (!id) ? '등록' : '정보 수정';
                 alert(`관리자 ${msg}이 완료되었습니다.`);
                 location.reload();
             }).catch(error => alert(error.message));
@@ -175,10 +181,10 @@
             const pageParam = Number(new URLSearchParams(location.search).get('page'));
             page = (page) ? page : ((pageParam) ? pageParam : 1);
             const params = {
-                page: page - 1,
-                size: 10,
+                page      : page - 1,
+                size      : 10,
                 searchType: form.searchType.value,
-                keyword: form.keyword.value,
+                keyword   : form.keyword.value,
                 memberType: 'ADMIN'
             }
 
@@ -191,7 +197,10 @@
 
                 let html = '';
                 let num = response.totalElements - ((params.page) * params.size);
-                const deleteYn = { Y : '<span class="btns btn_bdr2 btn_xs btnW40">미사용</span>', N : '<span class="btns btn_bdr1 btn_xs btnW40">사용</span>'};
+                const deleteYn = {
+                    Y: '<span class="btns btn_bdr2 btn_xs btnW40">미사용</span>',
+                    N: '<span class="btns btn_bdr1 btn_xs btnW40">사용</span>'
+                };
                 response.content.forEach((obj) => {
                     const event = `findAdmin('${obj.id}', '${obj.loginId}', '${obj.password}', '${obj.name}', '${obj.deleteYn}')`;
                     html += `
@@ -206,11 +215,11 @@
                 findById('list').innerHTML = html;
 
                 const paginationInfo = {
-                    page: page,
-                    size: params.size,
-                    pageSize: 10,
+                    page         : page,
+                    size         : params.size,
+                    pageSize     : 10,
                     totalElements: response.totalElements,
-                    totalPages: response.totalPages
+                    totalPages   : response.totalPages
                 }
 
                 drawPages(paginationInfo, 'findPaginationAll');
@@ -237,7 +246,7 @@
         // 관리자 아이디 중복 확인
         async function checkDuplicate(uri, params) {
             const form = findById('form');
-            if(!form.loginId.value.trim()) {
+            if (!form.loginId.value.trim()) {
                 alert('아이디를 입력 후 중복확인을 해주세요.');
                 form.loginId.focus();
                 return false;
@@ -245,7 +254,7 @@
 
             const id = findById('loginId');
             getJson(`/api/members/check/${id.value}`, params).then(exists => {
-                if(exists) {
+                if (exists) {
                     alert('이미 등록된 아이디 입니다.');
                     findById('isDuplicate').value = 'Y';
                     return false;

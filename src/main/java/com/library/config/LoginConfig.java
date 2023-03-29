@@ -35,7 +35,7 @@ public class LoginConfig implements WebMvcConfigurer {
                 // 접근 불가 Page 추가
                 .addPathPatterns("/manager/**")
                 // 접근 불가 페이지 제외
-                .excludePathPatterns("/manager","/api/members/login", "/admin/**");
+                .excludePathPatterns("/manager", "/api/members/login", "/admin/**");
 
     }
 }

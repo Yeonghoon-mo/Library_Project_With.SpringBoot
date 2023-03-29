@@ -5,50 +5,53 @@
 
     <!-- SELECT 결과 Map -->
     <resultMap id="BoardResultMap" type="com.library.domain.board.BoardViewResponse">
-        <id     column="id"                 property="id" />
-        <result column="member_id"          property="memberId" />
-        <result column="title"              property="title" />
-        <result column="content"            property="content" />
-        <result column="writer"             property="writer" />
-        <result column="hits"               property="hits" />
-        <result column="rep_image"          property="repImage" />
-        <result column="save_name_image"    property="saveNameImage" />
-        <result column="board_keyword"      property="boardKeyword" />
-        <result column="notice_yn"          property="noticeYn" />
-        <result column="delete_yn"          property="deleteYn" />
-        <result column="created_date"       property="createdDate" />
-        <result column="modified_date"      property="modifiedDate" />
-        <result column="login_id"           property="loginId" />
-        <result column="profile_image"      property="profileImage" />
-        <result column="like_cnt"           property="likeCnt" />
-        <result column="bad_cnt"            property="badCnt" />
-        <result column="like_type"          property="likeType" />
+        <id column="id" property="id"/>
+        <result column="member_id" property="memberId"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="writer" property="writer"/>
+        <result column="hits" property="hits"/>
+        <result column="rep_image" property="repImage"/>
+        <result column="save_name_image" property="saveNameImage"/>
+        <result column="board_keyword" property="boardKeyword"/>
+        <result column="notice_yn" property="noticeYn"/>
+        <result column="delete_yn" property="deleteYn"/>
+        <result column="created_date" property="createdDate"/>
+        <result column="modified_date" property="modifiedDate"/>
+        <result column="login_id" property="loginId"/>
+        <result column="profile_image" property="profileImage"/>
+        <result column="like_cnt" property="likeCnt"/>
+        <result column="bad_cnt" property="badCnt"/>
+        <result column="like_type" property="likeType"/>
     </resultMap>
 
     <!-- 게시글 상세정보 조회 (with. 좋아요) -->
     <select id="findByBoardId" parameterType="com.library.domain.board.BoardViewRequest" resultMap="BoardResultMap">
-        select
-              B.id
-            , B.member_id
-            , B.title
-            , B.content
-            , B.writer
-            , B.hits
-            , B.rep_image
-            , B.save_name_image
-            , B.board_keyword
-            , B.notice_yn
-            , B.delete_yn
-            , B.created_date
-            , B.modified_date
-            , M.login_id
-            , M.profile_image
-            , COUNT(CASE WHEN L.like_type = 1 THEN 1 END) AS like_cnt
-            , COUNT(CASE WHEN L.like_type = 0 THEN 1 END) AS bad_cnt
-            , (SELECT like_type from tb_like WHERE board_id = #{boardId} AND member_id = #{memberId} ORDER BY id DESC LIMIT 1) AS like_type
+        select B.id
+             , B.member_id
+             , B.title
+             , B.content
+             , B.writer
+             , B.hits
+             , B.rep_image
+             , B.save_name_image
+             , B.board_keyword
+             , B.notice_yn
+             , B.delete_yn
+             , B.created_date
+             , B.modified_date
+             , M.login_id
+             , M.profile_image
+             , COUNT(CASE WHEN L.like_type = 1 THEN 1 END) AS like_cnt
+             , COUNT(CASE WHEN L.like_type = 0 THEN 1 END) AS bad_cnt
+             , (SELECT like_type
+                from tb_like
+                WHERE board_id = #{boardId} AND member_id = #{memberId}
+                ORDER BY id DESC                              LIMIT 1) AS like_type
         FROM
             tb_board AS B -- 게시글
-            INNER JOIN tb_member AS M ON B.member_id = M.id -- 회원
+            INNER JOIN tb_member AS M
+        ON B.member_id = M.id -- 회원
             LEFT OUTER JOIN tb_like as L ON B.id = L.board_id -- 좋아요
         where
             B.id = #{boardId}

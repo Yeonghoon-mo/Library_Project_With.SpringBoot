@@ -16,7 +16,7 @@ public class CommentRequest {
     private Integer commentLevel; // 댓글 레벨 (0 = 댓글, 1 = 대댓글)
     private String content; // 내용
 
-    public Comment toEntity(Board board, Member member){
+    public Comment toEntity(Board board, Member member) {
         return Comment.builder()
                 .board(board)
                 .member(member)

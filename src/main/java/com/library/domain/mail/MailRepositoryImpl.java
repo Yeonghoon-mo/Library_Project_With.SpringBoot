@@ -13,7 +13,9 @@ public class MailRepositoryImpl implements MailRepositoryCustom {
         this.jpaQueryFactory = new JPAQueryFactory(em);
     }
 
-    /** 만료 여부 변경 */
+    /**
+     * 만료 여부 변경
+     */
     @Override
     public Optional<Mail> findValidAuthByEmail(final MailRequest params) {
         Mail mail = jpaQueryFactory

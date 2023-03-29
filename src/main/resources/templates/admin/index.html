@@ -2,12 +2,12 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="">
 
 <head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
-    <link rel="stylesheet" href="/admin/css/default.css" />
-    <link rel="stylesheet" href="/admin/css/common.css" type="text/css" />
-    <link rel="stylesheet" href="/admin/css/content.css" type="text/css" />
-    <link rel="stylesheet" href="/admin/css/button.css" type="text/css" />
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible"/>
+    <link rel="stylesheet" href="/admin/css/default.css"/>
+    <link rel="stylesheet" href="/admin/css/common.css" type="text/css"/>
+    <link rel="stylesheet" href="/admin/css/content.css" type="text/css"/>
+    <link rel="stylesheet" href="/admin/css/button.css" type="text/css"/>
     <title>Library Project - 로그인</title>
 </head>
 
@@ -25,14 +25,15 @@
                     <ul>
                         <li>
                             <label for="loginId" class="skip_info">아이디</label>
-                            <input type="text" title="아이디" placeholder="아이디" id="loginId" name="loginId" />
+                            <input type="text" title="아이디" placeholder="아이디" id="loginId" name="loginId"/>
                         </li>
                         <li>
                             <label for="password" class="skip_info">비밀번호</label>
-                            <input type="password" title="비밀번호" placeholder="비밀번호" id="password" name="password" />
+                            <input type="password" title="비밀번호" placeholder="비밀번호" id="password" name="password"/>
                         </li>
                     </ul>
-                    <input type="button" id="loginBtn" name="loginBtn" onclick="loginAdmin()" value="로그인" class="login_btn" />
+                    <input type="button" id="loginBtn" name="loginBtn" onclick="loginAdmin()" value="로그인"
+                           class="login_btn"/>
                 </form>
             </div>
             <!-- // 로그인 form -->
@@ -57,13 +58,13 @@
         function isValid() {
             const form = findById('form');
 
-            if(!form.loginId.value.trim()) {
+            if (!form.loginId.value.trim()) {
                 alert('아이디를 입력해주세요.');
                 form.loginId.focus();
                 return false;
             }
 
-            if(!form.password.value.trim()) {
+            if (!form.password.value.trim()) {
                 alert('비밀번호를 입력해주세요.');
                 form.password.focus();
                 return false;
@@ -74,25 +75,25 @@
 
         // 로그인 함수
         function loginAdmin() {
-            if(!isValid()) {
+            if (!isValid()) {
                 return false;
             }
 
             const form = findById('form');
             const params = {
-                loginId : form.loginId.value,
-                password : form.password.value,
-                memberType : 'ADMIN'
+                loginId   : form.loginId.value,
+                password  : form.password.value,
+                memberType: 'ADMIN'
             };
             fetch('/api/members/login', {
                 method : 'POST',
-                headers  : {
-                    'Content-Type' : 'application/json'
+                headers: {
+                    'Content-Type': 'application/json'
                 },
-                body : JSON.stringify(params)
+                body   : JSON.stringify(params)
 
             }).then(response => {
-                if(!response.ok){
+                if (!response.ok) {
                     throw new Error("아이디 또는 비밀번호가 틀렸습니다.");
                 }
                 location.assign("/manager/manager?mnId=1");

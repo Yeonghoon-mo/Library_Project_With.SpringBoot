@@ -30,7 +30,7 @@ public class BoardResponse {
     private LocalDateTime createdDate;      // 게시글 생성일
     private LocalDateTime modifiedDate;     // 게시글 수정일
 
-    public BoardResponse(Board entity){
+    public BoardResponse(Board entity) {
         this.id = entity.getId();
         this.title = entity.getTitle();
         this.content = entity.getContent();

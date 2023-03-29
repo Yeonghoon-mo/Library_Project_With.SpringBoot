@@ -33,7 +33,9 @@ public class MemberService {
     private final FileUtil fileUtil;
     private final PasswordEncoder encoder;
 
-    /** 관리자 생성 */
+    /**
+     * 관리자 생성
+     */
     @Transactional
     public Long saveAdmin(final MemberRequest params) {
         params.encodingPassword(encoder.encode(params.getPassword()));
@@ -41,7 +43,9 @@ public class MemberService {
         return member.getId();
     }
 
-    /** 관리자 수정 */
+    /**
+     * 관리자 수정
+     */
     @Transactional
     public Long updateAdmin(final Long id, final MemberRequest params) {
         Member member = memberRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
@@ -50,7 +54,9 @@ public class MemberService {
         return member.getId();
     }
 
-    /** 회원가입 (일반회원, 정회원) */
+    /**
+     * 회원가입 (일반회원, 정회원)
+     */
     @Transactional
     public Long saveMember(final MemberRequest params) {
 
@@ -65,16 +71,18 @@ public class MemberService {
         return member.getId();
     }
 
-    /** 회원 수정 */
+    /**
+     * 회원 수정
+     */
     @Transactional
-    public Long updateMember(final Long id, final MemberRequest params){
+    public Long updateMember(final Long id, final MemberRequest params) {
 
         Member member = memberRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND)); // 회원
         FileResponse profileImage = fileUtil.uploadFile(params.getThumbnail()); // 대표 이미지 업로드
         member.updateProfileImage(profileImage); // 대표 이미지 수정
 
         // 정회원 정보 수정
-        if(params.getType() == MemberType.REGULAR) {
+        if (params.getType() == MemberType.REGULAR) {
             RegularMember regularMember = regularMemberRepository.findByMemberId(id).orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
             regularMember.update(params);
         }
@@ -82,28 +90,36 @@ public class MemberService {
         return member.getId();
     }
 
-    /** 회원 삭제 */
+    /**
+     * 회원 삭제
+     */
     @Transactional
-    public Long deleteMember(final Long id){
+    public Long deleteMember(final Long id) {
         Member member = memberRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         member.delete();
         return id;
     }
 
-    /** 회원 상세조회 */
+    /**
+     * 회원 상세조회
+     */
     @Transactional
-    public MemberResponse findByMember(final Long id){
+    public MemberResponse findByMember(final Long id) {
         return memberRepository.findByMemberId(id).orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
     }
 
-    /** 회원 상세조회 ( 비밀번호 찾기 ) */
+    /**
+     * 회원 상세조회 ( 비밀번호 찾기 )
+     */
     @Transactional
     public LoginResponse findByMemberName(final String loginId) {
         Member member = memberRepository.findByLoginId(loginId);
         return new LoginResponse(member);
     }
 
-    /** ID 값으로 비밀번호 변경 */
+    /**
+     * ID 값으로 비밀번호 변경
+     */
     @Transactional
     public Long passwordUpdate(final String loginId, final String password) {
         Member member = memberRepository.findByLoginId(loginId);
@@ -111,22 +127,28 @@ public class MemberService {
         return member.getId();
     }
 
-    /** 리스트 조회 */
-    public Page<MemberResponse> findAll(final MemberInquirySearchCondition condition, final Pageable pageable){
+    /**
+     * 리스트 조회
+     */
+    public Page<MemberResponse> findAll(final MemberInquirySearchCondition condition, final Pageable pageable) {
         return memberRepository.findAll(condition, pageable);
     }
 
-    /** 아이디 중복체크 */
+    /**
+     * 아이디 중복체크
+     */
     public boolean checkLoginIdDuplicate(final String id) {
         return memberRepository.existsByLoginId(id);
     }
 
-    /** 회원가입 인증메일 발송 */
+    /**
+     * 회원가입 인증메일 발송
+     */
     @Transactional
     public Long createCheckNumber(final MailRequest params) throws MessagingException {
         String authToken = authToken();
         Mail mail = mailRepository.save(params.toEntity(authToken));
-        if(params.getMailType().equals("0")) {
+        if (params.getMailType().equals("0")) {
             mailService.sendJoinMail(mail.getEmail(), mail.getAuthToken());
         } else {
             mailService.sendPasswordFindMail(mail.getEmail(), mail.getAuthToken());
@@ -135,7 +157,9 @@ public class MemberService {
         return mail.getId();
     }
 
-    /** 이메일 인증번호 확인 */
+    /**
+     * 이메일 인증번호 확인
+     */
     @Transactional
     public Long confirmEmail(final MailRequest params) {
         Mail mail = mailRepository.findValidAuthByEmail(params).orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -143,15 +167,19 @@ public class MemberService {
         return mail.getId();
     }
 
-    /** 정회원 회원가입 승인 */
+    /**
+     * 정회원 회원가입 승인
+     */
     @Transactional
-    public Long authorityApprove(final Long id){
+    public Long authorityApprove(final Long id) {
         Member member = memberRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         member.regularMemberAuthorityYn();
         return id;
     }
 
-    /** 로그인 처리 */
+    /**
+     * 로그인 처리
+     */
     public Long loginAction(final LoginRequest params, HttpSession session) {
 
         Member member = memberRepository.findByMemberTypeLoginId(params);
@@ -164,12 +192,16 @@ public class MemberService {
         return member.getId();
     }
 
-    /** 로그아웃 처리 */
+    /**
+     * 로그아웃 처리
+     */
     public void logoutAction(HttpSession session) {
         session.invalidate();
     }
 
-    /** 6자리 이메일 인증번호 난수 생성 Method */
+    /**
+     * 6자리 이메일 인증번호 난수 생성 Method
+     */
     public static String authToken() {
         StringBuilder key = new StringBuilder();
         Random rnd = new Random();

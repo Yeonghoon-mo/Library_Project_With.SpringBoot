@@ -1,67 +1,72 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" layout:decorate="/layout/userLayout" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" layout:decorate="/layout/userLayout"
+      xmlns:layout="http://www.w3.org/1999/xhtml">
 <th:block layout:fragment="main">
 
-	<div id="contents" class="container">
-		<div class="innerwrap">
-			<div class="content">
-				<div class="login_wrap join_wrap">
-				<form id="form" name="form" onsubmit="return false;">
-					<input id="changeYn" name="changeYn" type="hidden" value="N" />
-					<h4>마이페이지</h4>
-					<div class="join_input">
-						<ul id="memberTypeHtml" name="memberTypeHtml">
-							<li>
-								<label for="thumbnail" class="skip_info">프로필 사진</label>
-								<div>
-									<div class="file_preview">
-										<div class="thumb_wrap">
-											<p><span id="preview-image" name="preview-image"></span></p>
-										</div>
-										<div class="file_upload">
-											<label> <i>파일 업로드</i>
-												<input type="file" id="thumbnail" name="thumbnail" accept="image/*" onchange="changeFileName(this); readImage(this);" />
-											</label>
-										</div>
-									</div>
-								</div>
-							</li>
-							<li>
-								<label>이메일 아이디 <span class="es">필수입력</span></label>
-								<div><input type="email" id="loginId" name="loginId" placeholder="이메일 주소 입력" readonly /></div>
-							</li>
-							<li>
-								<label for="name">이름 <span class="es">필수입력</span></label>
-								<div><input type="text" id="name" name="name" placeholder="이름" maxlength="5" readonly /></div>
-							</li>
-							<li>
-								<label for="phone">연락처 <span class="es">필수입력</span></label>
-								<div><span><input type="tel" title="연락처" id="phone" name="phone" maxlength="11" placeholder="숫자만 입력해 주세요." /></span></div>
-							</li>
-						</ul>
-					</div>
-					<button type="button" class="btns btn_mem" onclick="save()">저장</button>
-				</form>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div id="contents" class="container">
+        <div class="innerwrap">
+            <div class="content">
+                <div class="login_wrap join_wrap">
+                    <form id="form" name="form" onsubmit="return false;">
+                        <input id="changeYn" name="changeYn" type="hidden" value="N"/>
+                        <h4>마이페이지</h4>
+                        <div class="join_input">
+                            <ul id="memberTypeHtml" name="memberTypeHtml">
+                                <li>
+                                    <label for="thumbnail" class="skip_info">프로필 사진</label>
+                                    <div>
+                                        <div class="file_preview">
+                                            <div class="thumb_wrap">
+                                                <p><span id="preview-image" name="preview-image"></span></p>
+                                            </div>
+                                            <div class="file_upload">
+                                                <label> <i>파일 업로드</i>
+                                                    <input type="file" id="thumbnail" name="thumbnail" accept="image/*"
+                                                           onchange="changeFileName(this); readImage(this);"/>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <label>이메일 아이디 <span class="es">필수입력</span></label>
+                                    <div><input type="email" id="loginId" name="loginId" placeholder="이메일 주소 입력"
+                                                readonly/></div>
+                                </li>
+                                <li>
+                                    <label for="name">이름 <span class="es">필수입력</span></label>
+                                    <div><input type="text" id="name" name="name" placeholder="이름" maxlength="5"
+                                                readonly/></div>
+                                </li>
+                                <li>
+                                    <label for="phone">연락처 <span class="es">필수입력</span></label>
+                                    <div><span><input type="tel" title="연락처" id="phone" name="phone" maxlength="11"
+                                                      placeholder="숫자만 입력해 주세요."/></span></div>
+                                </li>
+                            </ul>
+                        </div>
+                        <button type="button" class="btns btn_mem" onclick="save()">저장</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </th:block>
 <th:block layout:fragment="script">
-	<script th:inline="javascript">
-		/*<![CDATA[*/
+    <script th:inline="javascript">
+        /*<![CDATA[*/
 
-		window.onload = () => {
-			findBoard();
-			memberTypeHtml();
-		}
+        window.onload = () => {
+            findBoard();
+            memberTypeHtml();
+        }
 
-		// 일반 회원일 경우의 HTML 렌더링 함수
-		function memberTypeHtml() {
-			let html = '';
-			if([[${session.loginMember.type}]] === 'GENERAL') {
-					 html = `<li>
+        // 일반 회원일 경우의 HTML 렌더링 함수
+        function memberTypeHtml() {
+            let html = '';
+            if ([[${session.loginMember.type}]] === 'GENERAL') {
+                html = `<li>
 								<label for="thumbnail" class="skip_info">프로필 사진</label>
 								<div>
 									<div class="file_preview">
@@ -84,94 +89,94 @@
 								<label for="name">이름 <span class="es">필수입력</span></label>
 								<div><input type="text" id="name" name="name" placeholder="이름" maxlength="5" readonly /></div>
 							</li>`;
-				findById('memberTypeHtml').innerHTML = html;
-			}
-		}
+                findById('memberTypeHtml').innerHTML = html;
+            }
+        }
 
-		// 마이페이지 회원 개인정보 수정 함수
-		function save() {
-			const id = [[${session.loginMember.id}]];
-			const form = findById('form');
-			const formData = new FormData(findById('form'));
+        // 마이페이지 회원 개인정보 수정 함수
+        function save() {
+            const id = [[${session.loginMember.id}]];
+            const form = findById('form');
+            const formData = new FormData(findById('form'));
 
-			if([[${session.loginMember.type}]] === "REGULAR") {
-				const phoneRegex = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+            if ([[${session.loginMember.type}]] === "REGULAR") {
+                const phoneRegex = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
 
-				if(!form.phone.value.trim()) {
-					alert('연락처를 입력해주세요.');
-					form.phone.focus();
-					return false;
-				}
+                if (!form.phone.value.trim()) {
+                    alert('연락처를 입력해주세요.');
+                    form.phone.focus();
+                    return false;
+                }
 
-				if(!phoneRegex.test(form.phone.value)) {
-					alert('휴대폰번호 형식이 올바르지 않습니다.');
-					form.phone.focus();
-					return false;
-				}
-			}
+                if (!phoneRegex.test(form.phone.value)) {
+                    alert('휴대폰번호 형식이 올바르지 않습니다.');
+                    form.phone.focus();
+                    return false;
+                }
+            }
 
 
-			if([[${session.loginMember.type}]] === "REGULAR") {
-				formData.append('type' , 'REGULAR');
-			} else {
-				formData.append('type' , 'GENERAL');
-			}
-			formData.append('deleteYn', 'N');
+            if ([[${session.loginMember.type}]] === "REGULAR") {
+                formData.append('type', 'REGULAR');
+            } else {
+                formData.append('type', 'GENERAL');
+            }
+            formData.append('deleteYn', 'N');
 
-			fetch(`/api/members/${id}`, {
-				method: 'POST',
-				body: formData
-			}).then(response => {
-				if(!response.ok) {
-					throw new Error("Request failed...")
-				}
-				alert("회원 수정이 완료되었습니다.")
-				location.href = '/';
-			}).catch(error => {
-				console.log(error);
-			});
-		}
+            fetch(`/api/members/${id}`, {
+                method: 'POST',
+                body  : formData
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error("Request failed...")
+                }
+                alert("회원 수정이 완료되었습니다.")
+                location.href = '/';
+            }).catch(error => {
+                console.log(error);
+            });
+        }
 
-		// 회원정보 Response
-		function findBoard() {
-			if ([[${session.loginMember}]] === null) {
-				alert('잘못된 접근입니다.');
-				location.href = '/';
-				return false;
-			}
-			const id = [[${session.loginMember.id}]];
+        // 회원정보 Response
+        function findBoard() {
+            if ([[${session.loginMember}]] === null) {
+                alert('잘못된 접근입니다.');
+                location.href = '/';
+                return false;
+            }
+            const id = [[${session.loginMember.id}]];
 
-			fetch(`/api/members/${id}`).then(response => {
-				if(!response.ok) {
-					throw new Error("Request failed...");
-				}
-				return response.json();
-			}).then(json => {
-				Object.keys(json).forEach(key =>{
-					const elem = findById(key);
-					if(elem){
-						elem.value = json[key];
-					}
-				});
+            fetch(`/api/members/${id}`).then(response => {
+                if (!response.ok) {
+                    throw new Error("Request failed...");
+                }
+                return response.json();
+            }).then(json => {
+                Object.keys(json).forEach(key => {
+                    const elem = findById(key);
+                    if (elem) {
+                        elem.value = json[key];
+                    }
+                });
 
-				// 회원 프로필
-				findById('preview-image').innerHTML = (json.profileImage) ? `<img src="/api/image-files?savedFilename=${json.profileImage}" alt="회원 프로필 이미지" />` : '<img src="/user/images/board/default_profile.png" alt="기본 프로필 이미지" />';
+                // 회원 프로필
+                findById('preview-image').innerHTML = (json.profileImage) ? `<img src="/api/image-files?savedFilename=${json.profileImage}" alt="회원 프로필 이미지" />` : '<img src="/user/images/board/default_profile.png" alt="기본 프로필 이미지" />';
 
-			}).catch(error =>{
-				console.log(error);
-			});
-		}
+            }).catch(error => {
+                console.log(error);
+            });
+        }
 
-		/** 이미지 미리보기 함수 */
-		function readImage(file) {
-			if ( !file ) {
-				findById('preview-image').innerHTML = '<img src="/user/images/board/default_profile.png" alt="기본 프로필 이미지" />';
-				return false;
-			}
-			findById('preview-image').innerHTML = `<img src="${URL.createObjectURL(file.files[0])}" alt="회원 프로필 이미지" />`;
-		}
+        /** 이미지 미리보기 함수 */
+        function readImage(file) {
+            if (!file) {
+                findById('preview-image').innerHTML = '<img src="/user/images/board/default_profile.png" alt="기본 프로필 이미지" />';
+                return false;
+            }
+            findById('preview-image').innerHTML = `<img src="${URL.createObjectURL(file.files[0])}" alt="회원 프로필 이미지" />`;
+        }
 
-		/*]]>*/
-	</script>
+        /*]]>*/
+    </script>
 </th:block>
 </html>

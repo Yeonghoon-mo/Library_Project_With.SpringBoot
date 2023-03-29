@@ -25,7 +25,9 @@ public class MemberRequest {
     // 정회원 member 변수
     private String phone;             // 연락처
 
-    /** Entity Class 컬럼에 등록되어 있는 데이터를 받는 것이 아닌 직접 선언한 멤버변수 */
+    /**
+     * Entity Class 컬럼에 등록되어 있는 데이터를 받는 것이 아닌 직접 선언한 멤버변수
+     */
     private MultipartFile thumbnail;       // 프로필 이미지
 
     @Builder

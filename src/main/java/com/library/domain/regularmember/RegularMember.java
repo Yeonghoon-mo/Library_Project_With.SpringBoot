@@ -26,13 +26,13 @@ public class RegularMember {
     private String phone;                   // 연락처
 
     @Builder
-    public RegularMember(Member member, String phone){
+    public RegularMember(Member member, String phone) {
         this.member = member;
         this.phone = phone;
     }
 
     // 정회원 수정
-    public void update(MemberRequest params){
+    public void update(MemberRequest params) {
         this.phone = params.getPhone();
     }
 

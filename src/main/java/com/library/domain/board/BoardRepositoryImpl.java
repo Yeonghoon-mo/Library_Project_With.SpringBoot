@@ -19,18 +19,20 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-    public BoardRepositoryImpl(EntityManager entityManager){
+    public BoardRepositoryImpl(EntityManager entityManager) {
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
 
-    /** 게시판 페이징, 검색 */
+    /**
+     * 게시판 페이징, 검색
+     */
     @Override
     public Page<Board> findAll(BoardInquirySearchCondition condition, Pageable pageable) {
         List<Board> list = queryFactory
                 .selectFrom(board)
                 .where(board.deleteYn.eq(YnStatus.N)
                         .and(search(condition.getSearchType(), condition.getKeyword()))
-                                .and(boardMenuNum(condition.getBoardMenuNum())))
+                        .and(boardMenuNum(condition.getBoardMenuNum())))
                 .orderBy(board.noticeYn.desc(), orderByNameType(condition.getOrderByName()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -40,7 +42,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .selectFrom(board)
                 .where(board.deleteYn.eq(YnStatus.N)
                         .and(search(condition.getSearchType(), condition.getKeyword()))
-                                .and(boardMenuNum(condition.getBoardMenuNum())));
+                        .and(boardMenuNum(condition.getBoardMenuNum())));
 
         return PageableExecutionUtils.getPage(list, pageable, count::fetchCount);
 
@@ -62,11 +64,13 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     }
 
 
-    /** 게시글 검색 조건 */
+    /**
+     * 게시글 검색 조건
+     */
     private BooleanExpression search(String searchType, String keyword) {
-        if(StringUtils.isBlank(keyword)) {
+        if (StringUtils.isBlank(keyword)) {
             return null;
-        } else if(StringUtils.isBlank(searchType)){
+        } else if (StringUtils.isBlank(searchType)) {
             return board.title.contains(keyword).or(board.content.contains(keyword).or(board.writer.contains(keyword)));
         }
 
@@ -81,9 +85,11 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         return null;
     }
 
-    /** 게시판 타입 */
+    /**
+     * 게시판 타입
+     */
     private BooleanExpression boardMenuNum(Integer boardMenuNum) {
-        if(boardMenuNum == null) {
+        if (boardMenuNum == null) {
             return null;
         } else if (boardMenuNum == 19970709) {
             return board.boardMenuNum.id.notIn(28, 29, 30);
@@ -91,9 +97,11 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         return board.boardMenuNum.id.eq(boardMenuNum);
     }
 
-    /** 정렬 기준 */
+    /**
+     * 정렬 기준
+     */
     private OrderSpecifier<?> orderByNameType(String orderByName) {
-        if(StringUtils.isBlank(orderByName)) {
+        if (StringUtils.isBlank(orderByName)) {
             return board.id.desc();
         }
         switch (orderByName) {
