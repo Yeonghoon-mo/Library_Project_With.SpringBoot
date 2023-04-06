@@ -26,16 +26,14 @@ public class MemberUtil {
     public static Member getSessionMember() {
         ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpSession session = sra.getRequest().getSession();
-        Member member = (Member) session.getAttribute("loginMember");
-        return member;
+        return (Member) session.getAttribute("loginMember");
     }
 
     // 관리자 세션값 넣기
     public static Member getSessionAdmin() {
         ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpSession session = sra.getRequest().getSession();
-        Member member = (Member) session.getAttribute("login");
-        return member;
+        return (Member) session.getAttribute("login");
     }
 
     // Null Check
