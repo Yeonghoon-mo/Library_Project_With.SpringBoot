@@ -51,7 +51,7 @@ public class BoardService {
     // 게시글 수정
     @Transactional
     public Long update(final Long id, final BoardRequest params) {
-        Board board = boardRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND)); // 게시글
+        Board board = getBoardById(id);
         Member member = MemberUtil.getLoginSessionMember(); // 회원 (사용자 or 관리자)
         adminAuthorityCheck(board, member);
         FileResponse repImage = fileUtil.uploadFile(params.getThumbnail()); // 대표 이미지
@@ -65,7 +65,7 @@ public class BoardService {
     // 게시글 삭제
     @Transactional
     public Long delete(final Long id) {
-        Board board = boardRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND)); // 게시글
+        Board board = getBoardById(id);
         Member member = MemberUtil.getLoginSessionMember(); // 회원 (사용자 or 관리자)
         adminAuthorityCheck(board, member);
         board.delete(); // 게시글 삭제
@@ -75,7 +75,7 @@ public class BoardService {
 
     // 게시글 상세정보 조회
     public BoardResponse findById(final Long id) {
-        Board board = boardRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
+        Board board = getBoardById(id);
         MemberResponse member = new MemberResponse(board.getMember());
         board.increaseHits();
         return new BoardResponse(board, member);
@@ -126,7 +126,7 @@ public class BoardService {
     // 조회수 증가 ( 쿠키를 이용한 )
     @Transactional
     public void increaseHits(final Long id) {
-        Board board = boardRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+        Board board = getBoardById(id);
         board.increaseHits();
     }
 
@@ -164,5 +164,10 @@ public class BoardService {
             return;
         }
         attachRepository.deleteAllByAttachIds(removeFileIds);
+    }
+
+    // Find Board ID Method
+    private Board getBoardById(final Long id) {
+        return boardRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
     }
 }
