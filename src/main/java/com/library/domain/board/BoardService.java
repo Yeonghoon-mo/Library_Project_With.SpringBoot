@@ -14,12 +14,17 @@ import com.library.exception.ErrorCode;
 import com.library.utils.FileUtil;
 import com.library.utils.MemberUtil;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
@@ -123,11 +128,31 @@ public class BoardService {
         return attachRepository.findByAttachList(boardId).stream().map(AttachResponse::new).collect(Collectors.toList());
     }
 
-    // 조회수 증가 ( 쿠키를 이용한 )
+    // 조회수 증가 (쿠키)
     @Transactional
-    public void increaseHits(final Long id) {
-        Board board = getBoardById(id);
-        board.increaseHits();
+    public void increaseHits(final Long id, HttpServletRequest request, HttpServletResponse response) {
+        Cookie[] cookies = request.getCookies();
+        Cookie cookie = null;
+
+        if (!ObjectUtils.isEmpty(cookies)) {
+            for (Cookie c : cookies) {
+                String name = "cookie-board-" + id;
+                if (StringUtils.equals(name, c.getName())) {
+                    cookie = c;
+                    break;
+                }
+            }
+
+            if (cookie == null) {
+                cookie = new Cookie("cookie-board-" + id, String.valueOf(id));
+                cookie.setMaxAge(600); // 쿠키 저장 시간 ( 초 기준 )
+                response.addCookie(cookie);
+
+                Board board = getBoardById(id);
+                board.increaseHits();
+            }
+        }
+
     }
 
     // 관리자가 아닌 경우, 권한 체크

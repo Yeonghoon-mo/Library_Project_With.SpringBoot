@@ -2,16 +2,13 @@ package com.library.controller;
 
 import com.library.domain.board.BoardService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -69,25 +66,7 @@ public class UserBoardPageController {
     }
 
     // 쿠키 저장 Method ( 게시글 조회수 증가 중복체크 사용 )
-    private void cookieProcessing(Long id, HttpServletRequest request, HttpServletResponse response) {
-        Cookie[] cookies = request.getCookies();
-        Cookie cookie = null;
-
-        if (!ObjectUtils.isEmpty(cookies)) {
-            for (Cookie c : cookies) {
-                String name = "cookie-board-" + id;
-                if (StringUtils.equals(name, c.getName())) {
-                    cookie = c;
-                    break;
-                }
-            }
-
-            if (cookie == null) {
-                cookie = new Cookie("cookie-board-" + id, String.valueOf(id));
-                cookie.setMaxAge(600); // 쿠키 저장 시간 ( 초 기준 )
-                response.addCookie(cookie);
-                boardService.increaseHits(id); // 조회수 증가
-            }
-        }
+    private void cookieProcessing(final Long id, HttpServletRequest request, HttpServletResponse response) {
+        boardService.increaseHits(id, request, response); // 조회수 증가
     }
 }
