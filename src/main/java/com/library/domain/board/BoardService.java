@@ -156,7 +156,7 @@ public class BoardService {
     }
 
     // 관리자가 아닌 경우, 권한 체크
-    private static void adminAuthorityCheck(Board board, Member member) {
+    private void adminAuthorityCheck(Board board, Member member) {
         if (member.getType() != MemberType.ADMIN) {
             if (board.getMember().getId().longValue() != member.getId().longValue()) {
                 throw new CustomException(ErrorCode.IS_NOT_CREATOR);
@@ -171,14 +171,12 @@ public class BoardService {
             return;
         }
 
-        List<Attach> attachEntities = attachFiles.stream().map(attachFile -> {
-            return Attach.builder()
-                    .board(board)
-                    .originalName(attachFile.getOriginalFilename())
-                    .saveName(attachFile.getSaveFilename())
-                    .size(attachFile.getFileSize())
-                    .build();
-        }).collect(Collectors.toList());
+        List<Attach> attachEntities = attachFiles.stream().map(attachFile -> Attach.builder()
+                .board(board)
+                .originalName(attachFile.getOriginalFilename())
+                .saveName(attachFile.getSaveFilename())
+                .size(attachFile.getFileSize())
+                .build()).collect(Collectors.toList());
 
         attachRepository.saveAll(attachEntities);
     }

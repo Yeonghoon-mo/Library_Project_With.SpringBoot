@@ -209,7 +209,7 @@ public class MemberService {
         for (int i = 0; i < 6; i++) { // 인증코드 6자리
             int index = rnd.nextInt(3); // 0~2 까지 랜덤
 
-            switch (2) {
+            switch (index) {
                 case 0:
                     key.append((char) (rnd.nextInt(26) + 97));
                     //  a~z  (ex. 1+97=98 => (char)98 = 'b')

@@ -35,7 +35,7 @@ public class UserBoardPageController {
     // 공지사항형 게시글 View
     @GetMapping("view/{id}")
     public String boardView(@PathVariable final Long id, Model model, HttpServletRequest request, HttpServletResponse response) {
-        cookieProcessing(id, request, response);
+        boardService.increaseHits(id, request, response); // 쿠키를 이용한 조회수 증가
         model.addAttribute("id", id);
         return "/user/board/boardView";
     }
@@ -65,8 +65,4 @@ public class UserBoardPageController {
         return "/user/board/searchBoard";
     }
 
-    // 쿠키 저장 Method ( 게시글 조회수 증가 중복체크 사용 )
-    private void cookieProcessing(final Long id, HttpServletRequest request, HttpServletResponse response) {
-        boardService.increaseHits(id, request, response); // 조회수 증가
-    }
 }
