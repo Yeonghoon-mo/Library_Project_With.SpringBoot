@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class BoardService {
 
@@ -43,7 +44,6 @@ public class BoardService {
     private final FileUtil fileUtil;
 
     // 게시글 생성
-    @Transactional
     public Long save(final BoardRequest params) {
         FileResponse repImage = fileUtil.uploadFile(params.getThumbnail()); // 대표 이미지 업로드
         List<FileResponse> attachFiles = fileUtil.uploadFiles(params.getAttachFiles()); // 첨부파일 업로드
@@ -54,7 +54,6 @@ public class BoardService {
     }
 
     // 게시글 수정
-    @Transactional
     public Long update(final Long id, final BoardRequest params) {
         Board board = getBoardById(id);
         Member member = MemberUtil.getLoginSessionMember(); // 회원 (사용자 or 관리자)
@@ -68,7 +67,6 @@ public class BoardService {
     }
 
     // 게시글 삭제
-    @Transactional
     public Long delete(final Long id) {
         Board board = getBoardById(id);
         Member member = MemberUtil.getLoginSessionMember(); // 회원 (사용자 or 관리자)
@@ -129,7 +127,6 @@ public class BoardService {
     }
 
     // 조회수 증가 (쿠키)
-    @Transactional
     public void increaseHits(final Long id, HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
         Cookie cookie = null;

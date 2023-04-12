@@ -8,7 +8,7 @@ public interface AttachRepositoryCustom {
     void deleteAttach(Long boardId);
 
     // 게시판 파일 삭제
-    long deleteAllByAttachIds(List<Long> attachIds);
+    void deleteAllByAttachIds(List<Long> attachIds);
 
     // 파일 카운트
     Long selectAttachTotalCount(Long id);

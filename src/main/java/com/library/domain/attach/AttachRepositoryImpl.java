@@ -31,8 +31,8 @@ public class AttachRepositoryImpl implements AttachRepositoryCustom {
 
     // 게시판 파일 삭제
     @Override
-    public long deleteAllByAttachIds(List<Long> attachIds) {
-        return queryFactory
+    public void deleteAllByAttachIds(List<Long> attachIds) {
+        queryFactory
                 .update(attach)
                 .set(attach.deleteYn, YnStatus.Y)
                 .where(attach.id.in(attachIds))
