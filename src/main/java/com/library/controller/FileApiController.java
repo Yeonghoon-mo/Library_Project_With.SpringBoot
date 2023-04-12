@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 
 @RestController
@@ -42,7 +43,7 @@ public class FileApiController {
         final String filePath = Paths.get(fileUtil.uploadPath(), savedFilename).toString();
 
         try {
-            InputStream stream = new FileInputStream((filePath));
+            InputStream stream = Files.newInputStream(Paths.get(filePath));
             byte[] byteArr = IOUtils.toByteArray(stream);
 
             String mimeType = new Tika().detect(byteArr);

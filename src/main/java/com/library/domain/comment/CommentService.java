@@ -15,6 +15,7 @@ import java.util.List;
 
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CommentService {
 
@@ -23,7 +24,6 @@ public class CommentService {
     private final BoardRepository boardRepository;
 
     // 댓글 생성
-    @Transactional
     public Long saveComment(final CommentRequest params) {
         Board board = boardRepository.findById(params.getBoardId()).orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
         Member member = MemberUtil.getSessionMember(false);
@@ -31,7 +31,6 @@ public class CommentService {
     }
 
     // 댓글 수정
-    @Transactional
     public Long updateComment(@PathVariable final Long id, final CommentRequest params) {
         Comment entity = commentRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
         Member member = MemberUtil.getSessionMember(false);
@@ -43,7 +42,6 @@ public class CommentService {
     }
 
     // 댓글 삭제
-    @Transactional
     public Long deleteComment(@PathVariable final Long id) {
         Comment entity = commentRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
         Member member = MemberUtil.getSessionMember(false);
@@ -55,7 +53,6 @@ public class CommentService {
     }
 
     // 관리자 페이지 댓글 삭제
-    @Transactional
     public Long deleteAdminComment(@PathVariable final Long id) {
         Comment entity = commentRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
         entity.delete();

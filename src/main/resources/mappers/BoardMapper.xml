@@ -46,8 +46,11 @@
              , COUNT(CASE WHEN L.like_type = 0 THEN 1 END) AS bad_cnt
              , (SELECT like_type
                 from tb_like
-                WHERE board_id = #{boardId} AND member_id = #{memberId}
-                ORDER BY id DESC                              LIMIT 1) AS like_type
+                WHERE board_id = #{boardId}
+                  AND member_id = #{memberId}
+                ORDER BY id DESC                              LIMIT
+            1)
+                AS like_type
         FROM
             tb_board AS B -- 게시글
             INNER JOIN tb_member AS M

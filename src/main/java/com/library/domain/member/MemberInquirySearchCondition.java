@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class MemberInquirySearchCondition {
 
+    // Member 검색 조건 멤버변수
     private String searchType;      // 검색조건
     private String keyword;         // 검색 키워드
     private MemberType memberType;      // 회원 유형

@@ -50,8 +50,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
     @Override
     public List<Board> findByBoardIndexList(BoardInquirySearchCondition condition) {
-
-        List<Board> list = queryFactory
+        return queryFactory
                 .selectFrom(board)
                 .where(board.deleteYn.eq(YnStatus.N)
                         .and(board.boardMenuNum.id.goe(condition.getStartMenuNum()))
@@ -59,8 +58,6 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .orderBy(orderByNameType(condition.getOrderByName()))
                 .limit(condition.getListLimit())
                 .fetch();
-
-        return list;
     }
 
 

@@ -9,7 +9,7 @@ import javax.persistence.Converter;
 @Converter(autoApply = true)
 public class YnStatusConverter implements AttributeConverter<YnStatus, String> {
 
-    // JPA EnumType 적용 Converter
+    // JPA EnumType 적용을 위한 클래스
 
     @Override
     public String convertToDatabaseColumn(YnStatus attribute) {

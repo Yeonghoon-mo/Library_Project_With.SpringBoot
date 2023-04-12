@@ -1,5 +1,6 @@
 package com.library.domain.member;
 
+import com.library.domain.regularmember.RegularMember;
 import com.library.status.YnStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,7 @@ public class MemberResponse {
     // 정회원 member 변수
     private String phone;                   // 연락처
 
-    public MemberResponse(Member entity) {
+    public MemberResponse(Member entity, RegularMember regMember) {
         this.id = entity.getId();
         this.type = entity.getType();
         this.loginId = entity.getLoginId();
@@ -35,8 +36,9 @@ public class MemberResponse {
         this.createdDate = entity.getCreatedDate();
         this.modifiedDate = entity.getModifiedDate();
 
+        // Test 필요함.
         if (entity.getType() == MemberType.REGULAR) {
-            this.phone = phone;
+            this.phone = regMember.getPhone();
         }
     }
 

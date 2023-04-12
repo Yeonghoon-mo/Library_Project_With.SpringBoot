@@ -27,7 +27,7 @@ public class MailService {
         MimeMessage mm = javaMailSender.createMimeMessage();
         MimeMessageHelper mmHelper = new MimeMessageHelper(mm, true, "UTF-8");
 
-        String htmlStr = "안녕하세요! " + email + " 님의 인증번호는" + authToken + " 입니다.";
+        String htmlStr = email + " 님의 인증번호는" + authToken + " 입니다.";
 
         mmHelper.setTo(email);
         mmHelper.setSubject("Library Project 회원가입 인증번호");
@@ -44,7 +44,7 @@ public class MailService {
         MimeMessage mm = javaMailSender.createMimeMessage();
         MimeMessageHelper mmHelper = new MimeMessageHelper(mm, true, "UTF-8");
 
-        String htmlStr = "안녕하세요! " + email + " 님의 비밀번호 찾기 인증번호는" + authToken + " 입니다.";
+        String htmlStr = email + " 님의 비밀번호 찾기 인증번호는" + authToken + " 입니다.";
 
         mmHelper.setTo(email);
         mmHelper.setSubject("Library Project 비밀번호 찾기 인증번호");

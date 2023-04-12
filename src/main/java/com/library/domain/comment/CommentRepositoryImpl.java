@@ -50,5 +50,4 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         return (parentCommentId == null) ? null : comment.parentCommentId.eq(parentCommentId);
     }
 
-
 }
