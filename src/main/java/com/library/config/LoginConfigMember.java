@@ -10,12 +10,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class LoginConfigMember implements WebMvcConfigurer {
 
-    // 인터셉터 로그인
+    // 인터셉터를 이용한 로그인
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginCheckInterceptorMember())
-                // 접근 불가 Page 추가
-                // 인터셉터를 적용할 페이지
+                // 접근 불가 Page 추가 (인터셉터를 적용할 페이지)
                 .addPathPatterns(
                         "/board/write",
                         "/board/view/*",

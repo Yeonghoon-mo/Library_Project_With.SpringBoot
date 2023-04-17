@@ -11,13 +11,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class LoginConfig implements WebMvcConfigurer {
 
-    // 개발 시점에 static directory 경로 읽는 코드
+    // 개발 시점에 static directory 경로 읽는 코드 (JS, CSS)
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
     }
 
-//    // 배포 시점에 사용 가능한 코드.
+//    // 배포 시점에 사용 가능한 코드 (배포 서버 경로를 정확히 입력해야 함)
 //    @Override
 //    public void addResourceHandlers(ResourceHandlerRegistry registry) {
 //        registry
